@@ -12,4 +12,7 @@ TODO
     C. Donate
     D. HireMe
     E. Errors in json/translation, bugs
+    F. FAQ
+    G. Roadmap (w/ timeline?)
+        I. Prettify UI
 03. DirectCommunication

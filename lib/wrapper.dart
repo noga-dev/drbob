@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'blocs/Bloc.dart';
 import 'utils/localization.dart';
+import 'utils/style.dart';
 import 'views/home.dart';
 import 'views/settings.dart';
 
+// ANCHOR Redundant?
 var routes = {
   "/": (context) => AppHome(),
   "/home": (context) => HomeView(),
@@ -18,7 +20,7 @@ class AppWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Bloc>(
       builder: (_) => Bloc(
-          ThemeData(brightness: Brightness.dark, primaryColor: Colors.purple),
+          ThemeData(brightness: Brightness.dark, primaryColor: Colors.purple, appBarTheme: appBarTheme),
           Locale("en")),
       child: MyApp(),
     );
@@ -56,9 +58,9 @@ class AppHome extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Spacer(),
-            Icon(Icons.ac_unit),
+            Icon(Icons.home),
             Spacer(),
-            Text(trans(context, "home_title"))
+            Text(trans(context, "tab_title_home"))
           ],
         ),
       ),
@@ -66,9 +68,9 @@ class AppHome extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Spacer(),
-            Icon(Icons.ac_unit),
+            Icon(Icons.build),
             Spacer(),
-            Text(trans(context, "home_title"))
+            Text(trans(context, "tab_title_tools"))
           ],
         ),
       ),
@@ -76,9 +78,9 @@ class AppHome extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Spacer(),
-            Icon(Icons.ac_unit),
+            Icon(Icons.settings),
             Spacer(),
-            Text(trans(context, "home_title"))
+            Text(trans(context, "tab_title_settings"))
           ],
         ),
       ),
@@ -87,15 +89,11 @@ class AppHome extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(trans(context, "home_title")),
           centerTitle: true,
-          primary: false,
           flexibleSpace: SafeArea(
+            minimum: EdgeInsets.only(top: 55),
             child: TabBar(
               indicatorWeight: 6.0,
-              labelPadding: EdgeInsets.symmetric(vertical: 2.0),
-              indicatorColor: Colors.red,
-              labelColor: Colors.white,
               tabs: tabs,
             ),
           ),

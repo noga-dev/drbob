@@ -1,4 +1,13 @@
 {
-    "home_title": "דר AA",
-    "theme_primary_color": "צבע עיקרי"
+    "serenity_prayer": "תן לי את השלווה לקבל את הדברים שאין ביכולתי לשנותם, האומץ לשנות את אשר ביכולתי, והתבונה להבחין בין השניים.",
+    "tab_title_home": "בית",
+    "tab_title_tools": "כלים",
+    "tab_title_settings": "הגדרות",
+    "theme_primary_color": "צבי עיקרי",
+    "appearance_view_title": "מראה",
+    "btn_appearance": "מראה",
+    "btn_language": "שפה",
+    "btn_sobriety_date": "תעריך פיקחות",
+    "btn_about": "אודות",
+    "desc_about": "צור קשר ועוד"
 }

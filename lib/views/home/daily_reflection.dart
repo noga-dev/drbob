@@ -5,10 +5,53 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+class DrBgCustomPainter extends CustomPainter {
+  Color mainBgColor = Colors.orange;
+  Color layer2Color = Colors.red;
+  Color layer3Color = Colors.blue;
+  Color layer4Color = Colors.green;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint();
+
+    Path mainBgPath = Path()
+      ..lineTo(0, 0)
+      ..addRect(Rect.fromLTWH(.0, .0, size.width, size.height));
+    paint.color = mainBgColor;
+    canvas.drawPath(mainBgPath, paint);
+
+    Path layer2 = Path()
+      ..lineTo(size.width, 0)
+      ..quadraticBezierTo(size.width, size.height, 100, 100)
+      ..close();
+    paint.color = layer2Color;
+    canvas.drawPath(layer2, paint);
+
+    Path layer3 = Path()
+      ..lineTo(-100, 200)
+      ..quadraticBezierTo(size.width, 0, size.width * .5, 100)
+      ..close();
+    paint.color = layer3Color;
+    canvas.drawPath(layer3, paint);
+
+    Path layer4 = Path()
+      ..lineTo(size.width, size.height)
+      ..quadraticBezierTo(size.width, 350, size.width * .5, size.height)
+      ..close();
+    paint.color = layer4Color;
+    canvas.drawPath(layer4, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return oldDelegate != this;
+  }
+}
+
 class DailyReflectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var topPadding = MediaQuery.of(context).size.height * 0.25;
     return FutureBuilder(
       future: rootBundle.loadString(
           "assets/daily_reflections/${Provider.of<Bloc>(context).getLocale.languageCode}.daily.reflections.json"),
@@ -19,6 +62,7 @@ class DailyReflectionView extends StatelessWidget {
               .firstWhere((x) =>
                   x.day == DateTime.now().day &&
                   x.month == DateTime.now().month);
+              // .firstWhere((x) => x.month == 1 && x.day == 13);
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -32,44 +76,40 @@ class DailyReflectionView extends StatelessWidget {
               children: <Widget>[
                 Stack(
                   children: <Widget>[
+                    CustomPaint(
+                      child: Container(
+                      ),
+                      painter: DrBgCustomPainter(),
+                    ),
                     Container(
-                        padding: EdgeInsets.only(left: 10.0),
-                        height: topPadding,
-                        decoration: new BoxDecoration(
-                          image: new DecorationImage(
-                            image: new AssetImage("assets/images/bg_beach.jpg"),
-                            fit: BoxFit.fill,
-                          ),
-                        )),
-                    Container(
-                      height: topPadding,
-                      padding: EdgeInsets.all(40.0),
-                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.all(20.0),
                       decoration: BoxDecoration(
-                          color: Colors.lightBlue.withOpacity(.25)),
-                      child: Center(
-                        //ANCHOR: Add Quote BG
-                        child: Container(
-                          padding: EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(.75),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          child: RichText(
-                            text: TextSpan(
-                              text: dr.excerpt,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: 18),
-                              children: [
-                                TextSpan(
-                                  text: "\n\n",
-                                  children: [
-                                    TextSpan(text: dr.source),
-                                  ],
-                                ),
-                              ],
-                            ),
+                        color: Colors.black.withOpacity(.5),
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(12.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(.9),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        child: RichText(
+                          text: TextSpan(
+                            text: '"${dr.excerpt}"',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: 18),
+                            children: [
+                              TextSpan(
+                                text: "\n\n",
+                                children: [
+                                  TextSpan(
+                                      text: dr.source,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 16)),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -78,12 +118,14 @@ class DailyReflectionView extends StatelessWidget {
                 ),
                 Container(
                   child: Expanded(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.all(20.0),
-                      child: Text(
-                        dr.reflection,
-                        style: TextStyle(
-                          fontSize: 18.0,
+                    child: Scrollbar(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.all(20.0),
+                        child: Text(
+                          dr.reflection,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
                         ),
                       ),
                     ),
