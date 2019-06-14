@@ -11,5 +11,11 @@
     "btn_sobriety_date": "Soberiety Date",
     "btn_about": "About",
     "appearance_desc": "Change the appearance of the app",
-    "desc_about": "Contact, etc."
+    "desc_about": "Contact, etc.",
+    "search": "Search",
+    "month": "Month",
+    "month_colon": "Month: ",
+    "day": "Day",
+    "day_colon": "Day: ",
+    "no_results": "No Matches."
 }

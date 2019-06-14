@@ -1,5 +1,21 @@
 {
     "serenity_prayer": "Боже, дай мне разум и душевный покой принять то, что я не в силах изменить, мужество изменить то, что могу, и мудрость отличить одно от другого.",
     "home_title": "Др. АА",
-    "theme_primary_color": "Основной Цвет"
+    "theme_primary_color": "Основной Цвет",
+    "tab_title_home": "Дом",
+    "tab_title_tools": "Инструменты",
+    "tab_title_settings": "Опции",
+    "appearance_view_title": "Вид",
+    "btn_appearance": "Вид",
+    "btn_language": "Язык",
+    "btn_sobriety_date": "Дата трезвости",
+    "btn_about": "О програме",
+    "appearance_desc": "Изминить вид",
+    "desc_about": "Связтся и т.д.",
+    "search": "Поиск",
+    "month": "Месяц",
+    "month_colon": "Месяц: ",
+    "day": "День",
+    "day_colon": "День: ",
+    "no_results": "Нет результатов."
 }

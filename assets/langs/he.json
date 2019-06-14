@@ -9,5 +9,11 @@
     "btn_language": "שפה",
     "btn_sobriety_date": "תעריך פיקחות",
     "btn_about": "אודות",
-    "desc_about": "צור קשר ועוד"
+    "desc_about": "צור קשר ועוד",
+    "search": "חיפוש",
+    "month": "חודש",
+    "month_colon": "חודש: ",
+    "day": "יום",
+    "day_colon": "יום: ",
+    "no_results": "אין התאמות."
 }

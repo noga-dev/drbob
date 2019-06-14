@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'blocs/Bloc.dart';
 import 'utils/localization.dart';
-import 'utils/style.dart';
 import 'views/home.dart';
 import 'views/settings.dart';
+import 'views/tools/daily_reflections.dart';
 
 // ANCHOR Redundant?
 var routes = {
   "/": (context) => AppHome(),
   "/home": (context) => HomeView(),
   "/tools": (context) => ToolsView(),
-  "/settings": (context) => SettingsView()
+  "/settings": (context) => SettingsView(),
+  "/drList": (context) => DailyReflectionsView(),
 };
 
 class AppWrapper extends StatelessWidget {
@@ -20,8 +21,9 @@ class AppWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Bloc>(
       builder: (_) => Bloc(
-          ThemeData(brightness: Brightness.dark, primaryColor: Colors.purple, appBarTheme: appBarTheme),
-          Locale("en")),
+            ThemeData.dark(),
+            Locale("en"),
+          ),
       child: MyApp(),
     );
   }
@@ -94,6 +96,7 @@ class AppHome extends StatelessWidget {
             minimum: EdgeInsets.only(top: 55),
             child: TabBar(
               indicatorWeight: 6.0,
+              indicatorColor: Colors.red,
               tabs: tabs,
             ),
           ),
