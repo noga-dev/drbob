@@ -15,7 +15,32 @@ class DailyReflectionsView extends StatefulWidget {
 class _DailyReflectionsViewState extends State<DailyReflectionsView> {
   List<DailyReflection> drList;
   String search;
+  String numberOfResults;
   int month = 0, day = 0;
+
+  TextStyle negRes, posRes;
+  String refinedMatch, refinedSearch;
+
+  @override
+  BuildContext get context => super.context;
+
+  @override
+  void didChangeDependencies() {
+    posRes = TextStyle(
+        backgroundColor: Colors.red,
+        color: Theme.of(context).textTheme.body1.color,
+        decoration: null);
+    negRes = TextStyle(
+        backgroundColor: Colors.transparent,
+        color: Theme.of(context).textTheme.body1.color,
+        decoration: null);
+    super.didChangeDependencies();
+  }
+
+  @override
+  initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,20 +60,35 @@ class _DailyReflectionsViewState extends State<DailyReflectionsView> {
                       (x.reflection.toLowerCase())
                           .contains(search.toLowerCase())
                   : true));
+          numberOfResults =
+              trans(context, "number_of_results_colon") + res.length.toString();
           return Scaffold(
             appBar: AppBar(
               title: Center(
-                child: TextField(
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: trans(context, "search"),
-                    hintStyle: TextStyle(color: Colors.grey),
-                    isDense: true,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: TextField(
+                    style: TextStyle(color: Colors.white),
+                    autocorrect: true,
+                    decoration: InputDecoration(
+                      hintText: trans(context, "search"),
+                      contentPadding: EdgeInsets.all(2.0),
+                      hintStyle: TextStyle(color: Colors.grey),
+                      counter: Align(
+                        alignment: Alignment.centerRight,
+                        heightFactor: 1.5,
+                        child: Text(
+                          numberOfResults ?? "",
+                          style: TextStyle(fontSize: 14, height: .5),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      isDense: true,
+                    ),
+                    onChanged: (t) {
+                      setState(() => search = t);
+                    },
                   ),
-                  autocorrect: true,
-                  onChanged: (t) {
-                    setState(() => search = t);
-                  },
                 ),
               ),
               actions: <Widget>[
@@ -86,7 +126,7 @@ class _DailyReflectionsViewState extends State<DailyReflectionsView> {
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 12),
-                  color: (month == 0) ? Colors.transparent : Colors.lightBlue[600].withOpacity(.5),
+                  color: (month == 0) ? Colors.transparent : Colors.blueGrey,
                   child: Center(
                     child: DropdownButton(
                       value: day,
@@ -164,14 +204,15 @@ class _DailyReflectionsViewState extends State<DailyReflectionsView> {
                                                   ),
                                               enableFeedback: true,
                                               splashColor:
-                                                  Colors.red.withOpacity(.25),
+                                                  Colors.blue.withOpacity(.5),
                                               child: Card(
                                                 elevation: 0,
                                                 color: Colors.transparent,
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                    border:
-                                                        Border.all(width: 1),
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: Colors.green),
                                                   ),
                                                   padding: EdgeInsets.all(4.0),
                                                   child: Column(
@@ -246,29 +287,15 @@ class _DailyReflectionsViewState extends State<DailyReflectionsView> {
     );
   }
 
+  // NOTE (AN) Convert to stream/future?
   TextSpan searchMatch(String match) {
-    if (search == null)
-      return TextSpan(
-          text: match,
-          style: TextStyle(color: Theme.of(context).textTheme.body1.color));
+    if (search == null || search == "") return TextSpan(text: match, style: negRes);
     var refinedMatch = match.toLowerCase();
     var refinedSearch = search.toLowerCase();
-    TextStyle style;
-    if (search == "" || !refinedMatch.contains(refinedSearch)) {
-      style = TextStyle(
-          color: Theme.of(context).textTheme.body1.color,
-          decoration: TextDecoration.none);
-      return TextSpan(text: match, style: style);
-    } else if (refinedMatch.contains(refinedSearch)) {
-      if (refinedMatch.length == refinedSearch.length) {
-        style = TextStyle(color: Colors.red);
-        return TextSpan(text: match, style: style);
-      } else if (refinedMatch.substring(0, refinedSearch.length) ==
-          refinedSearch) {
-        style =
-            TextStyle(color: Colors.red, decoration: TextDecoration.underline);
+    if (refinedMatch.contains(refinedSearch)) {
+      if (refinedMatch.substring(0, refinedSearch.length) == refinedSearch) {
         return TextSpan(
-          style: style,
+          style: posRes,
           text: match.substring(0, refinedSearch.length),
           children: [
             searchMatch(
@@ -278,12 +305,11 @@ class _DailyReflectionsViewState extends State<DailyReflectionsView> {
             ),
           ],
         );
+      } else if (refinedMatch.length == refinedSearch.length) {
+        return TextSpan(text: match, style: posRes);
       } else {
-        style = TextStyle(
-            color: Theme.of(context).textTheme.body1.color,
-            decoration: TextDecoration.none);
         return TextSpan(
-          style: style,
+          style: negRes,
           text: match.substring(
             0,
             refinedMatch.indexOf(refinedSearch),
@@ -297,11 +323,12 @@ class _DailyReflectionsViewState extends State<DailyReflectionsView> {
           ],
         );
       }
+    } else if (!refinedMatch.contains(refinedSearch)) {
+      return TextSpan(text: match, style: negRes);
     }
-    print("test");
     return TextSpan(
       text: match.substring(0, refinedMatch.indexOf(refinedSearch)),
-      style: style,
+      style: negRes,
       children: [
         searchMatch(match.substring(refinedMatch.indexOf(refinedSearch)))
       ],

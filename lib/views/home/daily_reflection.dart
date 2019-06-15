@@ -108,9 +108,9 @@ class DailyReflectionView extends StatelessWidget {
                     ),
                     Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.all(20.0),
+                      padding: EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(.5),
+                        color: Colors.transparent,
                       ),
                       child: Container(
                         padding: EdgeInsets.all(12.0),
@@ -122,29 +122,40 @@ class DailyReflectionView extends StatelessWidget {
                                 ? Colors.white.withOpacity(.9)
                                 : Colors.black.withOpacity(.9),
                             borderRadius: BorderRadius.circular(10.0)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            /* TODO https://github.com/flutter/flutter/issues/14014
-                            https://github.com/flutter/flutter/issues/5422 */
-                            TextField(
-                              controller:
-                                  TextEditingController(text: dr.excerpt),
-                              maxLines: null,
-                              decoration: null,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                              focusNode: DisabledFocusNode(),
+                        child: Builder(
+                              builder: (context) {
+                                return InkWell(
+                                  splashColor: Colors.red,
+                                  onLongPress: () {
+                                    Clipboard.setData(
+                                      ClipboardData(text: dr.excerpt),
+                                    );
+                                    Scaffold.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          trans(context,
+                                              "clipboard_copied_excerpt"),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        dr.excerpt,
+                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text( "\n" +
+                                        dr.source,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontWeight: FontWeight.w600),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
-                            Text("\n"),
-                            TextField(
-                              controller:
-                                  TextEditingController(text: dr.source),
-                              maxLines: null,
-                              decoration: null,
-                              focusNode: DisabledFocusNode(),
-                            )
-                          ],
-                        ),
                       ),
                     ),
                   ],
@@ -153,16 +164,29 @@ class DailyReflectionView extends StatelessWidget {
                   child: Expanded(
                     child: Scrollbar(
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.all(20.0),
-                        child: TextField(
-                          controller:
-                              TextEditingController(text: dr.reflection),
-                          maxLines: null,
-                          decoration: null,
-                          focusNode: DisabledFocusNode(),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                          ),
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: Builder(
+                          builder: (context) {
+                            return InkWell(
+                              onLongPress: () {
+                                Clipboard.setData(
+                                  ClipboardData(text: dr.reflection),
+                                );
+                                Scaffold.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      trans(context, "clipboard_copied_reflection"),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                dr.reflection,
+                                style: TextStyle(fontSize: 22),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -179,9 +203,4 @@ class DailyReflectionView extends StatelessWidget {
       },
     );
   }
-}
-
-class DisabledFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }

@@ -15,5 +15,6 @@
     "month_colon": "חודש: ",
     "day": "יום",
     "day_colon": "יום: ",
-    "no_results": "אין התאמות."
+    "no_results": "אין התאמות.",
+    "number_of_results_colon": "תוצאות: "
 }
