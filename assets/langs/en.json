@@ -7,6 +7,7 @@
     "test": "Tester",
     "appearance_view_title": "Display",
     "btn_appearance": "Display",
+    "btn_todays_reflection": "Today's Reflection",
     "btn_language": "Language",
     "btn_sobriety_date": "Soberiety Date",
     "btn_about": "About",

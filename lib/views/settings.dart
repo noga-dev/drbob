@@ -1,8 +1,9 @@
-import 'package:aadr/blocs/Bloc.dart';
-import 'package:aadr/utils/localization.dart';
+import 'package:drbob/blocs/Bloc.dart';
+import 'package:drbob/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsView extends StatelessWidget {
   final list = [
@@ -23,11 +24,6 @@ class SettingsView extends StatelessWidget {
     ),
   ];
 
-  Card buildItem(Widget item) => Card(
-        child: item,
-        elevation: 20.0,
-      );
-
   @override
   Widget build(BuildContext context) {
     TextStyle valueStyle = TextStyle(
@@ -36,16 +32,19 @@ class SettingsView extends StatelessWidget {
             : Colors.black,
         fontWeight: FontWeight.bold,
         fontSize: 16.0);
-        Brightness brightness = Provider.of<Bloc>(context).getTheme.brightness;
+    Brightness brightness = Provider.of<Bloc>(context).getTheme.brightness;
     return Container(
-      padding: EdgeInsets.all(40.0),
       child: Column(
         children: <Widget>[
-          buildItem(
-            Directionality(
+          ListTile(
+            contentPadding: EdgeInsets.all(0),
+            dense: false,
+            title: Directionality(
               textDirection: TextDirection.ltr,
               child: Container(
                 decoration: BoxDecoration(
+                  // borderRadius:
+                  //     BorderRadius.vertical(bottom: Radius.circular(100.0)),
                   gradient: LinearGradient(
                     begin: Alignment(-1, -30),
                     end: Alignment(1, 30),
@@ -74,9 +73,9 @@ class SettingsView extends StatelessWidget {
                       child: Switch(
                         value: (brightness == Brightness.dark) ? true : false,
                         inactiveTrackColor: Colors.grey.withOpacity(.75),
-                        inactiveThumbColor: Colors.black,
                         activeTrackColor: Colors.grey.withOpacity(.75),
-                        activeColor: Colors.white,
+                        inactiveThumbColor: Colors.amber,
+                        activeColor: Colors.blue,
                         onChanged: (val) {
                           brightness = (brightness == Brightness.light)
                               ? Brightness.dark
@@ -84,7 +83,9 @@ class SettingsView extends StatelessWidget {
                           Provider.of<Bloc>(context).changeTheme(
                             ThemeData(
                               brightness: brightness,
-                              primaryColor: Provider.of<Bloc>(context).getTheme.primaryColor,
+                              primaryColor: Provider.of<Bloc>(context)
+                                  .getTheme
+                                  .primaryColor,
                             ),
                           );
                         },
@@ -106,55 +107,9 @@ class SettingsView extends StatelessWidget {
               ),
             ),
           ),
-          // buildItem(
-          //   ListTile(
-          //     leading: Icon(
-          //       Icons.palette,
-          //     ),
-          //     title: Text(
-          //       trans(context, "btn_appearance"),
-          //       style: valueStyle,
-          //     ),
-          //     trailing: Container(
-          //       decoration: BoxDecoration(
-          //           border: Border.all(width: 1, color: Colors.black)),
-          //       child: Container(
-          //         decoration: BoxDecoration(
-          //           border: Border.all(width: 1, color: Colors.white),
-          //         ),
-          //         child: Directionality(
-          //           textDirection: TextDirection.ltr,
-          //           child: Row(
-          //             mainAxisSize: MainAxisSize.min,
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             children: <Widget>[
-          //               Container(
-          //                 height: 20,
-          //                 width: 20,
-          //                 color: Theme.of(context).brightness == Brightness.dark
-          //                     ? Colors.black
-          //                     : Colors.white,
-          //               ),
-          //               Container(
-          //                 height: 20,
-          //                 width: 20,
-          //                 color: Theme.of(context).primaryColor,
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     onTap: () => Navigator.push(
-          //           context,
-          //           MaterialPageRoute(
-          //             builder: (context) => AppearanceView(),
-          //           ),
-          //         ),
-          //   ),
-          // ),
-          buildItem(
-            DropdownButton(
+          InkWell(
+            splashColor: Colors.red,
+            child: DropdownButton(
               underline: Container(),
               icon: Container(),
               isExpanded: true,
@@ -185,31 +140,71 @@ class SettingsView extends StatelessWidget {
               onChanged: (v) =>
                   Provider.of<Bloc>(context).changeLocale(Locale(v)),
             ),
+            onTap: () => null,
           ),
-          buildItem(
-            ListTile(
-              leading: Icon(Icons.date_range),
-              title: Text(
-                trans(context, "btn_sobriety_date"),
-                style: valueStyle,
-              ),
-              trailing: Text(
-                DateTime.now().toString().substring(0, 10),
-                style: valueStyle,
-              ),
-              onTap: () {
-                showDatePicker(
-                  firstDate: DateTime(1900),
-                  context: context,
-                  initialDate: DateTime.now(),
-                  lastDate: DateTime.now(),
-                );
-              },
-            ),
+          StatefulBuilder(
+            builder: (c, s) {
+              return InkWell(
+                onTap: () => null,
+                splashColor: Colors.blue,
+                child: FutureBuilder(
+                  future: SharedPreferences.getInstance(),
+                  builder: (c, f) {
+                    if (f.connectionState == ConnectionState.done) {
+                      var sobDate = ((f.data as SharedPreferences)
+                              .containsKey("sobrietyDateInt"))
+                          ? DateTime.fromMillisecondsSinceEpoch(
+                              (f.data as SharedPreferences)
+                                  .getInt("sobrietyDateInt"))
+                          : DateTime.now();
+                      return ListTile(
+                        leading: Icon(Icons.date_range),
+                        title: Text(
+                          // FutureBuilder -> SharedPreferences
+                          trans(context, "btn_sobriety_date"),
+                          style: valueStyle,
+                        ),
+                        trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "${sobDate.day}.${sobDate.month}.${sobDate.year}",
+                              style: valueStyle,
+                            ),
+                            Text(
+                              trans(c, "settings_date_format"),
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          showDatePicker(
+                            firstDate: DateTime.fromMillisecondsSinceEpoch(0),
+                            context: c,
+                            initialDate: sobDate,
+                            lastDate: DateTime.now(),
+                          ).then((val) {
+                            s(() {
+                              (f.data as SharedPreferences).setInt(
+                                  "sobrietyDateInt",
+                                  val.millisecondsSinceEpoch);
+                            });
+                          });
+                        },
+                      );
+                    } else {
+                      return LinearProgressIndicator();
+                    }
+                  },
+                ),
+              );
+            },
           ),
-          buildItem(
-            ListTile(
-              leading: Icon(Icons.question_answer),
+          InkWell(
+            splashColor: Colors.green,
+            onTap: () => null,
+            child: ListTile(
+              leading: Icon(Icons.account_circle),
               title: Text(
                 trans(context, "btn_about"),
                 style: valueStyle,
@@ -218,6 +213,7 @@ class SettingsView extends StatelessWidget {
                 trans(context, "desc_about"),
                 style: valueStyle,
               ),
+              onTap: () => null,
             ),
           ),
         ],

@@ -1,4 +1,4 @@
-import 'package:aadr/views/tools.dart';
+import 'package:drbob/views/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'blocs/Bloc.dart';
@@ -57,34 +57,16 @@ class AppHome extends StatelessWidget {
   Widget build(BuildContext context) {
     var tabs = <Widget>[
       Tab(
-        child: Column(
-          children: <Widget>[
-            Spacer(),
-            Icon(Icons.home),
-            Spacer(),
-            Text(trans(context, "tab_title_home"))
-          ],
-        ),
+        icon: Icon(Icons.home,),
+        text: trans(context, "tab_title_home")
       ),
       Tab(
-        child: Column(
-          children: <Widget>[
-            Spacer(),
-            Icon(Icons.build),
-            Spacer(),
-            Text(trans(context, "tab_title_tools"))
-          ],
-        ),
+        icon: Icon(Icons.build),
+        text: trans(context, "tab_title_tools"),
       ),
       Tab(
-        child: Column(
-          children: <Widget>[
-            Spacer(),
-            Icon(Icons.settings),
-            Spacer(),
-            Text(trans(context, "tab_title_settings"))
-          ],
-        ),
+        icon: Icon(Icons.settings),
+        text: trans(context, "tab_title_settings"),
       ),
     ];
     return DefaultTabController(
@@ -92,10 +74,9 @@ class AppHome extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
+          backgroundColor: Colors.transparent,
           flexibleSpace: SafeArea(
-            minimum: EdgeInsets.only(top: 55),
             child: TabBar(
-              indicatorWeight: 6.0,
               indicatorColor: Colors.red,
               tabs: tabs,
             ),

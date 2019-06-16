@@ -1,4 +1,4 @@
-package com.example.aadr;
+package dev.noga.drbob;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

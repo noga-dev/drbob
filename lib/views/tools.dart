@@ -1,5 +1,5 @@
-import 'package:aadr/utils/localization.dart';
-import 'package:aadr/views/tools/daily_reflections.dart';
+import 'package:drbob/utils/localization.dart';
+import 'package:drbob/views/tools/daily_reflections.dart';
 import 'package:flutter/material.dart';
 
 class ToolsView extends StatelessWidget {

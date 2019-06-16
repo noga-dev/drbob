@@ -1,4 +1,4 @@
-name: aadr
+name: drbob
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -87,3 +87,4 @@ flutter:
     - assets/daily_reflections/ru.daily.reflections.json
 
     - assets/images/bg_beach.jpg
+    - assets/images/noun_hands.png

@@ -1,4 +1,4 @@
-# aadr
+# drbob
 
 A new Flutter project.
 
@@ -6,7 +6,7 @@ A new Flutter project.
 00. Names:
         I.      Doctor's Opinion
         II.     Dr Bob/Doctor Bob
-        III.    AADR/DRAA (A.A. Dr., Dr. AA)
+        III.    drbob/DRAA (A.A. Dr., Dr. AA)
         IV.     Alcoholic Brain
         V.      Terminally Unique/Terminal Uniqueness
 01. Add #ContactMe in #Setttings
@@ -22,3 +22,5 @@ A new Flutter project.
                 I. Prettify UI
                 II. Add Favorite daily reflection? (Add star?)
 03. DirectCommunication
+04. Features:
+        a. Daily Reflection Notification?
