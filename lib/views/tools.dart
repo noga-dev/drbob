@@ -12,7 +12,7 @@ class ToolsView extends StatelessWidget {
             child: Text(trans(context, "btn_daily_reflections")),
             onPressed: () async => await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DailyReflectionsView()),
+                  MaterialPageRoute(builder: (context) => DailyReflectionsListView()),
                 ),
           ),
         ],
