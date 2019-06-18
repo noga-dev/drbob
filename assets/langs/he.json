@@ -16,5 +16,12 @@
     "day": "יום",
     "day_colon": "יום: ",
     "no_results": "אין התאמות.",
-    "number_of_results_colon": "תוצאות: "
+    "number_of_results_colon": "תוצאות: ",
+    "test": "Tester",
+    "btn_todays_reflection": "הרהור יומי",
+    "appearance_desc": "שנה את מראה האפליקציה",
+    "disabled_func": "זמני. ישתנה בעתיד.",
+    "go_back": "הביתה",
+    "btn_serenity_prayer": "תפילת השלווה",
+    "btn_daily_reflections": "רשימת הרהורים יומיים"
 }

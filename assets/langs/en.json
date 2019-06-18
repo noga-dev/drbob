@@ -19,5 +19,9 @@
     "day": "Day",
     "day_colon": "Day: ",
     "no_results": "No Matches.",
-    "number_of_results_colon": "results: "
+    "number_of_results_colon": "results: ",
+    "disabled_func": "Placeholder. Disabled for now.",
+    "go_back": "Go Home",
+    "btn_serenity_prayer": "Serenity Prayer",
+    "btn_daily_reflections": "Daily Reflections List"
 }

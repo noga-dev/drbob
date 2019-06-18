@@ -121,12 +121,14 @@ class DailyReflectionView extends StatelessWidget {
                         children: <Widget>[
                           BackButton(),
                           Container(
+                            padding: EdgeInsets.only(top: 6),
                             width: MediaQuery.of(context).size.width * .5,
                             child: Text(
                               dr.title,
                               softWrap: true,
                               maxLines: 2,
                               textAlign: TextAlign.center,
+                              textScaleFactor: 1.5,
                             ),
                           ),
                           Padding(
@@ -160,20 +162,19 @@ class DailyReflectionView extends StatelessWidget {
                           Container(
                             alignment: Alignment.center,
                             padding: EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(),
                             child: Card(
                               elevation: 20,
                               child: Container(
                                 padding: EdgeInsets.all(12.0),
-                                decoration: BoxDecoration(
-                                  color: Provider.of<Bloc>(context)
-                                              .getTheme
-                                              .brightness ==
-                                          Brightness.light
-                                      ? Colors.white.withOpacity(.9)
-                                      : Colors.black.withOpacity(.9),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
+                                // decoration: BoxDecoration(
+                                //   color: Provider.of<Bloc>(context)
+                                //               .getTheme
+                                //               .brightness ==
+                                //           Brightness.light
+                                //       ? Colors.white.withOpacity(.9)
+                                //       : Colors.black.withOpacity(.9),
+                                //   borderRadius: BorderRadius.circular(10.0),
+                                // ),
                                 child: Builder(
                                   builder: (context) {
                                     return InkWell(
@@ -241,7 +242,7 @@ class DailyReflectionView extends StatelessWidget {
                                     },
                                     child: Text(
                                       dr.reflection,
-                                      style: TextStyle(fontSize: 22),
+                                      style: TextStyle(fontSize: 18),
                                     ),
                                   );
                                 },

@@ -11,9 +11,9 @@ class AppWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Bloc>(
       builder: (_) => Bloc(
-            ThemeData.dark(),
-            Locale("en"),
-          ),
+        ThemeData.dark(),
+        Locale("en"),
+      ),
       child: MyApp(),
     );
   }
@@ -60,14 +60,16 @@ class AppHome extends StatelessWidget {
     ),
   ];
 
+  final horizItemInset = 50.0;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: HomeView(),
-        drawerScrimColor: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.grey.withOpacity(.5)
-            : Colors.pink.withOpacity(.5),
+        drawerScrimColor: (Theme.of(context).brightness == Brightness.light)
+            ? Colors.black.withOpacity(.25)
+            : Colors.white.withOpacity(.25),
         drawer: SizedBox(
           width: MediaQuery.of(context).size.width * .75,
           child: Theme(
@@ -75,26 +77,27 @@ class AppHome extends StatelessWidget {
             child: Drawer(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  DrawerHeader(
-                    decoration: BoxDecoration(
-                        color: Colors.deepPurple.withOpacity(.75)),
-                    child: Container(
-                      child: FittedBox(
-                        fit: BoxFit.fill,
-                        child: FlatButton.icon(
-                          label: Text(
-                          trans(context, "Dr. Bob"),
-                        ),
-                        icon: Icon(Icons.hearing),
-                        onPressed: () => null,
+                  InkWell(
+                    onLongPress: () => null,
+                    splashColor: Colors.yellow,
+                    child: Tooltip(
+                      message: trans(context, "disabled_func"),
+                      child: DrawerHeader(
+                        decoration: BoxDecoration(
+                            color: Colors.teal),
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              trans(context, "Dr. Bob"),
+                              textScaleFactor: 2,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       children: <Widget>[
                         buildSobrietyDate(context),
@@ -121,19 +124,24 @@ class AppHome extends StatelessWidget {
         splashColor: Colors.green,
         onTap: () => null,
         child: Tooltip(
-          message: trans(context, "desc_about"),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: Icon(Icons.help_outline),
-              ),
-              Text(
-                trans(context, "btn_about"),
-              ),
-            ],
+          message: trans(context, "disabled_func"),
+          preferBelow: false,
+          verticalOffset: 40,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: horizItemInset),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Icon(Icons.help_outline),
+                ),
+                Text(
+                  trans(context, "btn_about"),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -158,15 +166,18 @@ class AppHome extends StatelessWidget {
                   child: Tooltip(
                     preferBelow: false,
                     message: trans(c, "settings_date_format"),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Icon(Icons.calendar_today),
-                        Text(
-                          "${sobDate.day}.${sobDate.month}.${sobDate.year}",
-                        ),
-                      ],
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: horizItemInset),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Icon(Icons.calendar_today),
+                          Text(
+                            "${sobDate.day}.${sobDate.month}.${sobDate.year}",
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   onTap: () {
@@ -205,32 +216,35 @@ class AppHome extends StatelessWidget {
         message: trans(context, "pick_language"),
         child: InkWell(
           splashColor: Colors.pink,
-          child: DropdownButton(
-            isExpanded: true,
-            underline: Container(),
-            icon: Container(),
-            hint: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Icon(Icons.translate),
-                Text(
-                  list
-                      .firstWhere((x) =>
-                          x.value ==
-                          Localizations.localeOf(context).languageCode)
-                      .key
-                      .toString()
-                      .replaceAll("[<'", "")
-                      .replaceAll("'>]", ""),
-                  style:
-                      TextStyle(color: Theme.of(context).textTheme.body1.color),
-                ),
-              ],
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: horizItemInset),
+            child: DropdownButton(
+              isExpanded: true,
+              underline: Container(),
+              icon: Container(),
+              hint: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Icon(Icons.translate),
+                  Text(
+                    list
+                        .firstWhere((x) =>
+                            x.value ==
+                            Localizations.localeOf(context).languageCode)
+                        .key
+                        .toString()
+                        .replaceAll("[<'", "")
+                        .replaceAll("'>]", ""),
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.body1.color),
+                  ),
+                ],
+              ),
+              items: list,
+              onChanged: (v) =>
+                  Provider.of<Bloc>(context).changeLocale(Locale(v)),
             ),
-            items: list,
-            onChanged: (v) =>
-                Provider.of<Bloc>(context).changeLocale(Locale(v)),
           ),
           onTap: () => null,
         ),
@@ -334,18 +348,13 @@ class AppHome extends StatelessWidget {
   FloatingActionButton buildTodaysReflectionFAP(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DailyReflectionView(),
-            ),
-          ),
-      label: Text(
-        trans(context, "btn_todays_reflection"),
-        style: TextStyle(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Colors.black
-                : Colors.white),
+        context,
+        MaterialPageRoute(
+          builder: (context) => DailyReflectionView(),
+        ),
       ),
+      label: Text(trans(context, "btn_todays_reflection"),
+          style: TextStyle(color: Colors.white)),
       backgroundColor: Colors.lightBlue,
     );
   }

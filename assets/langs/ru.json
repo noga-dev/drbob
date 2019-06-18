@@ -17,5 +17,11 @@
     "month_colon": "Месяц: ",
     "day": "День",
     "day_colon": "День: ",
-    "no_results": "Нет результатов."
+    "no_results": "Нет результатов.",
+    "btn_todays_reflection": "Сегодняшняя размышление",
+    "number_of_results_colon": "Результаты: ",
+    "disabled_func": "Временный заполнитель",
+    "go_back": "Домой",
+    "btn_serenity_prayer": "Молитва о душевном покое",
+    "btn_daily_reflections": "Список Ежедневных размышлении"
 }

@@ -86,5 +86,4 @@ flutter:
     - assets/daily_reflections/he.daily.reflections.json
     - assets/daily_reflections/ru.daily.reflections.json
 
-    - assets/images/bg_beach.jpg
-    - assets/images/noun_hands.png
+    - assets/images/doc.png

@@ -65,229 +65,253 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                   : true));
           numberOfResults =
               trans(context, "number_of_results_colon") + res.length.toString();
+          List<int> monthsList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
           return Scaffold(
             body: SafeArea(
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          child: BackButton(),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * .55,
-                          child: TextField(
-                            style: TextStyle(color: Colors.white),
-                            autocorrect: true,
-                            decoration: InputDecoration(
-                              hintText: trans(context, "search"),
-                              contentPadding: EdgeInsets.all(2.0),
-                              hintStyle: TextStyle(color: Colors.grey),
-                              counter: Align(
-                                alignment: Alignment.centerRight,
-                                heightFactor: 1.5,
-                                child: Text(
-                                  numberOfResults ?? "",
-                                  style: TextStyle(fontSize: 14, height: .5),
-                                  textAlign: TextAlign.center,
+              child: Dismissible(
+                key: Key("DismissableDrList"),
+                direction: DismissDirection.horizontal,
+                background: Container(
+                  child: RotatedBox(
+                    quarterTurns: 3,
+                    child: Text(
+                      trans(context, "go_back"),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 30),
+                    ),
+                  ),
+                ),
+                secondaryBackground: Container(
+                  child: RotatedBox(
+                    quarterTurns: 1,
+                    child: Text(
+                      trans(context, "go_back"),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 30),
+                    ),
+                  ),
+                ),
+                onDismissed: (d) {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Container(
+                            child: BackButton(),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .55,
+                            child: TextField(
+                              autocorrect: true,
+                              decoration: InputDecoration(
+                                hintText: trans(context, "search"),
+                                contentPadding: EdgeInsets.all(2.0),
+                                hintStyle: TextStyle(color: Colors.grey),
+                                counter: Align(
+                                  alignment: Alignment.centerRight,
+                                  heightFactor: 1.5,
+                                  child: Text(
+                                    numberOfResults ?? "",
+                                    style: TextStyle(fontSize: 14, height: .5),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                isDense: true,
+                              ),
+                              onChanged: (t) {
+                                setState(() => search = t);
+                              },
+                            ),
+                          ),
+                          Container(
+                            child: InkWell(
+                              splashColor: Colors.blueGrey.withOpacity(.5),
+                              onTap: () => null,
+                              // PopUpMenu?
+                              child: DropdownButton<int>(
+                                value: month,
+                                items: monthsList
+                                    .map(
+                                      (f) => DropdownMenuItem(
+                                        //ANCHOR (AN) Conventional methods don't center seleceted value
+                                        child: Center(
+                                          child: Text(
+                                            (f == 0)
+                                                ? trans(context, "month")
+                                                : f.toString(),
+                                          ),
+                                        ),
+                                        value: f,
+                                        key: Key(f.toString()),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (int val) {
+                                  setState(
+                                    () {
+                                      day = 0;
+                                      month = val;
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: InkWell(
+                              onTap: () => null,
+                              child: DropdownButton<int>(
+                                value: day,
+                                items: (drList
+                                            .where((x) => (month != 0)
+                                                ? x.month == month
+                                                : false)
+                                            .length >
+                                        0)
+                                    ? (drList
+                                        .where((x) => (month != 0)
+                                            ? x.month == month
+                                            : false)
+                                        .map(
+                                          (f) => DropdownMenuItem<int>(
+                                            child: Center(
+                                              child: Text(f.day.toString()),
+                                            ),
+                                            value: f.day,
+                                            key: Key(f.day.toString()),
+                                          ),
+                                        )
+                                        .toList()
+                                          ..insert(
+                                            0,
+                                            DropdownMenuItem<int>(
+                                              child: Center(
+                                                child:
+                                                    Text(trans(context, "day")),
+                                              ),
+                                              value: 0,
+                                              key: Key("0"),
+                                            ),
+                                          ))
+                                    : null,
+                                onChanged: (int val) {
+                                  setState(() {
+                                    day = val;
+                                  });
+                                },
+                                disabledHint: Text(
+                                  trans(context, "day"),
+                                  style: TextStyle(color: Colors.grey),
                                 ),
                               ),
-                              isDense: true,
-                            ),
-                            onChanged: (t) {
-                              setState(() => search = t);
-                            },
-                          ),
-                        ),
-                        Container(
-                          child: InkWell(
-                            splashColor: Colors.blueGrey.withOpacity(.5),
-                            onTap: () => null,
-                            // PopUpMenu?
-                            child: DropdownButton<int>(
-                              value: month,
-                              items: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-                                  .map(
-                                    (f) => DropdownMenuItem(
-                                      //ANCHOR (AN) Conventional methods don't center seleceted value
-                                          child: Center(
-                                            child: Text(
-                                              (f == 0)
-                                                  ? trans(context, "month")
-                                                  : f.toString(),
-                                            ),
-                                          ),
-                                          value: f,
-                                          key: Key(f.toString()),
-                                        ),
-                                  )
-                                  .toList(),
-                              onChanged: (int val) {
-                                setState(
-                                  () {
-                                    day = 0;
-                                    month = val;
-                                  },
-                                );
-                              },
                             ),
                           ),
-                        ),
-                        Container(
-                          child: InkWell(
-                            onTap: () => null,
-                            child: DropdownButton<int>(
-                              value: day,
-                              items: (drList
-                                          .where((x) => (month != 0)
-                                              ? x.month == month
-                                              : false)
-                                          .length >
-                                      0)
-                                  ? (drList
-                                      .where((x) => (month != 0)
-                                          ? x.month == month
-                                          : false)
-                                      .map(
-                                        (f) => DropdownMenuItem<int>(
-                                              child: Center(
-                                                child: Text(f.day.toString()),
-                                              ),
-                                              value: f.day,
-                                              key: Key(f.day.toString()),
-                                            ),
-                                      )
-                                      .toList()
-                                        ..insert(
-                                          0,
-                                          DropdownMenuItem<int>(
-                                            child: Center(
-                                              child:
-                                                  Text(trans(context, "day")),
-                                            ),
-                                            value: 0,
-                                            key: Key("0"),
-                                          ),
-                                        ))
-                                  : null,
-                              onChanged: (int val) {
-                                setState(() {
-                                  day = val;
-                                });
-                              },
-                              disabledHint: Text(
-                                trans(context, "day"),
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: Scrollbar(
+                        ],
+                      ),
+                      Expanded(
                         child: (res.length > 0)
-                            ? ListView.builder(
-                                shrinkWrap: true,
-                                physics: ScrollPhysics(),
-                                itemCount: res.length,
-                                itemBuilder: (context, idx) {
-                                  return res
+                        // ExcludeSemantics overcomes bug https://github.com/flutter/flutter/issues/30675 which causes crashes
+                            ? ExcludeSemantics(
+                                child: ListView(
+                                  children: res
                                       .map(
                                         (f) => Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 2,
-                                                horizontal: 6,
-                                              ),
-                                              child: InkWell(
-                                                onTap: () => Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            DailyReflectionView(
-                                                              month: f.month,
-                                                              day: f.day,
-                                                            ),
-                                                      ),
-                                                    ),
-                                                enableFeedback: true,
-                                                splashColor:
-                                                    Colors.primaries[Random().nextInt(Colors.primaries.length)].withOpacity(.5),
-                                                child: Card(
-                                                  elevation: 0,
-                                                  color: Colors.transparent,
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          width: 1,
-                                                          color: Colors.green),
-                                                    ),
-                                                    padding:
-                                                        EdgeInsets.all(4.0),
-                                                    child: Column(
-                                                      children: <Widget>[
-                                                        RichText(
-                                                          text: searchMatch(
-                                                            f.title,
-                                                          ),
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: <Widget>[
-                                                            Text(
-                                                              trans(context,
-                                                                      "month_colon") +
-                                                                  f.month
-                                                                      .toString(),
-                                                            ),
-                                                            Text(
-                                                              trans(context,
-                                                                      "day_colon") +
-                                                                  f.day
-                                                                      .toString(),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        Text(
-                                                          "\n",
-                                                          textScaleFactor: .25,
-                                                        ),
-                                                        RichText(
-                                                          text: searchMatch(
-                                                            f.excerpt,
-                                                          ),
-                                                          textAlign: TextAlign.justify,
-                                                        ),
-                                                        Text(
-                                                          "\n",
-                                                          textScaleFactor: .1,
-                                                        ),
-                                                        RichText(
-                                                          text: searchMatch(
-                                                            f.source,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          "\n",
-                                                          textScaleFactor: .25,
-                                                        ),
-                                                        RichText(
-                                                          text: searchMatch(
-                                                              f.reflection),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 2,
+                                            horizontal: 6,
+                                          ),
+                                          child: InkWell(
+                                            onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DailyReflectionView(
+                                                  month: f.month,
+                                                  day: f.day,
                                                 ),
                                               ),
                                             ),
+                                            enableFeedback: true,
+                                            splashColor: Colors
+                                                .primaries[Random().nextInt(
+                                                    Colors.primaries.length)]
+                                                .withOpacity(.5),
+                                            child: Card(
+                                              elevation: 0,
+                                              color: Colors.transparent,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.green),
+                                                ),
+                                                padding: EdgeInsets.all(4.0),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    RichText(
+                                                      text: searchMatch(
+                                                        f.title,
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          trans(context,
+                                                                  "month_colon") +
+                                                              f.month
+                                                                  .toString(),
+                                                        ),
+                                                        Text(
+                                                          trans(context,
+                                                                  "day_colon") +
+                                                              f.day.toString(),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      "\n",
+                                                      textScaleFactor: .25,
+                                                    ),
+                                                    RichText(
+                                                      text: searchMatch(
+                                                        f.excerpt,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.justify,
+                                                    ),
+                                                    Text(
+                                                      "\n",
+                                                      textScaleFactor: .1,
+                                                    ),
+                                                    RichText(
+                                                      text: searchMatch(
+                                                        f.source,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "\n",
+                                                      textScaleFactor: .25,
+                                                    ),
+                                                    RichText(
+                                                      text: searchMatch(
+                                                          f.reflection),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       )
-                                      .toList()[idx];
-                                },
+                                      .toList(),
+                                ),
                               )
                             : Center(
                                 child: Text(
@@ -295,8 +319,8 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                                 ),
                               ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
