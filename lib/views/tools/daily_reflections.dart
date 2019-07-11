@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:drbob/blocs/Bloc.dart';
+import 'package:drbob/main_drawer.dart';
 import 'package:drbob/models/daily_reflection.dart';
 import 'package:drbob/utils/localization.dart';
 import 'package:drbob/views/home/daily_reflection.dart';
@@ -67,13 +68,14 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
               trans(context, "number_of_results_colon") + res.length.toString();
           List<int> monthsList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
           return Scaffold(
+            drawer: MainDrawer(),
             body: SafeArea(
               child: Dismissible(
                 key: Key("DismissableDrList"),
                 direction: DismissDirection.horizontal,
                 background: Container(
                   child: RotatedBox(
-                    quarterTurns: 3,
+                    quarterTurns: (Directionality.of(context) == TextDirection.ltr) ? 3 : 1,
                     child: Text(
                       trans(context, "go_back"),
                       textAlign: TextAlign.center,
@@ -83,7 +85,7 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                 ),
                 secondaryBackground: Container(
                   child: RotatedBox(
-                    quarterTurns: 1,
+                    quarterTurns: (Directionality.of(context) == TextDirection.ltr) ? 1 : 3,
                     child: Text(
                       trans(context, "go_back"),
                       textAlign: TextAlign.center,
@@ -328,7 +330,7 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
         } else if (future.hasError) {
           return ErrorWidget(future.data);
         } else {
-          return CircularProgressIndicator();
+          return Container(child: CircularProgressIndicator(backgroundColor: Colors.pink,),);
         }
       },
     );

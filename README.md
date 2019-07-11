@@ -1,7 +1,5 @@
 # drbob
 
-A new Flutter project.
-
 ## Getting Started
 00. Names:
         I.      Doctor's Opinion
@@ -14,7 +12,9 @@ A new Flutter project.
         A. Help translate
         B. iOS support
         C. Donate (Add donators section: +Patreon?)
-                I. Roadmap (With X people requestions Y feature, i.e. iOS app)
+                I.      Roadmap (With X people requestions Y feature, i.e. iOS app)
+                II.     Early access to alpha builds in play market
+                III.    Access to statistics?
         D. HireMe
         E. Errors in json/translation, bugs
         F. FAQ
@@ -24,3 +24,5 @@ A new Flutter project.
 03. DirectCommunication
 04. Features:
         a. Daily Reflection Notification?
+05. Play console:
+        I. Website: link to patreon?
