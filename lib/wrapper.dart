@@ -34,7 +34,8 @@ class _AppWrapperState extends State<AppWrapper> {
               prefs.containsKey("theme")
                   ? ThemeData(
                       brightness: Brightness.values
-                          .firstWhere((x) => x.index == prefs.getInt("theme")))
+                          .firstWhere((x) => x.index == prefs.getInt("theme")),
+                    )
                   : ThemeData.light(),
               prefs.containsKey("lang")
                   ? Locale(prefs.getString("lang"))
@@ -43,8 +44,7 @@ class _AppWrapperState extends State<AppWrapper> {
             ),
             child: MyApp(),
           );
-        }
-        else {
+        } else {
           return RefreshProgressIndicator();
         }
       },
@@ -80,14 +80,20 @@ class AppHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: HomeView(),
-        drawerScrimColor: (Theme.of(context).brightness == Brightness.light)
-            ? Colors.black.withOpacity(.25)
-            : Colors.white.withOpacity(.25),
-        drawer: MainDrawer(),
-        endDrawer: MainDrawer(),
-        floatingActionButton: buildTodaysReflectionFAP(context),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Scaffold(
+          body: Directionality(
+            textDirection: Directionality.of(context),
+            child: HomeView(),
+          ),
+          drawerScrimColor: (Theme.of(context).brightness == Brightness.light)
+              ? Colors.black.withOpacity(.25)
+              : Colors.white.withOpacity(.25),
+          drawer: MainDrawer(),
+          endDrawer: MainDrawer(),
+          floatingActionButton: buildTodaysReflectionFAP(context),
+        ),
       ),
     );
   }
@@ -97,7 +103,10 @@ class AppHome extends StatelessWidget {
       onPressed: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DailyReflectionView(),
+          builder: (context) => DailyReflectionView(
+            month: DateTime.now().month,
+            day: DateTime.now().day,
+          ),
         ),
       ),
       label: Text(trans(context, "btn_todays_reflection"),

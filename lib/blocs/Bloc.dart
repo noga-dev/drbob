@@ -32,8 +32,7 @@ class Bloc with ChangeNotifier {
 
   void changeLocale(Locale data) {
     this._locale = data;
-    this._preferences.setString("lang", data.languageCode).then((val) {
-      notifyListeners();
-    });
+    this._preferences.setString("lang", data.languageCode);
+    notifyListeners();
   }
 }

@@ -11,221 +11,50 @@ import 'tools/daily_reflections.dart';
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            )
-          ],
+    var buttons = <Widget>[
+      RaisedButton(
+        color: Colors.pink[700],
+        child: Text(
+          trans(context, "btn_daily_reflections"),
+          style: TextStyle(color: Colors.white),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 50),
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DailyReflectionsListView()),
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              SobrietySlider(),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-              ),
-              buildDrList(context),
-              buildSerenityPrayer(context),
-              buildPreamble(context),
-              buildTwelveSteps(context),
-              buildTwelveTraditions(context),
-              Container(
-                margin: EdgeInsets.only(bottom: 200),
-              ),
-            ],
-          ),
+      ),
+      buildTwelveX(context, "btn_twelve_traditions", "twelve_traditions",
+          "tradition_", Colors.brown),
+      buildTwelveX(context, "btn_twelve_steps", "twelve_steps", "step_",
+          Colors.teal[800]),
+      RaisedButton(
+        color: Colors.purple,
+        child: Text(
+          trans(context, "btn_serenity_prayer"),
+          style: TextStyle(color: Colors.white),
         ),
-      ],
-    );
-  }
-
-  Widget buildTwelveTraditions(BuildContext context) {
-    return RaisedButton(
-      onPressed: () => showDialog(
-          context: context,
-          builder: (context) {
-            return SimpleDialog(
-              title: Text(
-                trans(context, "twelve_traditions") + "\n",
-                textAlign: TextAlign.center,
-              ),
-              children: <Widget>[
-                Container(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List<int>.generate(12, (int i) => ++i)
-                          .map(
-                            (f) => Wrap(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Container(
-                                        width: 100,
-                                        child: Text(
-                                          f.toString(),
-                                          textScaleFactor: 2,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                    Flexible(
-                                      flex: 5,
-                                      child: Container(
-                                        padding: EdgeInsets.only(right: 20),
-                                        child: Text(
-                                          trans(
-                                            context,
-                                            "tradition_" + f.toString(),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                (f != 12) ? Divider() : Container()
-                              ],
-                            ),
-                          )
-                          .toList(),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return SimpleDialog(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        trans(context, "serenity_prayer"),
+                        textAlign: TextAlign.center,
+                        textScaleFactor: 2,
+                      ),
                     ),
-                  ),
-                )
-              ],
-            );
-          }),
-      child: Text(
-        trans(context, "btn_twelve_traditions"),
-        style: TextStyle(color: Colors.white),
+                  ],
+                );
+              });
+        },
       ),
-      color: Colors.teal[700],
-    );
-  }
-
-  Widget buildTwelveSteps(BuildContext context) {
-    return RaisedButton(
-      onPressed: () => showDialog(
-          context: context,
-          builder: (context) {
-            return SimpleDialog(
-              title: Text(
-                trans(context, "twelve_steps") + "\n",
-                textAlign: TextAlign.center,
-              ),
-              children: <Widget>[
-                Container(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List<int>.generate(12, (int i) => ++i)
-                          .map(
-                            (f) => Wrap(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Container(
-                                        width: 100,
-                                        child: Text(
-                                          f.toString(),
-                                          textScaleFactor: 2,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                    Flexible(
-                                      flex: 5,
-                                      child: Container(
-                                        padding: EdgeInsets.only(right: 20),
-                                        child: Text(
-                                          trans(
-                                            context,
-                                            "step_" + f.toString(),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                (f != 12) ? Divider() : Container()
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                )
-              ],
-            );
-          }),
-      color: Colors.brown,
-      child: Text(
-        trans(context, "btn_twelve_steps"),
-        style: TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  RaisedButton buildPreamble(BuildContext context) {
-    return RaisedButton(
-      color: Colors.indigo,
-      onPressed: () => showDialog(
-          context: context,
-          builder: (context) {
-            return SimpleDialog(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(20),
-                  child: Text(
-                    trans(context, "preamble"),
-                    textScaleFactor: 1.5,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            );
-          }),
-      child: Text(
-        trans(context, "btn_preamble"),
-        style: TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  RaisedButton buildDrList(BuildContext context) {
-    return RaisedButton(
-      color: Colors.pink[700],
-      child: Text(
-        trans(context, "btn_daily_reflections"),
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => DailyReflectionsListView()),
-      ),
-    );
-  }
-
-  Widget buildSerenityPrayer(BuildContext context) {
-    return RaisedButton(
-      color: Colors.purple,
-      child: Text(
-        trans(context, "btn_serenity_prayer"),
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () {
-        showDialog(
+      RaisedButton(
+        color: Colors.indigo,
+        onPressed: () => showDialog(
             context: context,
             builder: (context) {
               return SimpleDialog(
@@ -233,15 +62,177 @@ class HomeView extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(20),
                     child: Text(
-                      trans(context, "serenity_prayer"),
+                      trans(context, "preamble"),
+                      textScaleFactor: 1.5,
                       textAlign: TextAlign.center,
-                      textScaleFactor: 2,
                     ),
                   ),
                 ],
               );
-            });
-      },
+            }),
+        child: Text(
+          trans(context, "btn_preamble"),
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    ];
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          child: OrientationBuilder(
+            builder: (context, orientation) {
+              return orientation == Orientation.portrait
+                  ? SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 30),
+                            child: SobrietySlider(
+                              radius: 150,
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: buttons,
+                          )
+                        ],
+                      ),
+                    )
+                  : Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Container(),
+                          flex: 1,
+                        ),
+                        Expanded(
+                          flex: 10,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: buttons,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 30),
+                            child: FittedBox(
+                              fit: BoxFit.fill,
+                              child: SobrietySlider(
+                                radius: 150,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(),
+                        )
+                      ],
+                    );
+            },
+          ),
+        ),
+        Positioned(
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.menu),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget buildTwelveX(BuildContext context, String button, String header,
+      String type, Color color) {
+    return RaisedButton(
+      onPressed: () => showDialog(
+          context: context,
+          builder: (context) {
+            return SimpleDialog(
+              title: Text(
+                trans(context, header) + "\n",
+                textAlign: TextAlign.center,
+              ),
+              children: <Widget>[
+                Container(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List<int>.generate(12, (int i) => ++i)
+                          .map(
+                            (f) => Wrap(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Flexible(
+                                      flex: 2,
+                                      child: Container(
+                                        width: 100,
+                                        child: Text(
+                                          f.toString(),
+                                          textScaleFactor: 2,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 12,
+                                      child: Container(
+                                        child: Text(
+                                          trans(
+                                            context,
+                                            type + f.toString(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 1,
+                                      child: Container(),
+                                    ),
+                                  ],
+                                ),
+                                (f != 12)
+                                    ? Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .05),
+                                        child: Divider(
+                                          color: Colors.grey,
+                                        ),
+                                      )
+                                    : Container()
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                )
+              ],
+            );
+          }),
+      child: Text(
+        trans(context, button),
+        style: TextStyle(color: Colors.white),
+      ),
+      color: color,
     );
   }
 }
@@ -308,7 +299,7 @@ class ProgressPainter extends CustomPainter {
     var listOfOffsets =
         List<int>.generate(dividers, (int index) => index).map((i) {
       var radians = min(size.width / 2, size.height / 2) +
-          ((pi * 2) / dividers * i + 5.25);
+          ((pi * 2) / dividers * i + 5.38);
       return Offset(
         center.dx + radius * cos(radians),
         center.dy + radius * sin(radians),
@@ -335,7 +326,8 @@ class ProgressPainter extends CustomPainter {
 }
 
 class SobrietySlider extends StatefulWidget {
-  SobrietySlider() : super();
+  final double radius;
+  SobrietySlider({Key key, this.radius}) : super(key: key);
 
   @override
   _SobrietySliderState createState() => _SobrietySliderState();
@@ -396,7 +388,7 @@ class _SobrietySliderState extends State<SobrietySlider>
               ? Colors.black
               : Colors.white,
           completedPercentage: progressDegrees,
-          circleWidth: 10.0,
+          circleWidth: 12.0,
           dividers: 12),
     );
   }
@@ -410,6 +402,7 @@ class _SobrietySliderState extends State<SobrietySlider>
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(widget.radius),
       onTap: () => showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -487,10 +480,8 @@ class _SobrietySliderState extends State<SobrietySlider>
         },
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 50),
-        height: 200,
-        width: 200,
-        alignment: Alignment.center,
+        height: widget.radius,
+        width: widget.radius,
         child: progressView(),
       ),
     );

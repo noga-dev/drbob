@@ -185,12 +185,15 @@ class _MainDrawerState extends State<MainDrawer> {
                           .replaceAll("[<'", "")
                           .replaceAll("'>]", ""),
                       style: TextStyle(
-                          color: Theme.of(context).textTheme.body1.color),
+                        color: Theme.of(context).textTheme.body1.color,
+                        fontSize: Theme.of(context).textTheme.body1.fontSize
+                      ),
                     ),
                   ],
                 ),
                 items: list,
-                onChanged: (v) {
+                onChanged: (String v) {
+                  if (Localizations.localeOf(context).languageCode == v) return;
                   Provider.of<Bloc>(context).changeLocale(Locale(v));
                 }),
           ),
