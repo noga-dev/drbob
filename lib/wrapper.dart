@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'blocs/Bloc.dart';
-import 'main_drawer.dart';
 import 'utils/localization.dart';
 import 'views/home.dart';
-import 'views/home/daily_reflection.dart';
 
 class AppWrapper extends StatefulWidget {
   @override
@@ -71,47 +69,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: supportedLocales,
       locale: Provider.of<Bloc>(context).getLocale,
       localeResolutionCallback: localeResolutionCallback,
-      home: AppHome(),
-    );
-  }
-}
-
-class AppHome extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: Scaffold(
-          body: Directionality(
-            textDirection: Directionality.of(context),
-            child: HomeView(),
-          ),
-          drawerScrimColor: (Theme.of(context).brightness == Brightness.light)
-              ? Colors.black.withOpacity(.25)
-              : Colors.white.withOpacity(.25),
-          drawer: MainDrawer(),
-          endDrawer: MainDrawer(),
-          floatingActionButton: buildTodaysReflectionFAP(context),
-        ),
-      ),
-    );
-  }
-
-  FloatingActionButton buildTodaysReflectionFAP(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DailyReflectionView(
-            month: DateTime.now().month,
-            day: DateTime.now().day,
-          ),
-        ),
-      ),
-      label: Text(trans(context, "btn_todays_reflection"),
-          style: TextStyle(color: Colors.white)),
-      backgroundColor: Colors.lightBlue,
+      home: HomeView(),
     );
   }
 }

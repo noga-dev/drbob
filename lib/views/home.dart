@@ -2,10 +2,14 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:drbob/blocs/Bloc.dart';
+import 'package:drbob/utils/layout.dart';
 import 'package:drbob/utils/localization.dart';
+import 'package:drbob/views/tools/big_book.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'home/daily_reflection.dart';
 import 'tools/daily_reflections.dart';
 
 class HomeView extends StatelessWidget {
@@ -13,7 +17,18 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     var buttons = <Widget>[
       RaisedButton(
-        color: Colors.pink[700],
+        color: Colors.lightBlue[800],
+        child: Text(
+          trans(context, "btn_big_book"),
+          style: TextStyle(color: Colors.white),
+        ),
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BigBookView()),
+        ),
+      ),
+      RaisedButton(
+        color: Colors.pink[800],
         child: Text(
           trans(context, "btn_daily_reflections"),
           style: TextStyle(color: Colors.white),
@@ -27,205 +42,334 @@ class HomeView extends StatelessWidget {
           "tradition_", Colors.brown),
       buildTwelveX(context, "btn_twelve_steps", "twelve_steps", "step_",
           Colors.teal[800]),
-      RaisedButton(
-        color: Colors.purple,
-        child: Text(
-          trans(context, "btn_serenity_prayer"),
-          style: TextStyle(color: Colors.white),
-        ),
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return SimpleDialog(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.all(20),
-                      child: Text(
-                        trans(context, "serenity_prayer"),
-                        textAlign: TextAlign.center,
-                        textScaleFactor: 2,
-                      ),
-                    ),
-                  ],
-                );
-              });
-        },
-      ),
-      RaisedButton(
-        color: Colors.indigo,
-        onPressed: () => showDialog(
-            context: context,
-            builder: (context) {
-              return SimpleDialog(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    child: Text(
-                      trans(context, "preamble"),
-                      textScaleFactor: 1.5,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              );
-            }),
-        child: Text(
-          trans(context, "btn_preamble"),
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      buildTwelveX(context, "btn_twelve_promises", "twelve_promises",
+          "promise_", Colors.green[800]),
+      buildModalText(context, Colors.indigo[800], "btn_serenity_prayer",
+          "serenity_prayer"),
+      buildModalText(context, Colors.purple[800], "btn_preamble", "preamble"),
     ];
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          child: OrientationBuilder(
-            builder: (context, orientation) {
-              return orientation == Orientation.portrait
-                  ? SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 30),
-                            child: SobrietySlider(
-                              radius: 150,
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: buttons,
-                          )
-                        ],
+    return MyScaffold(
+      child: OrientationBuilder(
+        builder: (context, orientation) {
+          return orientation == Orientation.portrait
+              ? SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 30),
+                        child: SobrietySlider(
+                          radius: 150,
+                        ),
                       ),
-                    )
-                  : Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Container(),
-                          flex: 1,
-                        ),
-                        Expanded(
-                          flex: 10,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: buttons,
-                                ),
-                              ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: buttons,
+                      )
+                    ],
+                  ),
+                )
+              : Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(),
+                      flex: 1,
+                    ),
+                    Expanded(
+                      flex: 10,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Center(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: buttons,
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 5,
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 30),
-                            child: FittedBox(
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 30),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            FittedBox(
                               fit: BoxFit.fill,
                               child: SobrietySlider(
                                 radius: 150,
                               ),
                             ),
-                          ),
+                            Container(
+                              height: 75,
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: Container(),
-                        )
-                      ],
-                    );
-            },
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    )
+                  ],
+                );
+        },
+      ),
+      leading: Container(),
+      title: Center(
+        child: Text(
+          trans(context, "title_home"),
+        ),
+      ),
+      fab: FloatingActionButton.extended(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DailyReflectionView(
+              month: DateTime.now().month,
+              day: DateTime.now().day,
+            ),
           ),
         ),
-        Positioned(
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () => Scaffold.of(context).openDrawer(),
-              ),
-            ],
-          ),
-        )
-      ],
+        label: Text(trans(context, "btn_todays_reflection"),
+            style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.lightBlue,
+      ),
+    );
+  }
+
+  Widget buildModalText(
+      BuildContext context, Color color, String btnText, String modalText) {
+    return RaisedButton(
+      color: color,
+      child: Text(
+        trans(context, btnText),
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () {
+        showGeneralDialog(
+            barrierDismissible: true,
+            barrierLabel: "",
+            barrierColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white,
+            context: context,
+            transitionDuration: Duration(milliseconds: 500),
+            pageBuilder: (context, anim1, anime2) {
+              return;
+            },
+            transitionBuilder: (context, anim1, anim2, child) {
+              String clipboard = "copied_to_clipboard";
+              bool copied = false;
+              return SafeArea(
+                top: true,
+                child: Opacity(
+                  opacity: anim1.value,
+                  child: SimpleDialog(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    contentPadding: EdgeInsets.all(0),
+                    children: <Widget>[
+                      StatefulBuilder(
+                        builder: (context, s) {
+                          return InkWell(
+                            onLongPress: () {
+                              s(() {
+                                copied = true;
+                                Clipboard.setData(
+                                  ClipboardData(
+                                    text: modalText,
+                                  ),
+                                );
+                              });
+                              Future.delayed(Duration(seconds: 2), () {
+                                s(() {
+                                  copied = false;
+                                });
+                              });
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            child: Container(
+                              child: AnimatedDefaultTextStyle(
+                                curve: Curves.ease,
+                                duration: Duration(milliseconds: 2000),
+                                style: copied
+                                    ? TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold)
+                                    : TextStyle(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                child: Text(
+                                  (copied)
+                                      ? trans(context, clipboard)
+                                      : trans(context, modalText),
+                                      textScaleFactor: 2,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            });
+      },
     );
   }
 
   Widget buildTwelveX(BuildContext context, String button, String header,
       String type, Color color) {
     return RaisedButton(
-      onPressed: () => showDialog(
+      onPressed: () => showGeneralDialog(
           context: context,
-          builder: (context) {
-            return SimpleDialog(
-              title: Text(
-                trans(context, header) + "\n",
-                textAlign: TextAlign.center,
-              ),
-              children: <Widget>[
-                Container(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List<int>.generate(12, (int i) => ++i)
-                          .map(
-                            (f) => Wrap(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Flexible(
-                                      flex: 2,
-                                      child: Container(
-                                        width: 100,
-                                        child: Text(
-                                          f.toString(),
-                                          textScaleFactor: 2,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                    Flexible(
-                                      flex: 12,
-                                      child: Container(
-                                        child: Text(
-                                          trans(
-                                            context,
-                                            type + f.toString(),
+          pageBuilder: (context, anim1, anim2) {
+            return;
+          },
+          barrierDismissible: true,
+          transitionDuration: Duration(milliseconds: 500),
+          barrierColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : Colors.white,
+          barrierLabel: "",
+          transitionBuilder: (context, anim1, anim2, child) {
+            String temp = trans(context, "copied_to_clipboard");
+            int selected = 0;
+            return SafeArea(
+              top: true,
+              child: Opacity(
+                opacity: anim1.value,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 60),
+                  child: SimpleDialog(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    title: Text(
+                      trans(context, header) + "\n",
+                      textAlign: TextAlign.center,
+                    ),
+                    children: <Widget>[
+                      Container(
+                        color: Colors.transparent,
+                        child: StatefulBuilder(
+                          builder: (context, s) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List<int>.generate(12, (int i) => ++i)
+                                  .map(
+                                    (f) => Wrap(
+                                      children: <Widget>[
+                                        InkWell(
+                                          splashColor: Colors.primaries
+                                              .toList()[Random().nextInt(
+                                                  Colors.primaries.length)]
+                                              .withOpacity(.5),
+                                          onLongPress: () {
+                                            s(() {
+                                              selected = f;
+                                              Clipboard.setData(
+                                                ClipboardData(
+                                                  text: trans(
+                                                    context,
+                                                    type + f.toString(),
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                            Future.delayed(Duration(seconds: 2),
+                                                () {
+                                              s(() {
+                                                selected = 0;
+                                              });
+                                            });
+                                          },
+                                          child: Row(
+                                            children: <Widget>[
+                                              Flexible(
+                                                flex: 2,
+                                                child: Container(
+                                                  width: 120,
+                                                  child: Text(
+                                                    f.toString(),
+                                                    textScaleFactor: 2,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                              Flexible(
+                                                flex: 12,
+                                                child: Container(
+                                                  child:
+                                                      AnimatedDefaultTextStyle(
+                                                    curve: Curves.ease,
+                                                    style: selected == f
+                                                        ? TextStyle(
+                                                            color: Colors.red)
+                                                        : TextStyle(
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .dark
+                                                                ? Colors.white
+                                                                : Colors.black),
+                                                    duration: Duration(
+                                                        milliseconds: 4000),
+                                                    child: (selected == f)
+                                                        ? Center(
+                                                            child: Text(temp),
+                                                          )
+                                                        : Text(
+                                                            trans(
+                                                              context,
+                                                              type +
+                                                                  f.toString(),
+                                                            ),
+                                                          ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Flexible(
+                                                flex: 1,
+                                                child: Container(),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ),
+                                        (f != 12)
+                                            ? Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            .2),
+                                                child: Divider(
+                                                  color: Colors.grey,
+                                                ),
+                                              )
+                                            : Container()
+                                      ],
                                     ),
-                                    Flexible(
-                                      flex: 1,
-                                      child: Container(),
-                                    ),
-                                  ],
-                                ),
-                                (f != 12)
-                                    ? Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                .05),
-                                        child: Divider(
-                                          color: Colors.grey,
-                                        ),
-                                      )
-                                    : Container()
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    ),
+                                  )
+                                  .toList(),
+                            );
+                          },
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
+                ),
+              ),
             );
           }),
       child: Text(
@@ -289,6 +433,7 @@ class ProgressPainter extends CustomPainter {
         color: dividerColor,
         cap: StrokeCap.round,
         invert: darkTheme,
+        stroke: 10,
         blend: BlendMode.exclusion);
 
     canvas.save();
@@ -314,6 +459,8 @@ class ProgressPainter extends CustomPainter {
 
     for (var i = 0; i < dividers; i++) {
       canvas.drawLine(listOfOffsets[i], listOfOffsets[i], sections);
+      // WOW this is beatiful
+      // canvas.drawArc(Rect.fromCenter(center: listOfOffsets[i],height: size.height, width: size.width), -pi / 2, arcAngle, false, sections);
     }
 
     canvas.restore();

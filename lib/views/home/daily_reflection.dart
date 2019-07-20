@@ -1,6 +1,6 @@
 import 'package:drbob/blocs/Bloc.dart';
-import 'package:drbob/main_drawer.dart';
 import 'package:drbob/models/daily_reflection.dart';
+import 'package:drbob/utils/layout.dart';
 import 'package:drbob/utils/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -50,186 +50,159 @@ class DailyReflectionView extends StatelessWidget {
             prevDay = 31;
           }
 
-          return SafeArea(
-            child: Directionality(
-              textDirection: TextDirection.ltr,
-              child: Scaffold(
-                drawer: MainDrawer(),
-                endDrawer: MainDrawer(),
-                body: Directionality(
-                  textDirection: Directionality.of(context),
-                  child: Dismissible(
-                    key: Key("drDis"),
-                    resizeDuration: null,
-                    direction: DismissDirection.horizontal,
-                    background: DailyReflectionView(
-                      month: (Directionality.of(context) == TextDirection.ltr)
-                          ? prevMonth
-                          : nextMonth,
-                      day: (Directionality.of(context) == TextDirection.ltr)
-                          ? prevDay
-                          : nextDay,
-                    ),
-                    secondaryBackground: DailyReflectionView(
-                      month: (Directionality.of(context) == TextDirection.ltr)
-                          ? nextMonth
-                          : prevMonth,
-                      day: (Directionality.of(context) == TextDirection.ltr)
-                          ? nextDay
-                          : prevDay,
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? Colors.grey[600]
-                                    : Colors.grey[200],
-                              ),
-                            ),
+          return MyScaffold(
+            implyLeading: true,
+            title: Center(
+              child: Text(
+                dr.title,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            child: Dismissible(
+              key: Key("drDis"),
+              resizeDuration: null,
+              direction: DismissDirection.horizontal,
+              background: DailyReflectionView(
+                month: (Directionality.of(context) == TextDirection.ltr)
+                    ? prevMonth
+                    : nextMonth,
+                day: (Directionality.of(context) == TextDirection.ltr)
+                    ? prevDay
+                    : nextDay,
+              ),
+              secondaryBackground: DailyReflectionView(
+                month: (Directionality.of(context) == TextDirection.ltr)
+                    ? nextMonth
+                    : prevMonth,
+                day: (Directionality.of(context) == TextDirection.ltr)
+                    ? nextDay
+                    : prevDay,
+              ),
+              onDismissed: (DismissDirection d) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => d == DismissDirection.startToEnd
+                        ? DailyReflectionView(
+                            day: prevDay,
+                            month: prevMonth,
+                          )
+                        : DailyReflectionView(
+                            day: nextDay,
+                            month: nextMonth,
                           ),
-                          child: Row(
-                            children: <Widget>[
-                              BackButton(),
-                              Expanded(
-                                child: Text(
-                                  dr.title,
-                                  maxLines: 2,
-                                  textScaleFactor: 1.25,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
+                  ),
+                );
+              },
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Scrollbar(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(10.0),
+                              child: Card(
+                                elevation: 20,
+                                child: Container(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: Builder(
+                                    builder: (context) {
+                                      return InkWell(
+                                        splashColor: Colors.red,
+                                        onLongPress: () {
+                                          Clipboard.setData(
+                                            ClipboardData(text: dr.excerpt),
+                                          );
+                                          Scaffold.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                trans(context,
+                                                    "copied_to_clipboard"),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(
+                                              intl.DateFormat.MMMMd(
+                                                      Localizations.localeOf(
+                                                              context)
+                                                          .languageCode)
+                                                  .format(
+                                                DateTime.parse(DateTime.now()
+                                                        .year
+                                                        .toString() +
+                                                    ((month < 10)
+                                                        ? "-0"
+                                                        : "-") +
+                                                    month.toString() +
+                                                    ((day < 10) ? "-0" : "-") +
+                                                    day.toString() +
+                                                    " 00:00:00.000000"),
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                            Text(
+                                              dr.excerpt,
+                                              textAlign: TextAlign.justify,
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              "\n" + dr.source,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
-                              Container(
-                                margin: EdgeInsets.only(right: 20),
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Scrollbar(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: Card(
-                                      elevation: 20,
-                                      child: Container(
-                                        padding: EdgeInsets.all(12.0),
-                                        child: Builder(
-                                          builder: (context) {
-                                            return InkWell(
-                                              splashColor: Colors.red,
-                                              onLongPress: () {
-                                                Clipboard.setData(
-                                                  ClipboardData(
-                                                      text: dr.excerpt),
-                                                );
-                                                Scaffold.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      trans(context,
-                                                          "clipboard_copied_excerpt"),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(
-                                                    "\n" +
-                                                        intl.DateFormat.MMMMd(
-                                                                Localizations
-                                                                        .localeOf(
-                                                                            context)
-                                                                    .languageCode)
-                                                            .format(
-                                                          DateTime.parse(DateTime
-                                                                      .now()
-                                                                  .year
-                                                                  .toString() +
-                                                              ((month < 10)
-                                                                  ? "-0"
-                                                                  : "-") +
-                                                              month.toString() +
-                                                              ((day < 10)
-                                                                  ? "-0"
-                                                                  : "-") +
-                                                              day.toString() +
-                                                              " 00:00:00.000000"),
-                                                        ) +
-                                                        "\n",
-                                                    style: TextStyle(
-                                                      height: .25,
-                                                    ),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                  Text(
-                                                    dr.excerpt,
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  Text(
-                                                    "\n" + dr.source,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.all(20),
-                                    child: Builder(
-                                      builder: (context) {
-                                        return InkWell(
-                                          onLongPress: () {
-                                            Clipboard.setData(
-                                              ClipboardData(
-                                                  text: dr.reflection),
-                                            );
-                                            Scaffold.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  trans(context,
-                                                      "clipboard_copied_reflection"),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: Text(
-                                            dr.reflection,
-                                            style: TextStyle(fontSize: 18),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(20),
+                              child: Builder(
+                                builder: (context) {
+                                  return InkWell(
+                                    onLongPress: () {
+                                      Clipboard.setData(
+                                        ClipboardData(text: dr.reflection),
+                                      );
+                                      Scaffold.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            trans(
+                                                context, "copied_to_clipboard"),
+                                            textAlign: TextAlign.center,
                                           ),
-                                        );
-                                      },
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      dr.reflection,
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(fontSize: 18),
                                     ),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           );
