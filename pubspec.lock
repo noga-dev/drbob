@@ -69,6 +69,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -177,6 +184,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.6+3"
+  mockito:
+    dependency: "direct dev"
+    description:
+      name: mockito
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.0"
   multi_server_socket:
     dependency: transitive
     description:
@@ -219,6 +233,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  platform:
+    dependency: transitive
+    description:
+      name: platform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   pool:
     dependency: transitive
     description:

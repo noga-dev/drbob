@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Bloc with ChangeNotifier {
   SharedPreferences _preferences;
   ThemeData _theme;
   Locale _locale;
+  FlutterLocalNotificationsPlugin _flnp;
 
   Bloc(
     ThemeData theme,
@@ -14,11 +16,13 @@ class Bloc with ChangeNotifier {
     this._theme = theme;
     this._locale = locale;
     this._preferences = prefs;
+    this._flnp = FlutterLocalNotificationsPlugin();
   }
 
   ThemeData get getTheme => _theme;
   Locale get getLocale => _locale;
   SharedPreferences get getPrefs => _preferences;
+  FlutterLocalNotificationsPlugin get flnp => _flnp;
 
   void notify() {
     notifyListeners();

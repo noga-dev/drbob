@@ -11,7 +11,7 @@ description: A companion app for AA members.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 19.07.19+2167
+version: 19.07.27+2172
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -23,6 +23,7 @@ dependencies:
     sdk: flutter
   provider: ^3.0.0+1
   shared_preferences: ^0.5.3+1
+  flutter_local_notifications: ^0.8.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -33,6 +34,7 @@ dev_dependencies:
     sdk: flutter
   test: ^1.5.1
   #build_runner: ^1.0.0
+  mockito: ^4.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

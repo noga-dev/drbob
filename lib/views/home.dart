@@ -7,6 +7,7 @@ import 'package:drbob/utils/localization.dart';
 import 'package:drbob/views/tools/big_book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
 import 'home/daily_reflection.dart';
@@ -15,6 +16,23 @@ import 'tools/daily_reflections.dart';
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Provider.of<Bloc>(context).flnp
+      ..initialize(
+        InitializationSettings(
+          AndroidInitializationSettings("@mipmap/ic_launcher"),
+          IOSInitializationSettings(),
+        ),
+        onSelectNotification: (String payload) => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DailyReflectionView(
+              month: DateTime.now().month,
+              day: DateTime.now().day,
+            ),
+          ),
+        ),
+      );
+    // #region Buttons
     var buttons = <Widget>[
       RaisedButton(
         color: Colors.lightBlue[800],
@@ -48,6 +66,7 @@ class HomeView extends StatelessWidget {
           "serenity_prayer"),
       buildModalText(context, Colors.purple[800], "btn_preamble", "preamble"),
     ];
+    // #endregion
     return MyScaffold(
       child: OrientationBuilder(
         builder: (context, orientation) {
@@ -211,7 +230,7 @@ class HomeView extends StatelessWidget {
                                   (copied)
                                       ? trans(context, clipboard)
                                       : trans(context, modalText),
-                                      textScaleFactor: 2,
+                                  textScaleFactor: 2,
                                   textAlign: TextAlign.center,
                                 ),
                               ),

@@ -74,5 +74,11 @@
     "promise_9": "Our whole attitude and outlook upon life will change.",
     "promise_10": "Fear of people and economic insecurity will leave us.",
     "promise_11": "We will intuitively know how to handle situations which used to baffle us.",
-    "promise_12": "We will suddenly realize that God is doing for us what we could not do for ourselves."
+    "promise_12": "We will suddenly realize that God is doing for us what we could not do for ourselves.",
+    "notif_dr_title": "Today's daily reflection",
+    "notif_dr_desc": "Click to read",
+    "notif_enabled": "Enabled",
+    "notif_disabled": "Disabled",
+    "btn_notifications": "Notifications",
+    "time": "Time"
 }
