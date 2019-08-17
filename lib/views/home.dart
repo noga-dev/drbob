@@ -34,37 +34,142 @@ class HomeView extends StatelessWidget {
       );
     // #region Buttons
     var buttons = <Widget>[
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(
+            child: RaisedButton(
+              color: Colors.lightBlue[800],
+              child: Text(
+                trans(context, "btn_big_book"),
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BigBookView(),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: RaisedButton(
+              color: Colors.blue[800],
+              child: Text(
+                trans(context, "btn_daily_reflections"),
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DailyReflectionsListView()),
+              ),
+            ),
+          ),
+        ],
+      ),
+      Row(
+        children: <Widget>[
+          Expanded(
+            child: buildX(context, "btn_twelve_traditions", "twelve_traditions",
+                "tradition_", Colors.green[800], 12),
+          ),
+          Expanded(
+            child: buildX(context, "btn_twelve_steps", "twelve_steps", "step_",
+                Colors.teal[800], 12),
+          ),
+        ],
+      ),
+      Row(
+        children: <Widget>[
+          Expanded(
+            child: buildX(context, "btn_twelve_promises", "twelve_promises",
+                "promise_", Colors.red[800], 12),
+          ),
+          Expanded(
+            child:
+                buildX(context, "btn_j4t", "j4t", "j4t_", Colors.pink[800], 9),
+          ),
+        ],
+      ),
+      Row(
+        children: <Widget>[
+          Expanded(
+            child: buildModalText(context, Colors.indigo[800],
+                "btn_serenity_prayer", "serenity_prayer"),
+          ),
+          Expanded(
+            child: buildModalText(
+                context, Colors.purple[800], "btn_preamble", "preamble"),
+          ),
+        ],
+      ),
       RaisedButton(
-        color: Colors.lightBlue[800],
+        color: Colors.brown[600],
         child: Text(
-          trans(context, "btn_big_book"),
+          trans(context, "hiw"),
           style: TextStyle(color: Colors.white),
         ),
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => BigBookView()),
+          MaterialPageRoute(
+            builder: (context) => MyScaffold(
+              implyLeading: true,
+              title: Center(child: Text(trans(context, "hiw"))),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: SingleChildScrollView(
+                  child: Text(
+                    trans(context, "hiw_1") +
+                        "\n\n" +
+                        trans(context, "hiw_2") +
+                        "\n\n" +
+                        trans(context, "hiw_3") +
+                        "\n\n" +
+                        trans(context, "hiw_4") +
+                        "\n\n" +
+                        trans(context, "hiw_5") +
+                        "\n\n" +
+                        trans(context, "hiw_6") +
+                        "\n\n1. " +
+                        trans(context, "step_1") +
+                        "\n2. " +
+                        trans(context, "step_2") +
+                        "\n3. " +
+                        trans(context, "step_3") +
+                        "\n4. " +
+                        trans(context, "step_4") +
+                        "\n5. " +
+                        trans(context, "step_5") +
+                        "\n6. " +
+                        trans(context, "step_6") +
+                        "\n7. " +
+                        trans(context, "step_7") +
+                        "\n8. " +
+                        trans(context, "step_8") +
+                        "\n9. " +
+                        trans(context, "step_9") +
+                        "\n10. " +
+                        trans(context, "step_10") +
+                        "\n11. " +
+                        trans(context, "step_11") +
+                        "\n12. " +
+                        trans(context, "step_12") +
+                        "\n\n" +
+                        trans(context, "hiw_7") +
+                        "\n\n" +
+                        trans(context, "hiw_8") +
+                        "\n\n" +
+                        trans(context, "hiw_9"),
+                    textScaleFactor: 1.5,
+                    textAlign: TextAlign.justify,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
-      RaisedButton(
-        color: Colors.pink[800],
-        child: Text(
-          trans(context, "btn_daily_reflections"),
-          style: TextStyle(color: Colors.white),
-        ),
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => DailyReflectionsListView()),
-        ),
-      ),
-      buildTwelveX(context, "btn_twelve_traditions", "twelve_traditions",
-          "tradition_", Colors.brown),
-      buildTwelveX(context, "btn_twelve_steps", "twelve_steps", "step_",
-          Colors.teal[800]),
-      buildTwelveX(context, "btn_twelve_promises", "twelve_promises",
-          "promise_", Colors.green[800]),
-      buildModalText(context, Colors.indigo[800], "btn_serenity_prayer",
-          "serenity_prayer"),
-      buildModalText(context, Colors.purple[800], "btn_preamble", "preamble"),
     ];
     // #endregion
     return MyScaffold(
@@ -247,8 +352,8 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget buildTwelveX(BuildContext context, String button, String header,
-      String type, Color color) {
+  Widget buildX(BuildContext context, String button, String header, String type,
+      Color color, int x) {
     return RaisedButton(
       onPressed: () => showGeneralDialog(
           context: context,
@@ -284,7 +389,7 @@ class HomeView extends StatelessWidget {
                           builder: (context, s) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List<int>.generate(12, (int i) => ++i)
+                              children: List<int>.generate(x, (int i) => ++i)
                                   .map(
                                     (f) => Wrap(
                                       children: <Widget>[
@@ -364,7 +469,7 @@ class HomeView extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        (f != 12)
+                                        (f != x)
                                             ? Container(
                                                 margin: EdgeInsets.symmetric(
                                                     horizontal:
@@ -536,10 +641,16 @@ class _SobrietySliderState extends State<SobrietySlider>
   progressView() {
     return CustomPaint(
       child: Center(
-        child: Text(
-          progressDegrees.toStringAsFixed(2).toString() + "%",
-          textScaleFactor: 1.25,
-        ),
+        child: !(progressDegrees == .0)
+            ? Text(progressDegrees.toStringAsFixed(2).toString() + "%",
+                textScaleFactor: 1.25)
+            : Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                child: Text(
+                  trans(context, "sobriety_date_not_set"),
+                  textAlign: TextAlign.center,
+                ),
+              ),
       ),
       foregroundPainter: ProgressPainter(
           darkTheme:
