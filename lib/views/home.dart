@@ -161,7 +161,6 @@ class HomeView extends StatelessWidget {
                         trans(context, "hiw_8") +
                         "\n\n" +
                         trans(context, "hiw_9"),
-                    textScaleFactor: 1.5,
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -335,7 +334,6 @@ class HomeView extends StatelessWidget {
                                   (copied)
                                       ? trans(context, clipboard)
                                       : trans(context, modalText),
-                                  textScaleFactor: 2,
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -425,7 +423,6 @@ class HomeView extends StatelessWidget {
                                                   width: 120,
                                                   child: Text(
                                                     f.toString(),
-                                                    textScaleFactor: 2,
                                                     textAlign: TextAlign.center,
                                                   ),
                                                 ),
@@ -642,8 +639,7 @@ class _SobrietySliderState extends State<SobrietySlider>
     return CustomPaint(
       child: Center(
         child: !(progressDegrees == .0)
-            ? Text(progressDegrees.toStringAsFixed(2).toString() + "%",
-                textScaleFactor: 1.25)
+            ? Text(progressDegrees.toStringAsFixed(2).toString() + "%")
             : Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Text(

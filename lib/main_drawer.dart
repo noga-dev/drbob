@@ -58,7 +58,6 @@ class _MainDrawerState extends State<MainDrawer> {
                         child: Center(
                           child: Text(
                             trans(context, "title_drawer"),
-                            textScaleFactor: 2,
                           ),
                         ),
                       ),

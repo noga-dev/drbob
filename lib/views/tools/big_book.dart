@@ -23,7 +23,7 @@ class BigBookView extends StatelessWidget {
           if (future.connectionState == ConnectionState.done) {
             var bigBook = BigBook.fromRawJson(future.data).chapter;
             return Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
+              margin: EdgeInsets.all(20),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,17 +70,18 @@ class BigBookChapterView extends StatelessWidget {
           return MyScaffold(
             implyLeading: true,
             title: Center(
-              child: Text(bigBook.keys.elementAt(f), textScaleFactor: .65,),
+              child: Text(bigBook.keys.elementAt(f),),
             ),
             child: Container(
-              padding: EdgeInsets.all(20),
               child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.all(20),
                 children: bigBook[bigBook.keys.elementAt(f)]
                     .map(
                       (x) => Text(
                         x + "\n",
+                        overflow: TextOverflow.visible,
                         textAlign: TextAlign.justify,
-                        textScaleFactor: 1.5,
                       ),
                     )
                     .toList(),
