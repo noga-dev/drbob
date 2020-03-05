@@ -82,7 +82,7 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(
-                  flex: 6,
+                  flex: 9,
                   child: TextField(
                     textAlign: TextAlign.center,
                     autocorrect: true,
@@ -116,15 +116,13 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                     splashColor: Colors.blueGrey.withOpacity(.5),
                     onTap: () => null,
                     child: PopupMenuButton(
+                      offset: Offset(0, 100),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          Center(
-                            child: Text(month > 0
-                                ? month.toString()
-                                : trans(context, "month")),
-                          ),
+                          Text(month > 0
+                              ? month.toString()
+                              : trans(context, "month")),
                           Icon(Icons.arrow_drop_down),
                         ],
                       ),
@@ -148,24 +146,22 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                   child: InkWell(
                     onTap: () => null,
                     child: PopupMenuButton(
+                      offset: Offset(0, 100),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Center(
-                            child: month > 0
-                                ? Text(day > 0
-                                    ? day.toString()
-                                    : trans(context, "day"))
-                                : Text(
-                                    trans(context, "day"),
-                                    style: TextStyle(
-                                      color: Provider.of<Bloc>(context)
-                                          .getTheme
-                                          .disabledColor,
-                                    ),
+                          month > 0
+                              ? Text(day > 0
+                                  ? day.toString()
+                                  : trans(context, "day"))
+                              : Text(
+                                  trans(context, "day"),
+                                  style: TextStyle(
+                                    color: Provider.of<Bloc>(context)
+                                        .getTheme
+                                        .disabledColor,
                                   ),
-                          ),
+                                ),
                           Icon(
                             Icons.arrow_drop_down,
                             color: month > 0
@@ -217,161 +213,134 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                 ),
               ],
             ),
-            child: Dismissible(
-              key: Key("DismissableDrList"),
-              direction: DismissDirection.horizontal,
-              background: Container(
-                child: RotatedBox(
-                  quarterTurns:
-                      (Directionality.of(context) == TextDirection.ltr) ? 3 : 1,
-                  child: Text(
-                    trans(context, "go_back"),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
-              ),
-              secondaryBackground: Container(
-                child: RotatedBox(
-                  quarterTurns:
-                      (Directionality.of(context) == TextDirection.ltr) ? 1 : 3,
-                  child: Text(
-                    trans(context, "go_back"),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
-              ),
-              onDismissed: (d) {
-                Navigator.pop(context);
-              },
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: (res.length > 0)
-                          // ExcludeSemantics overcomes bug https://github.com/flutter/flutter/issues/30675 which causes crashes
-                          ? ExcludeSemantics(
-                              child: ListView(
-                                children: res
-                                    .map(
-                                      (f) => Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 2,
-                                          horizontal: 6,
-                                        ),
-                                        child: InkWell(
-                                          onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DailyReflectionView(
-                                                month: f.month,
-                                                day: f.day,
-                                              ),
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: (res.length > 0)
+                        // ExcludeSemantics is a workaround for this bug: https://github.com/flutter/flutter/issues/30675 which causes the app to crash
+                        ? ExcludeSemantics(
+                            child: ListView(
+                              children: res
+                                  .map(
+                                    (f) => Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 2,
+                                        horizontal: 6,
+                                      ),
+                                      child: InkWell(
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DailyReflectionView(
+                                              month: f.month,
+                                              day: f.day,
                                             ),
                                           ),
-                                          enableFeedback: true,
-                                          splashColor: Colors.primaries[Random()
-                                                  .nextInt(
-                                                      Colors.primaries.length)]
-                                              .withOpacity(.5),
-                                          child: Card(
-                                            elevation: 0,
-                                            color: Colors.transparent,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.green),
-                                              ),
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  RichText(
-                                                    text: searchMatch(
-                                                      f.title,
-                                                    ),
+                                        ),
+                                        enableFeedback: true,
+                                        splashColor: Colors.primaries[Random()
+                                                .nextInt(
+                                                    Colors.primaries.length)]
+                                            .withOpacity(.5),
+                                        child: Card(
+                                          elevation: 0,
+                                          color: Colors.transparent,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Colors.green),
+                                            ),
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Column(
+                                              children: <Widget>[
+                                                RichText(
+                                                  text: searchMatch(
+                                                    f.title,
                                                   ),
-                                                  Text(
-                                                    "\n",
-                                                    style: TextStyle(height: .25),
+                                                ),
+                                                Text(
+                                                  "\n",
+                                                  style:
+                                                      TextStyle(height: .25),
+                                                ),
+                                                Text(
+                                                  intl.DateFormat.MMMd(
+                                                    Localizations.localeOf(
+                                                            context)
+                                                        .languageCode,
+                                                  )
+                                                      .format(
+                                                        DateTime.parse(
+                                                          "2016" +
+                                                              ((f.month < 10)
+                                                                  ? "-0" +
+                                                                      f.month
+                                                                          .toString()
+                                                                  : "-" +
+                                                                      f.month
+                                                                          .toString()) +
+                                                              ((f.day < 10)
+                                                                  ? "-0" +
+                                                                      f.day
+                                                                          .toString()
+                                                                  : "-" +
+                                                                      f.day
+                                                                          .toString()) +
+                                                              " 00:00:00.000000",
+                                                        ),
+                                                      )
+                                                      .toString(),
+                                                ),
+                                                Text(
+                                                  "\n",
+                                                  textScaleFactor: .25,
+                                                ),
+                                                RichText(
+                                                  text: searchMatch(
+                                                    f.excerpt,
                                                   ),
-                                                  Text(
-                                                    intl.DateFormat.MMMd(
-                                                      Localizations.localeOf(
-                                                              context)
-                                                          .languageCode,
-                                                    )
-                                                        .format(
-                                                          DateTime.parse(
-                                                            "2016" +
-                                                                ((f.month < 10)
-                                                                    ? "-0" +
-                                                                        f.month
-                                                                            .toString()
-                                                                    : "-" +
-                                                                        f.month
-                                                                            .toString()) +
-                                                                ((f.day < 10)
-                                                                    ? "-0" +
-                                                                        f.day
-                                                                            .toString()
-                                                                    : "-" +
-                                                                        f.day
-                                                                            .toString()) +
-                                                                " 00:00:00.000000",
-                                                          ),
-                                                        )
-                                                        .toString(),
+                                                  textAlign:
+                                                      TextAlign.justify,
+                                                ),
+                                                Text(
+                                                  "\n",
+                                                  textScaleFactor: .25,
+                                                ),
+                                                RichText(
+                                                  text: searchMatch(
+                                                    f.source,
                                                   ),
-                                                  Text(
-                                                    "\n",
-                                                    textScaleFactor: .25,
-                                                  ),
-                                                  RichText(
-                                                    text: searchMatch(
-                                                      f.excerpt,
-                                                    ),
-                                                    textAlign:
-                                                        TextAlign.justify,
-                                                  ),
-                                                  Text(
-                                                    "\n",
-                                                    textScaleFactor: .25,
-                                                  ),
-                                                  RichText(
-                                                    text: searchMatch(
-                                                      f.source,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "\n",
-                                                    textScaleFactor: .25,
-                                                  ),
-                                                  RichText(
-                                                    text: searchMatch(
-                                                        f.reflection),
-                                                        textAlign: TextAlign.justify,
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                                Text(
+                                                  "\n",
+                                                  textScaleFactor: .25,
+                                                ),
+                                                RichText(
+                                                  text: searchMatch(
+                                                      f.reflection),
+                                                  textAlign:
+                                                      TextAlign.justify,
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
                                       ),
-                                    )
-                                    .toList(),
-                              ),
-                            )
-                          : Center(
-                              child: Text(
-                                trans(context, "no_results"),
-                              ),
+                                    ),
+                                  )
+                                  .toList(),
                             ),
-                    ),
-                  ],
-                ),
+                          )
+                        : Center(
+                            child: Text(
+                              trans(context, "no_results"),
+                            ),
+                          ),
+                  ),
+                ],
               ),
             ),
           );

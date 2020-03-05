@@ -40,7 +40,7 @@ class _MainDrawerState extends State<MainDrawer> {
   Widget build(BuildContext context) {
     return Container(
       child: SizedBox(
-        width: MediaQuery.of(context).size.width * .75,
+        width: MediaQuery.of(context).size.width * .5,
         child: Theme(
           data: Theme.of(context),
           child: Drawer(
@@ -101,7 +101,7 @@ class _MainDrawerState extends State<MainDrawer> {
         splashColor: Colors.green,
         onTap: () => null,
         child: Tooltip(
-          message: trans(context, "disabled_func"),
+          message: trans(context, "notification_tooltip"),
           preferBelow: false,
           verticalOffset: 40,
           child: Container(
@@ -265,9 +265,10 @@ class _MainDrawerState extends State<MainDrawer> {
 
   Widget buildSobrietyDate(BuildContext context) {
     var prefs = Provider.of<Bloc>(context).getPrefs;
+    var now = DateTime.now();
     var sobDate = (prefs.containsKey("sobrietyDateInt"))
         ? DateTime.fromMillisecondsSinceEpoch(prefs.getInt("sobrietyDateInt"))
-        : DateTime.now();
+        : now;
     return Container(
       child: InkWell(
         child: Tooltip(
@@ -275,7 +276,7 @@ class _MainDrawerState extends State<MainDrawer> {
           message: trans(context, "settings_date_format"),
           child: ListTile(
             title: Text(
-              "${sobDate.day}.${sobDate.month}.${sobDate.year}",
+              sobDate == now ? trans(context, "set_sobriety_date") : "${sobDate.day}.${sobDate.month}.${sobDate.year}"
             ),
             leading: Icon(Icons.ac_unit, color: Colors.transparent),
             trailing: Icon(Icons.calendar_today),

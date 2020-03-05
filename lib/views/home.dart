@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'home/daily_reflection.dart';
 import 'tools/daily_reflections.dart';
 
+//TODO: Replace card groups with tabs
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -34,138 +35,209 @@ class HomeView extends StatelessWidget {
       );
     // #region Buttons
     var buttons = <Widget>[
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-            child: RaisedButton(
-              color: Colors.lightBlue[800],
-              child: Text(
-                trans(context, "btn_big_book"),
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BigBookView(),
+      Card(
+        child: Container(
+          decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.blue)),
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  "Tools",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline,
                 ),
               ),
-            ),
-          ),
-          Expanded(
-            child: RaisedButton(
-              color: Colors.blue[800],
-              child: Text(
-                trans(context, "btn_daily_reflections"),
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DailyReflectionsListView()),
-              ),
-            ),
-          ),
-        ],
-      ),
-      Row(
-        children: <Widget>[
-          Expanded(
-            child: buildX(context, "btn_twelve_traditions", "twelve_traditions",
-                "tradition_", Colors.green[800], 12),
-          ),
-          Expanded(
-            child: buildX(context, "btn_twelve_steps", "twelve_steps", "step_",
-                Colors.teal[800], 12),
-          ),
-        ],
-      ),
-      Row(
-        children: <Widget>[
-          Expanded(
-            child: buildX(context, "btn_twelve_promises", "twelve_promises",
-                "promise_", Colors.red[800], 12),
-          ),
-          Expanded(
-            child:
-                buildX(context, "btn_j4t", "j4t", "j4t_", Colors.pink[800], 9),
-          ),
-        ],
-      ),
-      Row(
-        children: <Widget>[
-          Expanded(
-            child: buildModalText(context, Colors.indigo[800],
-                "btn_serenity_prayer", "serenity_prayer"),
-          ),
-          Expanded(
-            child: buildModalText(
-                context, Colors.purple[800], "btn_preamble", "preamble"),
-          ),
-        ],
-      ),
-      RaisedButton(
-        color: Colors.brown[600],
-        child: Text(
-          trans(context, "hiw"),
-          style: TextStyle(color: Colors.white),
-        ),
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MyScaffold(
-              implyLeading: true,
-              title: Center(child: Text(trans(context, "hiw"))),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: SingleChildScrollView(
-                  child: Text(
-                    trans(context, "hiw_1") +
-                        "\n\n" +
-                        trans(context, "hiw_2") +
-                        "\n\n" +
-                        trans(context, "hiw_3") +
-                        "\n\n" +
-                        trans(context, "hiw_4") +
-                        "\n\n" +
-                        trans(context, "hiw_5") +
-                        "\n\n" +
-                        trans(context, "hiw_6") +
-                        "\n\n1. " +
-                        trans(context, "step_1") +
-                        "\n2. " +
-                        trans(context, "step_2") +
-                        "\n3. " +
-                        trans(context, "step_3") +
-                        "\n4. " +
-                        trans(context, "step_4") +
-                        "\n5. " +
-                        trans(context, "step_5") +
-                        "\n6. " +
-                        trans(context, "step_6") +
-                        "\n7. " +
-                        trans(context, "step_7") +
-                        "\n8. " +
-                        trans(context, "step_8") +
-                        "\n9. " +
-                        trans(context, "step_9") +
-                        "\n10. " +
-                        trans(context, "step_10") +
-                        "\n11. " +
-                        trans(context, "step_11") +
-                        "\n12. " +
-                        trans(context, "step_12") +
-                        "\n\n" +
-                        trans(context, "hiw_7") +
-                        "\n\n" +
-                        trans(context, "hiw_8") +
-                        "\n\n" +
-                        trans(context, "hiw_9"),
-                    textAlign: TextAlign.justify,
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Expanded(
+                    child: RaisedButton(
+                      color: Colors.lightBlue[800],
+                      child: Text(
+                        trans(context, "btn_big_book"),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BigBookView(),
+                        ),
+                      ),
+                    ),
                   ),
+                  Expanded(
+                    child: RaisedButton(
+                      color: Colors.blue[800],
+                      child: Text(
+                        trans(context, "btn_daily_reflections"),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DailyReflectionsListView()),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      Card(
+        child: Container(
+          padding: EdgeInsets.all(10.0),
+          decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.lightGreen)),
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  "Useful",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline,
                 ),
               ),
-            ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: buildX(
+                        context,
+                        "btn_twelve_traditions",
+                        "twelve_traditions",
+                        "tradition_",
+                        Colors.green[800],
+                        12),
+                  ),
+                  Expanded(
+                    child: buildX(context, "btn_twelve_steps", "twelve_steps",
+                        "step_", Colors.teal[800], 12),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: buildX(context, "btn_twelve_promises",
+                        "twelve_promises", "promise_", Colors.red[800], 12),
+                  ),
+                  Expanded(
+                    child: buildX(
+                        context, "btn_j4t", "j4t", "j4t_", Colors.pink[800], 9),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      Card(
+        child: Container(
+          padding: EdgeInsets.all(10.0),
+          decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.indigoAccent)),
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  "Meetings",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline,
+                ),
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: buildModalText(context, Colors.indigo[800],
+                        "btn_serenity_prayer", "serenity_prayer"),
+                  ),
+                  Expanded(
+                    child: buildModalText(context, Colors.purple[800],
+                        "btn_preamble", "preamble"),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: RaisedButton(
+                      color: Colors.brown[600],
+                      child: Text(
+                        trans(context, "hiw"),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyScaffold(
+                            implyLeading: true,
+                            title: Center(child: Text(trans(context, "hiw"))),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 20),
+                              child: SingleChildScrollView(
+                                child: Text(
+                                  trans(context, "hiw_1") +
+                                      "\n\n" +
+                                      trans(context, "hiw_2") +
+                                      "\n\n" +
+                                      trans(context, "hiw_3") +
+                                      "\n\n" +
+                                      trans(context, "hiw_4") +
+                                      "\n\n" +
+                                      trans(context, "hiw_5") +
+                                      "\n\n" +
+                                      trans(context, "hiw_6") +
+                                      "\n\n1. " +
+                                      trans(context, "step_1") +
+                                      "\n2. " +
+                                      trans(context, "step_2") +
+                                      "\n3. " +
+                                      trans(context, "step_3") +
+                                      "\n4. " +
+                                      trans(context, "step_4") +
+                                      "\n5. " +
+                                      trans(context, "step_5") +
+                                      "\n6. " +
+                                      trans(context, "step_6") +
+                                      "\n7. " +
+                                      trans(context, "step_7") +
+                                      "\n8. " +
+                                      trans(context, "step_8") +
+                                      "\n9. " +
+                                      trans(context, "step_9") +
+                                      "\n10. " +
+                                      trans(context, "step_10") +
+                                      "\n11. " +
+                                      trans(context, "step_11") +
+                                      "\n12. " +
+                                      trans(context, "step_12") +
+                                      "\n\n" +
+                                      trans(context, "hiw_7") +
+                                      "\n\n" +
+                                      trans(context, "hiw_8") +
+                                      "\n\n" +
+                                      trans(context, "hiw_9"),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Tooltip(
+                      message: trans(context, "disabled_func"),
+                      child: FlatButton(
+                        onPressed: null,
+                        child: Text(trans(context, "find_a_meeting")),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -760,6 +832,7 @@ class _SobrietySliderState extends State<SobrietySlider>
     );
   }
 
+  // TODO: Add next chip indicator
   initSobrietyDate() {
     if (!Provider.of<Bloc>(context).getPrefs.containsKey("sobrietyDateInt"))
       return;
@@ -777,6 +850,14 @@ class _SobrietySliderState extends State<SobrietySlider>
       sobrietyTimeDays = days.toInt() ?? 0;
       if (_sobrietyTime.inDays >= 365)
         goalCompleted = _sobrietyTime.inDays.toDouble() % 365.2425 / 365.2425;
+      else if (_sobrietyTime.inDays > 30 && _sobrietyTime.inDays <= 60)
+        goalCompleted = days / 60.88;
+      else if (_sobrietyTime.inDays > 60 && _sobrietyTime.inDays <= 90)
+        goalCompleted = days / 91;
+      else if (_sobrietyTime.inDays > 90 && _sobrietyTime.inDays <= 180)
+        goalCompleted = days / 180;
+      else if (_sobrietyTime.inDays > 180 && _sobrietyTime.inDays < 365)
+        goalCompleted = days / 365;
       else
         goalCompleted = days / 30.44;
     });

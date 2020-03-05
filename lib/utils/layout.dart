@@ -21,6 +21,7 @@ class MyScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: true,
       child: Directionality(
         textDirection: TextDirection.ltr,
         child: Scaffold(

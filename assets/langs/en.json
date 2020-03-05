@@ -48,7 +48,7 @@
     "day": "Day",
     "day_colon": "Day: ",
     "no_results": "No Matches.",
-    "sobriety_date_not_set": "Sobriety date not set",
+    "sobriety_date_not_set": "Choose your sobriety date from the menu",
     "number_of_results_colon": "results: ",
     "disabled_func": "Placeholder. Disabled for now.",
     "go_back": "Back",
@@ -102,5 +102,8 @@
     "notif_enabled": "Enabled",
     "notif_disabled": "Disabled",
     "btn_notifications": "Notifications",
-    "time": "Time"
+    "time": "Time",
+    "find_a_meeting": "Find a meeting",
+    "set_sobriety_date": "Set your sobriety date here",
+    "notification_tooltip": "Displays a notification of the daily reflection at set time"
 }

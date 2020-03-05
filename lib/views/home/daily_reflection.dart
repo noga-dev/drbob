@@ -60,24 +60,16 @@ class DailyReflectionView extends StatelessWidget {
               ),
             ),
             child: Dismissible(
-              key: Key("drDis"),
+              key: UniqueKey(),
               resizeDuration: null,
               direction: DismissDirection.horizontal,
               background: DailyReflectionView(
-                month: (Directionality.of(context) == TextDirection.ltr)
-                    ? prevMonth
-                    : nextMonth,
-                day: (Directionality.of(context) == TextDirection.ltr)
-                    ? prevDay
-                    : nextDay,
+                month: prevMonth,
+                day: prevDay,
               ),
               secondaryBackground: DailyReflectionView(
-                month: (Directionality.of(context) == TextDirection.ltr)
-                    ? nextMonth
-                    : prevMonth,
-                day: (Directionality.of(context) == TextDirection.ltr)
-                    ? nextDay
-                    : prevDay,
+                month: nextMonth,
+                day: nextDay,
               ),
               onDismissed: (DismissDirection d) {
                 Navigator.pushReplacement(

@@ -47,7 +47,7 @@
     "month_colon": "Месяц: ",
     "day": "День",
     "day_colon": "День: ",
-    "sobriety_date_not_set": "Дата трезвости не настроена",
+    "sobriety_date_not_set": "Выберите дату трезвости в меню",
     "no_results": "Нет результатов.",
     "number_of_results_colon": "Результаты: ",
     "disabled_func": "Временный заполнитель",
@@ -103,5 +103,9 @@
     "notif_enabled": "Включено",
     "notif_disabled": "Выключено",
     "btn_notifications": "Уведомления",
-    "time": "Время"
+    "time": "Время",
+    "translation_disclaimer": "Нет пока на русском",
+    "find_a_meeting": "Найти группу",
+    "set_sobriety_date": "Выберите ваш срок трезвости тут",
+    "notification_tooltip": "Показывать уведомление дневного размышления"
 }
