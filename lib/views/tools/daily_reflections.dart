@@ -21,7 +21,6 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
   String search;
   String numberOfResults;
   int month = 0, day = 0;
-
   TextStyle negRes, posRes;
   String refinedMatch, refinedSearch;
 
@@ -42,54 +41,64 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
   }
 
   @override
-  initState() {
+  void initState() {
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    final double _fontSize =
+        Provider.of<Bloc>(context).getPrefs.containsKey('fontSize')
+            ? Provider.of<Bloc>(context).getPrefs.getDouble('fontSize')
+            : 12;
+    negRes = negRes.copyWith(fontSize: _fontSize);
+    posRes = posRes.copyWith(fontSize: _fontSize);
+    return FutureBuilder<dynamic>(
       future: rootBundle.loadString(
-          "assets/daily_reflections/${Provider.of<Bloc>(context).getLocale.languageCode}.daily.reflections.json"),
-      builder: (context, future) {
+          'assets/daily_reflections/${Provider.of<Bloc>(context).getLocale.languageCode}.daily.reflections.json'),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> future) {
         if (future.hasData) {
-          drList = (DailyReflection.fromJson2List(future.data.toString())
-              as List<DailyReflection>);
-          var res = drList.where((x) =>
-              ((month != 0) ? x.month == month : true) &&
-              ((day != 0) ? x.day == day : true) &&
-              ((search != null)
-                  ? (x.excerpt.toLowerCase()).contains(search.toLowerCase()) ||
-                      (x.source.toLowerCase()).contains(search.toLowerCase()) ||
-                      (x.reflection.toLowerCase())
-                          .contains(search.toLowerCase())
-                  : true));
-          numberOfResults =
-              trans(context, "number_of_results_colon") + res.length.toString();
-          var monthsList = List<PopupMenuItem>.generate(
-              13,
-              (f) => PopupMenuItem(
-                    child: Center(
-                      child: Text(
-                        (f == 0) ? trans(context, "month") : f.toString(),
-                      ),
-                    ),
-                    value: f,
-                  ));
+          drList = DailyReflection.fromJson2List(future.data.toString());
+          List<DailyReflection> result = drList;
+          if (month != 0)
+            result =
+                drList.where((DailyReflection x) => x.month == month).toList();
+          if (day != 0)
+            result = result.where((DailyReflection x) => x.day == day).toList();
+          if (search != null)
+            result = result
+                .where((DailyReflection x) =>
+                    (x.excerpt.toLowerCase()).contains(search.toLowerCase()) ||
+                    (x.source.toLowerCase()).contains(search.toLowerCase()) ||
+                    (x.reflection.toLowerCase()).contains(search.toLowerCase()))
+                .toList();
+          numberOfResults = trans(context, 'number_of_results_colon') +
+              result.length.toString();
+          final List<PopupMenuItem<dynamic>> monthsList =
+              List<PopupMenuItem<dynamic>>.generate(
+                  13,
+                  (int f) => PopupMenuItem<dynamic>(
+                        child: Center(
+                          child: Text(
+                            (f == 0) ? trans(context, 'month') : f.toString(),
+                          ),
+                        ),
+                        value: f,
+                      ));
           return MyScaffold(
             implyLeading: true,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(
-                  flex: 9,
+                  flex: 7,
                   child: TextField(
                     textAlign: TextAlign.center,
                     autocorrect: true,
                     decoration: InputDecoration(
                       hintText: trans(
                         context,
-                        "search",
+                        'search',
                       ),
                       hintStyle: TextStyle(
                         color: Colors.grey,
@@ -97,17 +106,18 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                       counter: Align(
                         alignment: Alignment.topCenter,
                         child: Text(
-                          numberOfResults ?? "",
+                          numberOfResults ?? '',
                           style: TextStyle(
-                              fontSize: 12, height: .5, color: Colors.grey),
+                            fontSize: 12,
+                            height: .5,
+                            color: Colors.grey,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
                       isDense: true,
                     ),
-                    onChanged: (t) {
-                      setState(() => search = t);
-                    },
+                    onChanged: (String t) => setState(() => search = t),
                   ),
                 ),
                 Expanded(
@@ -115,29 +125,35 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                   child: InkWell(
                     splashColor: Colors.blueGrey.withOpacity(.5),
                     onTap: () => null,
-                    child: PopupMenuButton(
-                      offset: Offset(0, 100),
+                    child: PopupMenuButton<dynamic>(
+                      offset: const Offset(0, 100),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(month > 0
-                              ? month.toString()
-                              : trans(context, "month")),
-                          Icon(Icons.arrow_drop_down),
+                          Text(
+                            month > 0
+                                ? month.toString()
+                                : trans(
+                                    context,
+                                    'month',
+                                  ),
+                            style: TextStyle(
+                              color: Theme.of(context).textTheme.body1.color,
+                            ),
+                          ),
+                          Icon(Icons.arrow_drop_down, color: Theme.of(context).textTheme.body1.color,),
                         ],
                       ),
                       initialValue: month,
-                      onSelected: (val) {
+                      onSelected: (dynamic val) {
                         setState(
                           () {
                             day = 0;
-                            month = val;
+                            month = int.tryParse(val.toString());
                           },
                         );
                       },
-                      itemBuilder: (context) {
-                        return monthsList;
-                      },
+                      itemBuilder: (BuildContext context) => monthsList,
                     ),
                   ),
                 ),
@@ -145,69 +161,76 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                   flex: 4,
                   child: InkWell(
                     onTap: () => null,
-                    child: PopupMenuButton(
-                      offset: Offset(0, 100),
+                    child: PopupMenuButton<int>(
+                      offset: const Offset(0, 100),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          month > 0
-                              ? Text(day > 0
+                          if (month > 0)
+                            Text(
+                              day > 0
                                   ? day.toString()
-                                  : trans(context, "day"))
-                              : Text(
-                                  trans(context, "day"),
-                                  style: TextStyle(
-                                    color: Provider.of<Bloc>(context)
-                                        .getTheme
-                                        .disabledColor,
-                                  ),
-                                ),
+                                  : trans(
+                                      context,
+                                      'day',
+                                    ),
+                              style: TextStyle(
+                                color: Theme.of(context).textTheme.body1.color,
+                              ),
+                            )
+                          else
+                            Text(
+                              trans(context, 'day'),
+                              style: TextStyle(
+                                color: Provider.of<Bloc>(context)
+                                    .getTheme
+                                    .disabledColor,
+                              ),
+                            ),
                           Icon(
                             Icons.arrow_drop_down,
                             color: month > 0
-                                ? null
+                                ? Theme.of(context).textTheme.body1.color
                                 : Theme.of(context).disabledColor,
                           )
                         ],
                       ),
                       enabled: month > 0,
                       initialValue: day,
-                      itemBuilder: (context) {
-                        return (drList
-                                    .where((x) =>
-                                        (month != 0) ? x.month == month : false)
-                                    .length >
-                                0)
-                            ? (drList
-                                .where((x) =>
-                                    (month != 0) ? x.month == month : false)
-                                .map(
-                                  (f) => PopupMenuItem<int>(
-                                    child: Center(
-                                      child: Text(f.day.toString()),
-                                    ),
-                                    value: f.day,
-                                    key: Key(f.day.toString()),
+                      itemBuilder: (BuildContext context) => (drList
+                              .where((DailyReflection x) =>
+                                  (month != 0) ? x.month == month : null)
+                              .isNotEmpty)
+                          ? (drList
+                              .where((DailyReflection x) =>
+                                  (month != 0) ? x.month == month : null)
+                              .map(
+                                (DailyReflection f) => PopupMenuItem<int>(
+                                  child: Center(
+                                    child: Text(f.day.toString()),
                                   ),
-                                )
-                                .toList()
-                                  ..insert(
-                                    0,
-                                    PopupMenuItem<int>(
-                                      child: Center(
-                                        child: Text(trans(context, "day")),
+                                  value: f.day,
+                                  key: Key(f.day.toString()),
+                                ),
+                              )
+                              .toList()
+                                ..insert(
+                                  0,
+                                  PopupMenuItem<int>(
+                                    child: Center(
+                                      child: Text(
+                                        trans(
+                                          context,
+                                          'day',
+                                        ),
                                       ),
-                                      value: 0,
-                                      key: Key("0"),
                                     ),
-                                  ))
-                            : null;
-                      },
-                      onSelected: (int val) {
-                        setState(() {
-                          day = val;
-                        });
-                      },
+                                    value: 0,
+                                    key: const Key('0'),
+                                  ),
+                                ))
+                          : null,
+                      onSelected: (int val) => setState(() => day = val),
                     ),
                   ),
                 ),
@@ -217,126 +240,135 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
               child: Column(
                 children: <Widget>[
                   Expanded(
-                    child: (res.length > 0)
+                    child: (result.isNotEmpty)
                         // ExcludeSemantics is a workaround for this bug: https://github.com/flutter/flutter/issues/30675 which causes the app to crash
                         ? ExcludeSemantics(
-                            child: ListView(
-                              children: res
-                                  .map(
-                                    (f) => Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 2,
-                                        horizontal: 6,
-                                      ),
-                                      child: InkWell(
-                                        onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                DailyReflectionView(
-                                              month: f.month,
-                                              day: f.day,
-                                            ),
+                            child: ListView.separated(
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(
+                                thickness: 5,
+                              ),
+                              itemCount: result.length,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  result
+                                      .map(
+                                        (DailyReflection f) => Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 2,
+                                            horizontal: 6,
                                           ),
-                                        ),
-                                        enableFeedback: true,
-                                        splashColor: Colors.primaries[Random()
-                                                .nextInt(
+                                          child: InkWell(
+                                            onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute<void>(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        DailyReflectionView(
+                                                  month: f.month,
+                                                  day: f.day,
+                                                ),
+                                              ),
+                                            ),
+                                            enableFeedback: true,
+                                            splashColor: Colors
+                                                .primaries[Random().nextInt(
                                                     Colors.primaries.length)]
-                                            .withOpacity(.5),
-                                        child: Card(
-                                          elevation: 0,
-                                          color: Colors.transparent,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.green),
-                                            ),
-                                            padding: EdgeInsets.all(6.0),
-                                            child: Column(
-                                              children: <Widget>[
-                                                RichText(
-                                                  text: searchMatch(
-                                                    f.title,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "\n",
-                                                  style:
-                                                      TextStyle(height: .25),
-                                                ),
-                                                Text(
-                                                  intl.DateFormat.MMMd(
-                                                    Localizations.localeOf(
-                                                            context)
-                                                        .languageCode,
-                                                  )
-                                                      .format(
-                                                        DateTime.parse(
-                                                          "2016" +
-                                                              ((f.month < 10)
-                                                                  ? "-0" +
-                                                                      f.month
-                                                                          .toString()
-                                                                  : "-" +
-                                                                      f.month
-                                                                          .toString()) +
-                                                              ((f.day < 10)
-                                                                  ? "-0" +
-                                                                      f.day
-                                                                          .toString()
-                                                                  : "-" +
-                                                                      f.day
-                                                                          .toString()) +
-                                                              " 00:00:00.000000",
-                                                        ),
+                                                .withOpacity(.5),
+                                            child: Card(
+                                              elevation: 0,
+                                              color: Colors.transparent,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(6.0),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    RichText(
+                                                      text: searchMatch(
+                                                        f.title,
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      '\n',
+                                                      style: TextStyle(
+                                                          height: .25),
+                                                    ),
+                                                    Text(
+                                                      intl.DateFormat.MMMd(
+                                                        Localizations.localeOf(
+                                                                context)
+                                                            .languageCode,
                                                       )
-                                                      .toString(),
+                                                          .format(
+                                                            DateTime.parse(
+                                                              '2016' +
+                                                                  ((f.month <
+                                                                          10)
+                                                                      ? '-0' +
+                                                                          f.month
+                                                                              .toString()
+                                                                      : '-' +
+                                                                          f.month
+                                                                              .toString()) +
+                                                                  ((f.day < 10)
+                                                                      ? '-0' +
+                                                                          f.day
+                                                                              .toString()
+                                                                      : '-' +
+                                                                          f.day
+                                                                              .toString()) +
+                                                                  ' 00:00:00.000000',
+                                                            ),
+                                                          )
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          fontSize: _fontSize),
+                                                      textScaleFactor: .75,
+                                                    ),
+                                                    const Text(
+                                                      '\n',
+                                                      textScaleFactor: .25,
+                                                    ),
+                                                    RichText(
+                                                      text: searchMatch(
+                                                        f.excerpt,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.justify,
+                                                    ),
+                                                    const Text(
+                                                      '\n',
+                                                      textScaleFactor: .25,
+                                                    ),
+                                                    RichText(
+                                                      text: searchMatch(
+                                                        f.source,
+                                                      ),
+                                                      textScaleFactor: .75,
+                                                    ),
+                                                    const Text(
+                                                      '\n',
+                                                      textScaleFactor: .25,
+                                                    ),
+                                                    RichText(
+                                                      text: searchMatch(
+                                                          f.reflection),
+                                                      textAlign:
+                                                          TextAlign.justify,
+                                                    ),
+                                                  ],
                                                 ),
-                                                Text(
-                                                  "\n",
-                                                  textScaleFactor: .25,
-                                                ),
-                                                RichText(
-                                                  text: searchMatch(
-                                                    f.excerpt,
-                                                  ),
-                                                  textAlign:
-                                                      TextAlign.justify,
-                                                ),
-                                                Text(
-                                                  "\n",
-                                                  textScaleFactor: .25,
-                                                ),
-                                                RichText(
-                                                  text: searchMatch(
-                                                    f.source,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "\n",
-                                                  textScaleFactor: .25,
-                                                ),
-                                                RichText(
-                                                  text: searchMatch(
-                                                      f.reflection),
-                                                  textAlign:
-                                                      TextAlign.justify,
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
+                                      )
+                                      .toList()[index],
                             ),
                           )
                         : Center(
                             child: Text(
-                              trans(context, "no_results"),
+                              trans(context, 'no_results'),
                             ),
                           ),
                   ),
@@ -359,16 +391,16 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
 
   // NOTE (AN) Convert to stream/future?
   TextSpan searchMatch(String match) {
-    if (search == null || search == "")
+    if (search == null || search == '')
       return TextSpan(text: match, style: negRes);
-    var refinedMatch = match.toLowerCase();
-    var refinedSearch = search.toLowerCase();
+    final String refinedMatch = match.toLowerCase();
+    final String refinedSearch = search.toLowerCase();
     if (refinedMatch.contains(refinedSearch)) {
       if (refinedMatch.substring(0, refinedSearch.length) == refinedSearch) {
         return TextSpan(
           style: posRes,
           text: match.substring(0, refinedSearch.length),
-          children: [
+          children: <TextSpan>[
             searchMatch(
               match.substring(
                 refinedSearch.length,
@@ -385,7 +417,7 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
             0,
             refinedMatch.indexOf(refinedSearch),
           ),
-          children: [
+          children: <TextSpan>[
             searchMatch(
               match.substring(
                 refinedMatch.indexOf(refinedSearch),
@@ -400,7 +432,7 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
     return TextSpan(
       text: match.substring(0, refinedMatch.indexOf(refinedSearch)),
       style: negRes,
-      children: [
+      children: <TextSpan>[
         searchMatch(match.substring(refinedMatch.indexOf(refinedSearch)))
       ],
     );

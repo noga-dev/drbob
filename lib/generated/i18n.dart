@@ -94,7 +94,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
   ///
   bool _isSupported(Locale locale, bool withCountry) {
     if (locale != null) {
-      for (Locale supportedLocale in supportedLocales) {
+      for (final Locale supportedLocale in supportedLocales) {
         // Language must always match both locales.
         if (supportedLocale.languageCode != locale.languageCode) {
           continue;

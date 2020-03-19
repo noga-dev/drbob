@@ -1,0 +1,836 @@
+import 'dart:math';
+import 'package:drbob/blocs/Bloc.dart';
+import 'package:drbob/ui/common.dart';
+import 'package:drbob/utils/localization.dart';
+import 'package:drbob/utils/style.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class HomeView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> kids = <Widget>[
+      Container(
+        height: 140,
+        width: 140,
+        padding: const EdgeInsets.all(10),
+        child: const SobrietySlider(
+          radius: 120,
+        ),
+      ),
+      Container(
+        height: 140,
+        width: 140,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: UserStatistics(),
+      ),
+    ];
+    return Wrap(
+      alignment: WrapAlignment.center,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: kids,
+        ),
+        Container(
+          height: 10,
+        ),
+        buildX(
+          context: context,
+          icon: Icons.directions_walk,
+          button: 'btn_ts',
+          header: 'twelve_steps',
+          type: 'step_',
+          sub: 'btn_ts_desc',
+          x: 12,
+        ),
+        buildX(
+          context: context,
+          icon: Icons.bookmark,
+          button: 'btn_tt',
+          header: 'twelve_traditions',
+          type: 'tradition_',
+          sub: 'btn_tt_desc',
+          x: 12,
+        ),
+        buildModalText(
+          context: context,
+          title: 'btn_sp',
+          sub: 'btn_sp_desc',
+          modalText: 'serenity_prayer',
+          icon: Icons.dashboard,
+        ),
+        buildModalText(
+          context: context,
+          title: 'btn_preamble',
+          sub: 'btn_preamble_desc',
+          modalText: 'preamble',
+          icon: Icons.local_florist,
+        ),
+        menuItem(
+          icon: Icons.group_work,
+          label: trans(
+            context,
+            'btn_hiw',
+          ),
+          func: () => showGeneralDialog<void>(
+            context: context,
+            pageBuilder: (BuildContext context, Animation<double> anim1,
+                    Animation<double> anim2) =>
+                null,
+            barrierDismissible: true,
+            transitionDuration: const Duration(milliseconds: 500),
+            barrierColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white,
+            barrierLabel: '',
+            transitionBuilder: (BuildContext context, Animation<double> anim1,
+                    Animation<double> anim2, Widget child) =>
+                SimpleDialog(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              contentPadding: const EdgeInsets.all(0),
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ), // TODO(AN): Prettify this
+                  child: Builder(
+                    builder: (BuildContext context) {
+                      return DefaultTextStyle(
+                        style: DefaultTextStyle.of(context).style.copyWith(
+                            fontSize: Provider.of<Bloc>(context).getFontSize),
+                        child: Text(
+                          trans(context, 'hiw_1') +
+                              '\n\n' +
+                              trans(context, 'hiw_2') +
+                              '\n\n' +
+                              trans(context, 'hiw_3') +
+                              '\n\n' +
+                              trans(context, 'hiw_4') +
+                              '\n\n' +
+                              trans(context, 'hiw_5') +
+                              '\n\n' +
+                              trans(context, 'hiw_6') +
+                              '\n\n1. ' +
+                              trans(context, 'step_1') +
+                              '\n2. ' +
+                              trans(context, 'step_2') +
+                              '\n3. ' +
+                              trans(context, 'step_3') +
+                              '\n4. ' +
+                              trans(context, 'step_4') +
+                              '\n5. ' +
+                              trans(context, 'step_5') +
+                              '\n6. ' +
+                              trans(context, 'step_6') +
+                              '\n7. ' +
+                              trans(context, 'step_7') +
+                              '\n8. ' +
+                              trans(context, 'step_8') +
+                              '\n9. ' +
+                              trans(context, 'step_9') +
+                              '\n10. ' +
+                              trans(context, 'step_10') +
+                              '\n11. ' +
+                              trans(context, 'step_11') +
+                              '\n12. ' +
+                              trans(context, 'step_12') +
+                              '\n\n' +
+                              trans(context, 'hiw_7') +
+                              '\n\n' +
+                              trans(context, 'hiw_8') +
+                              '\n\n' +
+                              trans(context, 'hiw_9'),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Tooltip(
+        //   message: trans(context, 'disabled_func'),
+        //   child: menuItem(
+        //     icon: Icons.location_on,
+        //     label: trans(
+        //       context,
+        //       'btn_find_a_meeting',
+        //     ),
+        //     func: null,
+        //   ),
+        // ), 
+      ],
+    );
+  }
+
+  Widget menuItem(
+          {String label, IconData icon, Future<void> Function() func}) =>
+      Container(
+        height: 80,
+        width: 200,
+        child: Card(
+          color: Colors.transparent,
+          child: AnimatedMenuItem(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Container(width: 20,),
+                  Expanded(child: Text(label)),
+                  Icon(icon),
+                  Container(width: 20,),
+                ],
+              ),
+              func),
+        ),
+      );
+
+  Widget buildModalText(
+      {BuildContext context,
+      IconData icon,
+      String sub,
+      String title,
+      String modalText}) {
+    return menuItem(
+      icon: icon,
+      label: trans(
+        context,
+        title,
+      ),
+      func: () => showGeneralDialog<void>(
+        barrierDismissible: true,
+        barrierLabel: '',
+        barrierColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white,
+        context: context,
+        transitionDuration: const Duration(milliseconds: 500),
+        pageBuilder: (BuildContext context, Animation<double> anim1,
+            Animation<double> anime2) {
+          return;
+        },
+        transitionBuilder: (BuildContext context, Animation<double> anim1,
+            Animation<double> anim2, Widget child) {
+          const String clipboard = 'copied_to_clipboard';
+          bool copied = false;
+          return SafeArea(
+            top: true,
+            child: Opacity(
+              opacity: anim1.value,
+              child: SimpleDialog(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                contentPadding: const EdgeInsets.all(0),
+                children: <Widget>[
+                  StatefulBuilder(
+                    builder: (BuildContext context, Function s) => InkWell(
+                      onLongPress: () {
+                        s(() {
+                          copied = true;
+                          Clipboard.setData(
+                            ClipboardData(
+                              text: modalText,
+                            ),
+                          );
+                        });
+                        Future<dynamic>.delayed(
+                          const Duration(seconds: 2),
+                          () => s(
+                            () => copied = false,
+                          ),
+                        );
+                      },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: Container(
+                        child: AnimatedDefaultTextStyle(
+                          curve: Curves.ease, // TODO(AN): Randomize Curves?
+                          duration: const Duration(
+                            milliseconds: 2000,
+                          ),
+                          style: copied
+                              ? TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                )
+                              : TextStyle(
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      Provider.of<Bloc>(context).getFontSize,
+                                ),
+                          child: Text(
+                            copied
+                                ? trans(
+                                    context,
+                                    clipboard,
+                                  )
+                                : trans(
+                                    context,
+                                    modalText,
+                                  ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildX(
+      {BuildContext context,
+      IconData icon,
+      String button,
+      String sub,
+      String type,
+      String header,
+      int x}) {
+    return menuItem(
+        icon: icon,
+        label: trans(
+          context,
+          button,
+        ),
+        func: () => showGeneralDialog<void>(
+              context: context,
+              pageBuilder: (BuildContext context, Animation<double> anim1,
+                      Animation<double> anim2) =>
+                  null,
+              barrierDismissible: true,
+              transitionDuration: const Duration(milliseconds: 500),
+              barrierColor: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.white,
+              barrierLabel: '',
+              transitionBuilder: (BuildContext context, Animation<double> anim1,
+                  Animation<double> anim2, Widget child) {
+                final String temp = trans(context, 'copied_to_clipboard');
+                int selected = 0;
+                return SafeArea(
+                  top: true,
+                  child: Opacity(
+                    opacity: anim1.value,
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 60),
+                      child: SimpleDialog(
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                        title: Text(
+                          trans(context, header) + '\n',
+                          textAlign: TextAlign.center,
+                        ),
+                        children: <Widget>[
+                          Container(
+                            color: Colors.transparent,
+                            child: StatefulBuilder(
+                              builder: (BuildContext context, Function s) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: List<int>.generate(
+                                          x, (int i) => ++i)
+                                      .map(
+                                        (int f) => Wrap(
+                                          children: <Widget>[
+                                            InkWell(
+                                              splashColor: Colors.primaries
+                                                  .toList()[Random().nextInt(
+                                                      Colors.primaries.length)]
+                                                  .withOpacity(.5),
+                                              onLongPress: () {
+                                                s(() {
+                                                  selected = f;
+                                                  Clipboard.setData(
+                                                    ClipboardData(
+                                                      text: trans(
+                                                        context,
+                                                        type + f.toString(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                });
+                                                Future<void>.delayed(
+                                                  const Duration(seconds: 2),
+                                                  () => s(() => selected = 0),
+                                                );
+                                              },
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    flex: 2,
+                                                    child: Container(
+                                                      width: 120,
+                                                      child: Text(
+                                                        f.toString(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontSize: Provider
+                                                                    .of<Bloc>(
+                                                                        context)
+                                                                .getFontSize),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    flex: 12,
+                                                    child: Container(
+                                                      child:
+                                                          AnimatedDefaultTextStyle(
+                                                        curve: Curves.ease,
+                                                        style: selected == f
+                                                            ? TextStyle(
+                                                                color:
+                                                                    Colors.red,
+                                                              )
+                                                            : TextStyle(
+                                                                color: Theme.of(context)
+                                                                            .brightness ==
+                                                                        Brightness
+                                                                            .dark
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Colors
+                                                                        .black,
+                                                                fontSize: Provider.of<
+                                                                            Bloc>(
+                                                                        context)
+                                                                    .getFontSize),
+                                                        duration:
+                                                            const Duration(
+                                                          milliseconds: 4000,
+                                                        ),
+                                                        child: (selected == f)
+                                                            ? Center(
+                                                                child:
+                                                                    Text(temp),
+                                                              )
+                                                            : Text(
+                                                                trans(
+                                                                  context,
+                                                                  type +
+                                                                      f.toString(),
+                                                                ),
+                                                              ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    flex: 1,
+                                                    child: Container(),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            if (f != x)
+                                              Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            .2),
+                                                child: Divider(
+                                                  color: Colors.grey,
+                                                ),
+                                              )
+                                            else
+                                              Container()
+                                          ],
+                                        ),
+                                      )
+                                      .toList(),
+                                );
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ));
+  }
+}
+
+class ProgressPainter extends CustomPainter {
+  ProgressPainter({
+    this.darkTheme,
+    this.oldChipColor,
+    this.newChipColor,
+    this.dividerColor,
+    this.completedPercentage,
+    this.circleWidth,
+    this.dividers,
+  });
+
+  bool darkTheme;
+  Color oldChipColor;
+  Color newChipColor;
+  Color dividerColor;
+  double completedPercentage;
+  double circleWidth;
+  int dividers;
+
+  Paint getPaint(
+      {Color color = Colors.purple,
+      PaintingStyle style = PaintingStyle.stroke,
+      double stroke = 7,
+      StrokeCap cap = StrokeCap.round,
+      BlendMode blend = BlendMode.srcOver,
+      ColorFilter cFilter,
+      bool invert = false}) {
+    return Paint()
+      ..color = color
+      ..strokeCap = cap
+      ..style = style
+      ..blendMode = blend
+      ..invertColors = invert
+      ..strokeJoin = StrokeJoin.bevel
+      ..strokeWidth = stroke;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint defaultCirclePaint = getPaint(
+      color: oldChipColor,
+      stroke: circleWidth,
+      cap: StrokeCap.round,
+    );
+    final Paint progressCirclePaint = getPaint(
+      color: newChipColor,
+      stroke: circleWidth,
+      cap: StrokeCap.butt,
+    );
+    final Paint sections = getPaint(
+        color: dividerColor,
+        cap: StrokeCap.round,
+        invert: darkTheme,
+        stroke: 10,
+        blend: BlendMode.exclusion);
+
+    canvas.save();
+
+    final Offset center = Offset(size.width / 2, size.height / 2);
+    final double radius = min(size.width / 2, size.height / 2);
+
+    final List<Offset> listOfOffsets =
+        List<int>.generate(dividers, (int index) => index).map((int i) {
+      final double radians = min(size.width / 2, size.height / 2) +
+          ((pi * 2) / dividers * i + 5.2);
+      return Offset(
+        center.dx + radius * cos(radians),
+        center.dy + radius * sin(radians),
+      );
+    }).toList();
+
+    canvas.drawCircle(center, radius, defaultCirclePaint);
+
+    final double arcAngle = 2 * pi * (completedPercentage / 100);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), -pi / 2,
+        arcAngle, false, progressCirclePaint);
+
+    for (int i = 0; i < dividers; i++) {
+      canvas.drawLine(listOfOffsets[i], listOfOffsets[i], sections);
+      // WOW this is beatiful
+      // canvas.drawArc(Rect.fromCenter(center: listOfOffsets[i],height: size.height, width: size.width), -pi / 2, arcAngle, false, sections);
+    }
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class SobrietySlider extends StatefulWidget {
+  const SobrietySlider({Key key, this.radius}) : super(key: key);
+
+  final double radius;
+
+  @override
+  _SobrietySliderState createState() => _SobrietySliderState();
+}
+
+class _SobrietySliderState extends State<SobrietySlider>
+    with SingleTickerProviderStateMixin {
+  AnimationController _radialProgressAnimationController;
+  Animation<double> _progressAnimation;
+  double goalCompleted = 0, progressDegrees = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _radialProgressAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        seconds: 2,
+      ),
+    );
+
+    _progressAnimation = Tween<double>(begin: 0.0, end: 100.0).animate(
+      CurvedAnimation(
+        parent: _radialProgressAnimationController,
+        curve: Curves.decelerate,
+      ),
+    )..addListener(
+        () => setState(
+          () => progressDegrees = goalCompleted * _progressAnimation.value,
+        ),
+      );
+
+    _radialProgressAnimationController.forward();
+  }
+
+  @override
+  void didChangeDependencies() {
+    initSobrietyDate();
+    super.didChangeDependencies();
+  }
+
+  CustomPaint progressView() {
+    return CustomPaint(
+      child: DefaultTextStyle(
+        style: statisticsStyle.copyWith(color: Theme.of(context).textTheme.body1.color),
+        child: Center(
+          child: !(progressDegrees == .0)
+              ? Text(progressDegrees.toStringAsFixed(2).toString() + '%')
+              : Center(
+                  child: Text(
+                    trans(context, 'pick_sobriety_date'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+        ),
+      ),
+      foregroundPainter: ProgressPainter(
+          darkTheme: Theme.of(context).brightness == Brightness.dark,
+          oldChipColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : Colors.grey[300],
+          newChipColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+          dividerColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : Colors.white,
+          completedPercentage: progressDegrees,
+          circleWidth: 12.0,
+          dividers: 12),
+    );
+  }
+
+  @override
+  void dispose() {
+    _radialProgressAnimationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO(AN): duplicate code from drawer-> refactor later
+    final SharedPreferences prefs = Provider.of<Bloc>(context).getPrefs;
+    final bool hasSobrietyDate = prefs.containsKey('sobrietyDateInt');
+    final DateTime now = DateTime.now();
+    final DateTime sobDate = hasSobrietyDate
+        ? DateTime.fromMillisecondsSinceEpoch(prefs.getInt('sobrietyDateInt'))
+        : now;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(widget.radius),
+      onTap: () => hasSobrietyDate
+          ? null
+          : showDatePicker(
+              firstDate: DateTime.fromMillisecondsSinceEpoch(0),
+              context: context,
+              initialDate: sobDate,
+              lastDate: DateTime.now(),
+            ).then((DateTime val) {
+              setState(() {
+                if (val != null) {
+                  prefs.setInt('sobrietyDateInt', val.millisecondsSinceEpoch);
+                  Provider.of<Bloc>(context).notify();
+                }
+              });
+            }),
+      child: Tooltip(
+        message: trans(context, 'disabled_func'),
+        child: Container(
+          height: widget.radius,
+          width: widget.radius,
+          child: progressView(),
+        ),
+      ),
+    );
+  }
+
+  // TODO(AN): Add next chip indicator
+  void initSobrietyDate() {
+    if (Provider.of<Bloc>(context).getSobrietyDate == null) {
+      return;
+    }
+    setState(() {
+      _radialProgressAnimationController.reset();
+      _radialProgressAnimationController.forward();
+      final Duration _sobrietyTime = Provider.of<Bloc>(context).getSobrietyTime;
+      // average days in year and month
+      final double days = _sobrietyTime.inDays % 365.2425 % 30.44;
+      if (_sobrietyTime.inDays >= 365)
+        goalCompleted = _sobrietyTime.inDays.toDouble() % 365.2425 / 365.2425;
+      else if (_sobrietyTime.inDays > 30 && _sobrietyTime.inDays <= 60)
+        goalCompleted = days / 60.88;
+      else if (_sobrietyTime.inDays > 60 && _sobrietyTime.inDays <= 90)
+        goalCompleted = days / 91;
+      else if (_sobrietyTime.inDays > 90 && _sobrietyTime.inDays <= 180)
+        goalCompleted = days / 180;
+      else if (_sobrietyTime.inDays > 180 && _sobrietyTime.inDays < 365)
+        goalCompleted = days / 365;
+      else
+        goalCompleted = days / 30.44;
+    });
+  }
+}
+
+class UserStatistics extends StatefulWidget {
+  @override
+  _UserStatisticsState createState() => _UserStatisticsState();
+}
+
+class _UserStatisticsState extends State<UserStatistics> {
+  bool type = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final Duration sobrietyTime = Provider.of<Bloc>(context).getSobrietyTime;
+    final int years = sobrietyTime.inDays ~/ 365.2425;
+    final int months = sobrietyTime.inDays % 365.2425 ~/ 30.44;
+    final int days = (sobrietyTime.inDays % 365.2425 % 30.44).toInt();
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(150),
+      onTap: () => setState(() => type = !type),
+      child: !Provider.of<Bloc>(context).getPrefs.containsKey('sobrietyDateInt')
+          ? Center(
+              child: Text(
+                trans(
+                  context,
+                  'sobriety_date_not_set',
+                ),
+              ),
+            )
+          : Container(
+              width: 100,
+              height: 100,
+              child: DefaultTextStyle(
+                style: statisticsStyle.copyWith(color: Theme.of(context).textTheme.body1.color),
+                child: AnimatedSwitcher(
+                  duration: const Duration(seconds: 1),
+                  child: type
+                      ? Center(
+                          child: Text(
+                            sobrietyTime.inDays.toString() +
+                                ' ' +
+                                trans(context, 'total_sobriety_days'),
+                          ),
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              years.toString() + ' ' + trans(context, 'years'),
+                            ),
+                            Text(
+                              months.toString() +
+                                  ' ' +
+                                  trans(context, 'months'),
+                            ),
+                            Text(
+                              days.toString() + ' ' + trans(context, 'days'),
+                            ),
+                          ],
+                        ),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+class MenuButton extends StatelessWidget {
+  const MenuButton(this.title, this.sub, this.icon);
+
+  final String title;
+  final String sub;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 150,
+      height: 80,
+      child: InkWell(
+        onTap: () => null,
+        child: SizedBox.expand(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                  colors: <Color>[
+                    Colors.purple,
+                    Colors.teal,
+                  ],
+                  begin: const FractionalOffset(
+                    0.0,
+                    0.0,
+                  ),
+                  end: const FractionalOffset(
+                    0.5,
+                    0.0,
+                  ),
+                  stops: const <double>[
+                    0.0,
+                    1.0,
+                  ],
+                  tileMode: TileMode.clamp),
+            ),
+            child: Stack(
+              children: <Widget>[
+                Positioned(
+                  top: 30,
+                  child: Icon(icon),
+                ),
+                Positioned(
+                  right: 20,
+                  child: Text(
+                    title,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,10 +1,13 @@
 import 'package:drbob/utils/localization.dart';
+import 'package:drbob/views/tools/big_book.dart';
+import 'package:drbob/views/tools/daily_reflections.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'blocs/Bloc.dart';
 import 'utils/localization.dart';
-import 'views/home.dart';
+import 'views/primary.dart';
 
 class AppWrapper extends StatefulWidget {
   @override
@@ -15,35 +18,35 @@ class _AppWrapperState extends State<AppWrapper> {
   Future<SharedPreferences> prefs;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     prefs = SharedPreferences.getInstance();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<void>(
       future: prefs,
-      builder: (context, data) {
+      builder: (BuildContext context, AsyncSnapshot<void> data) {
         if (data.connectionState == ConnectionState.done) {
-          var prefs = data.data;
+          final SharedPreferences prefs = data.data as SharedPreferences;
           return ChangeNotifierProvider<Bloc>(
             builder: (_) => Bloc(
-              prefs.containsKey("theme")
+              prefs.containsKey('theme')
                   ? ThemeData(
-                      brightness: Brightness.values
-                          .firstWhere((x) => x.index == prefs.getInt("theme")),
+                      brightness: Brightness.values.firstWhere(
+                          (Brightness x) => x.index == prefs.getInt('theme')),
                     )
                   : ThemeData.light(),
-              prefs.containsKey("lang")
-                  ? Locale(prefs.getString("lang"))
-                  : Locale("en"),
+              prefs.containsKey('lang')
+                  ? Locale(prefs.getString('lang'))
+                  : const Locale('en'),
               prefs,
             ),
             child: MyApp(),
           );
         } else {
-          return RefreshProgressIndicator();
+          return const RefreshProgressIndicator();
         }
       },
     );
@@ -53,14 +56,16 @@ class _AppWrapperState extends State<AppWrapper> {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var localeResolutionCallback =
+    final Locale Function(
+            Locale deviceLocale, Iterable<Locale> supportedLocales)
+        localeResolutionCallback =
         (Locale deviceLocale, Iterable<Locale> supportedLocales) {
-      if (Provider.of<Bloc>(context).getPrefs.containsKey("lang")) {
+      if (Provider.of<Bloc>(context).getPrefs.containsKey('lang')) {
         return Provider.of<Bloc>(context).getLocale;
       } else if (supportedLocales.contains(Locale(deviceLocale.languageCode))) {
         return Locale(deviceLocale.languageCode);
       }
-      return Locale("en");
+      return const Locale('en');
     };
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -69,7 +74,15 @@ class MyApp extends StatelessWidget {
       supportedLocales: supportedLocales,
       locale: Provider.of<Bloc>(context).getLocale,
       localeResolutionCallback: localeResolutionCallback,
-      home: HomeView(),
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => PrimaryView(),
+        '/bb': (BuildContext context) => BigBookView(),
+        '/dr': (BuildContext context) => DailyReflectionsListView(),
+      },
+      title: 'Dr. Bob',
+      // debugShowMaterialGrid: true,
+      // showPerformanceOverlay: true,
     );
   }
 }

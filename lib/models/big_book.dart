@@ -1,57 +1,89 @@
 import 'dart:convert';
 
 class BigBook {
-    List<BigBookPage> bigBook;
+  BigBook({
+    this.bigBook,
+  });
 
-    BigBook({
-        this.bigBook,
-    });
+  factory BigBook.fromJson(Map<String, dynamic> json) => BigBook(
+        //ignore: argument_type_not_assignable
+        bigBook: json['BigBook'] == null
+            ? null
+            : List<BigBookPage>.from(
+                //ignore: argument_type_not_assignable
+                json['BigBook'].map(
+                  //ignore: argument_type_not_assignable
+                  (dynamic x) => BigBookPage.fromJson(x),
+                ),
+              ),
+      );
 
-    factory BigBook.fromRawJson(String str) => BigBook.fromJson(json.decode(str));
+  //ignore: argument_type_not_assignable
+  factory BigBook.fromRawJson(String str) => BigBook.fromJson(json.decode(str));
 
-    String toRawJson() => json.encode(toJson());
+  List<BigBookPage> bigBook;
 
-    factory BigBook.fromJson(Map<String, dynamic> json) => BigBook(
-        bigBook: json["BigBook"] == null ? null : List<BigBookPage>.from(json["BigBook"].map((x) => BigBookPage.fromJson(x))),
-    );
+  String toRawJson() => json.encode(toJson());
 
-    Map<String, dynamic> toJson() => {
-        "BigBook": bigBook == null ? null : List<dynamic>.from(bigBook.map((x) => x.toJson())),
-    };
+//ignore: implicit_dynamic_map_literal
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'BigBook': bigBook == null
+            ? null
+            : List<dynamic>.from(
+                //ignore: implicit_dynamic_method
+                bigBook.map(
+                  (dynamic x) => x.toJson(),
+                ),
+              ),
+      };
 }
 
 class BigBookPage {
-    String section;
-    String chapterName;
-    int pageNumber;
-    int chapterNumber;
-    List<String> text;
+  BigBookPage({
+    this.section,
+    this.chapterName,
+    this.pageNumber,
+    this.chapterNumber,
+    this.text,
+  });
 
-    BigBookPage({
-        this.section,
-        this.chapterName,
-        this.pageNumber,
-        this.chapterNumber,
-        this.text,
-    });
+  factory BigBookPage.fromRawJson(String str) =>
+      //ignore: argument_type_not_assignable
+      BigBookPage.fromJson(json.decode(str));
 
-    factory BigBookPage.fromRawJson(String str) => BigBookPage.fromJson(json.decode(str));
+  factory BigBookPage.fromJson(Map<String, dynamic> json) => BigBookPage(
+        //ignore: argument_type_not_assignable
+        section: json['Section'],
+        //ignore: argument_type_not_assignable
+        chapterName: json['ChapterName'],
+        //ignore: argument_type_not_assignable
+        pageNumber: json['PageNumber'],
+        //ignore: argument_type_not_assignable
+        chapterNumber:
+            json['ChapterNumber'],
+        text: json['Text'] == null
+            ? null
+            : List<String>.from(
+                //ignore: argument_type_not_assignable
+                json['Text'].map((dynamic x) => x),
+              ),
+      );
 
-    String toRawJson() => json.encode(toJson());
+  String section;
+  String chapterName;
+  int pageNumber;
+  int chapterNumber;
+  List<String> text;
 
-    factory BigBookPage.fromJson(Map<String, dynamic> json) => BigBookPage(
-        section: json["Section"] == null ? null : json["Section"],
-        chapterName: json["ChapterName"] == null ? null : json["ChapterName"],
-        pageNumber: json["PageNumber"] == null ? null : json["PageNumber"],
-        chapterNumber: json["ChapterNumber"] == null ? null : json["ChapterNumber"],
-        text: json["Text"] == null ? null : List<String>.from(json["Text"].map((x) => x)),
-    );
+  String toRawJson() => json.encode(toJson());
 
-    Map<String, dynamic> toJson() => {
-        "Section": section == null ? null : section,
-        "ChapterName": chapterName == null ? null : chapterName,
-        "PageNumber": pageNumber == null ? null : pageNumber,
-        "ChapterNumber": chapterNumber == null ? null : chapterNumber,
-        "Text": text == null ? null : List<dynamic>.from(text.map((x) => x)),
-    };
+  //ignore: implicit_dynamic_map_literal
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'Section': section,
+        'ChapterName': chapterName,
+        'PageNumber': pageNumber,
+        'ChapterNumber': chapterNumber,
+        //ignore: implicit_dynamic_method
+        'Text': text == null ? null : List<dynamic>.from(text.map((String x) => x)),
+      };
 }

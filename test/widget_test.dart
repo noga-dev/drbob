@@ -16,12 +16,12 @@ class MockMethodChannel extends Mock implements MethodChannel {}
 void main() {
   MockMethodChannel mockChannel;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  const id = 0;
-  const title = 'title';
-  const body = 'body';
-  const payload = 'payload';
+  const int id = 0;
+  const String title = 'title';
+  const String body = 'body';
+  const String payload = 'payload';
   
-  test("someTest", () => null);
+  test('someTest', () => null);
 
   group('android', () {
     setUp(() {
@@ -35,21 +35,21 @@ void main() {
       const InitializationSettings initializationSettings =
           InitializationSettings(initializationSettingsAndroid, null);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-      verify(mockChannel.invokeMethod(
+      verify(mockChannel.invokeMethod<dynamic>(
           'initialize', initializationSettingsAndroid.toMap()));
     });
     test('show notification on Android', () async {
-      AndroidNotificationDetails androidPlatformChannelSpecifics =
+      final AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails('your channel id', 'your channel name',
               'your channel description',
               importance: Importance.Max, priority: Priority.High);
 
-      NotificationDetails platformChannelSpecifics =
+      final NotificationDetails platformChannelSpecifics =
           NotificationDetails(androidPlatformChannelSpecifics, null);
 
       await flutterLocalNotificationsPlugin
           .show(0, title, body, platformChannelSpecifics, payload: payload);
-      verify(mockChannel.invokeMethod('show', <String, dynamic>{
+      verify(mockChannel.invokeMethod<dynamic>('show', <String, dynamic>{
         'id': id,
         'title': title,
         'body': body,
@@ -58,20 +58,20 @@ void main() {
       }));
     });
     test('schedule notification on Android', () async {
-      var scheduledNotificationDateTime =
-          DateTime.now().add(Duration(seconds: 5));
+      final DateTime scheduledNotificationDateTime =
+          DateTime.now().add(const Duration(seconds: 5));
 
-      AndroidNotificationDetails androidPlatformChannelSpecifics =
+      final AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails('your other channel id',
               'your other channel name', 'your other channel description');
 
-      NotificationDetails platformChannelSpecifics =
+      final NotificationDetails platformChannelSpecifics =
           NotificationDetails(androidPlatformChannelSpecifics, null);
-      var androidPlatformChannelSpecificsMap = androidPlatformChannelSpecifics.toMap();
+      final Map<String, dynamic> androidPlatformChannelSpecificsMap = androidPlatformChannelSpecifics.toMap();
       androidPlatformChannelSpecificsMap['allowWhileIdle'] = false;
       await flutterLocalNotificationsPlugin.schedule(id, title, body,
           scheduledNotificationDateTime, platformChannelSpecifics);
-      verify(mockChannel.invokeMethod('schedule', <String, dynamic>{
+      verify(mockChannel.invokeMethod<dynamic>('schedule', <String, dynamic>{
         'id': id,
         'title': title,
         'body': body,
@@ -84,7 +84,7 @@ void main() {
 
     test('delete notification on android', () async {
       await flutterLocalNotificationsPlugin.cancel(id);
-      verify(mockChannel.invokeMethod('cancel', id));
+      verify(mockChannel.invokeMethod<dynamic>('cancel', id));
     });
   });
 }

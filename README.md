@@ -7,7 +7,12 @@
         III.    drbob/DRAA (A.A. Dr., Dr. AA)
         IV.     Alcoholic Brain
         V.      Terminally Unique/Terminal Uniqueness
-01. Add #ContactMe in #Setttings
+01. About:
+        A. Social media (twitter)
+        B. Contact (submit form)
+                I. Feature Request
+        C. Donations (Paypal, ERC20, BTC)
+        D. FAQ?
 02. Call2Action:
         A. Help translate
         B. iOS support

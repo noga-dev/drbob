@@ -3,40 +3,52 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Bloc with ChangeNotifier {
-  SharedPreferences _preferences;
-  ThemeData _theme;
-  Locale _locale;
-  FlutterLocalNotificationsPlugin _flnp;
-
   Bloc(
     ThemeData theme,
     Locale locale,
     SharedPreferences prefs,
   ) {
-    this._theme = theme;
-    this._locale = locale;
-    this._preferences = prefs;
-    this._flnp = FlutterLocalNotificationsPlugin();
+    _theme = theme;
+    _locale = locale;
+    _preferences = prefs;
+    _flnp = FlutterLocalNotificationsPlugin();
   }
+
+  SharedPreferences _preferences;
+  ThemeData _theme;
+  Locale _locale;
+  FlutterLocalNotificationsPlugin _flnp;
 
   ThemeData get getTheme => _theme;
   Locale get getLocale => _locale;
   SharedPreferences get getPrefs => _preferences;
   FlutterLocalNotificationsPlugin get flnp => _flnp;
+  double get getFontSize => _preferences.containsKey('fontSize')
+      ? getPrefs.getDouble('fontSize')
+      : 14;
+  DateTime get getSobrietyDate => _preferences.containsKey('sobrietyDateInt')
+      ? DateTime.fromMillisecondsSinceEpoch(_preferences.getInt('sobrietyDateInt'))
+      : DateTime.now();
+  Duration get getSobrietyTime => DateTime.now().difference(getSobrietyDate);
 
   void notify() {
     notifyListeners();
   }
 
   void changeTheme(ThemeData data) {
-    this._theme = data;
-    this._preferences.setInt("theme", data.brightness.index);
+    _theme = data;
+    _preferences.setInt('theme', data.brightness.index);
     notifyListeners();
   }
 
   void changeLocale(Locale data) {
-    this._locale = data;
-    this._preferences.setString("lang", data.languageCode);
+    _locale = data;
+    _preferences.setString('lang', data.languageCode);
+    notifyListeners();
+  }
+
+  void changeFontSize(double fontSize) {
+    _preferences.setDouble('fontSize', fontSize);
     notifyListeners();
   }
 }

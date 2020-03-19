@@ -6,27 +6,27 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsView extends StatelessWidget {
-  final list = [
-    DropdownMenuItem(
-      child: Center(child: Text("English")),
-      key: Key("English"),
-      value: "en",
+  final List<DropdownMenuItem<String>> list = <DropdownMenuItem<String>>[
+    const DropdownMenuItem<String>(
+      child: Center(child: Text('English')),
+      key: Key('English'),
+      value: 'en',
     ),
-    DropdownMenuItem(
-      child: Center(child: Text("Русский")),
-      key: Key("Русский"),
-      value: "ru",
+    const DropdownMenuItem<String>(
+      child: Center(child: Text('Русский')),
+      key: Key('Русский'),
+      value: 'ru',
     ),
-    DropdownMenuItem(
-      child: Center(child: Text("עברית")),
-      key: Key("עברית"),
-      value: "he",
+    const DropdownMenuItem<String>(
+      child: Center(child: Text('עברית')),
+      key: Key('עברית'),
+      value: 'he',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    TextStyle valueStyle = TextStyle(
+    final TextStyle valueStyle = TextStyle(
         color: Theme.of(context).brightness == Brightness.dark
             ? Colors.white
             : Colors.black,
@@ -37,19 +37,17 @@ class SettingsView extends StatelessWidget {
       child: Column(
         children: <Widget>[
           ListTile(
-            contentPadding: EdgeInsets.all(0),
+            contentPadding: const EdgeInsets.all(0),
             dense: false,
             title: Directionality(
               textDirection: TextDirection.ltr,
               child: Container(
-                decoration: BoxDecoration(
-                  // borderRadius:
-                  //     BorderRadius.vertical(bottom: Radius.circular(100.0)),
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment(-1, -30),
                     end: Alignment(1, 30),
-                    stops: [.5, .5],
-                    colors: [Colors.white, Colors.black],
+                    stops: <double>[.5, .5],
+                    colors: <Color>[Colors.white, Colors.black,],
                   ),
                 ),
                 child: Row(
@@ -71,12 +69,12 @@ class SettingsView extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: Switch(
-                        value: (brightness == Brightness.dark) ? true : false,
+                        value: brightness == Brightness.dark,
                         inactiveTrackColor: Colors.grey.withOpacity(.75),
                         activeTrackColor: Colors.grey.withOpacity(.75),
                         inactiveThumbColor: Colors.amber,
                         activeColor: Colors.blue,
-                        onChanged: (val) {
+                        onChanged: (bool val) {
                           brightness = (brightness == Brightness.light)
                               ? Brightness.dark
                               : Brightness.light;
@@ -109,7 +107,7 @@ class SettingsView extends StatelessWidget {
           ),
           InkWell(
             splashColor: Colors.red,
-            child: DropdownButton(
+            child: DropdownButton<String>(
               underline: Container(),
               icon: Container(),
               isExpanded: true,
@@ -120,48 +118,48 @@ class SettingsView extends StatelessWidget {
                 title: Text(
                   trans(
                     context,
-                    "btn_language",
+                    'btn_language',
                   ),
                   style: valueStyle,
                 ),
                 trailing: Text(
                   list
-                      .firstWhere((x) =>
+                      .firstWhere((DropdownMenuItem<String> x) =>
                           x.value ==
                           Provider.of<Bloc>(context).getLocale.languageCode)
                       .key
                       .toString()
-                      .replaceAll("[<'", "")
-                      .replaceAll("'>]", ""),
+                      .replaceAll("[<'", '')
+                      .replaceAll("'>]", ''),
                   style: valueStyle,
                 ),
               ),
               items: list,
-              onChanged: (v) =>
+              onChanged: (String v) =>
                   Provider.of<Bloc>(context).changeLocale(Locale(v)),
             ),
             onTap: () => null,
           ),
           StatefulBuilder(
-            builder: (c, s) {
+            builder: (BuildContext c, Function s) {
               return InkWell(
                 onTap: () => null,
                 splashColor: Colors.blue,
-                child: FutureBuilder(
+                child: FutureBuilder<void>(
                   future: SharedPreferences.getInstance(),
-                  builder: (c, f) {
+                  builder: (BuildContext c, AsyncSnapshot<void> f) {
                     if (f.connectionState == ConnectionState.done) {
-                      var sobDate = ((f.data as SharedPreferences)
-                              .containsKey("sobrietyDateInt"))
+                      final DateTime sobDate = ((f.data as SharedPreferences)
+                              .containsKey('sobrietyDateInt'))
                           ? DateTime.fromMillisecondsSinceEpoch(
                               (f.data as SharedPreferences)
-                                  .getInt("sobrietyDateInt"))
+                                  .getInt('sobrietyDateInt'))
                           : DateTime.now();
                       return ListTile(
                         leading: Icon(Icons.date_range),
                         title: Text(
                           // FutureBuilder -> SharedPreferences
-                          trans(context, "btn_sobriety_date"),
+                          trans(context, 'btn_sobriety_date'),
                           style: valueStyle,
                         ),
                         trailing: Column(
@@ -169,11 +167,11 @@ class SettingsView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "${sobDate.day}.${sobDate.month}.${sobDate.year}",
+                              '${sobDate.day}.${sobDate.month}.${sobDate.year}',
                               style: valueStyle,
                             ),
                             Text(
-                              trans(c, "settings_date_format"),
+                              trans(c, 'settings_date_format'),
                             ),
                           ],
                         ),
@@ -183,17 +181,17 @@ class SettingsView extends StatelessWidget {
                             context: c,
                             initialDate: sobDate,
                             lastDate: DateTime.now(),
-                          ).then((val) {
+                          ).then((DateTime val) {
                             s(() {
                               (f.data as SharedPreferences).setInt(
-                                  "sobrietyDateInt",
+                                  'sobrietyDateInt',
                                   val.millisecondsSinceEpoch);
                             });
                           });
                         },
                       );
                     } else {
-                      return LinearProgressIndicator();
+                      return const LinearProgressIndicator();
                     }
                   },
                 ),
@@ -206,11 +204,11 @@ class SettingsView extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.account_circle),
               title: Text(
-                trans(context, "btn_about"),
+                trans(context, 'btn_about'),
                 style: valueStyle,
               ),
               trailing: Text(
-                trans(context, "desc_about"),
+                trans(context, 'desc_about'),
                 style: valueStyle,
               ),
               onTap: () => null,

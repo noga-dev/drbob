@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-const supportedLocales = [
-  const Locale('en'),
-  const Locale('he'),
-  const Locale('ru'),
+const List<Locale> supportedLocales = <Locale>[
+  Locale('en'),
+  Locale('he'),
+  Locale('ru'),
 ];
 
-var trans = (BuildContext context, String string) => AppLocalizations.of(
-      (context),
+String Function(BuildContext context, String string) trans = (BuildContext context, String string) => AppLocalizations.of(
+      context,
     ).translate(
       string,
     );
 
-Iterable<LocalizationsDelegate> localeDelegates = [
+Iterable<LocalizationsDelegate<dynamic>> localeDelegates = <LocalizationsDelegate<dynamic>>[
   const AppLocalizationsDelegate(),
   GlobalMaterialLocalizations.delegate,
   GlobalWidgetsLocalizations.delegate,
@@ -34,21 +34,22 @@ class AppLocalizations {
   Map<String, dynamic> _sentences;
 
   Future<bool> load() async {
-    this._sentences = Map();
+    _sentences = <String, dynamic>{};
     json
         .decode(
       await rootBundle
-          .loadString('assets/langs/${this.locale.languageCode}.json'),
+          .loadString('assets/langs/${locale.languageCode}.json'),
     )
         .forEach((String key, dynamic value) {
-      this._sentences[key] = value;
+      _sentences[key] = value;
     });
 
     return true;
   }
 
   String translate(String key) {
-    return this._sentences[key] ?? key;
+    //ignore: return_of_invalid_type
+    return _sentences[key] ?? key;
   }
 }
 
@@ -60,7 +61,7 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
 
   @override
   Future<AppLocalizations> load(Locale locale) async {
-    AppLocalizations localizations = new AppLocalizations(locale);
+    final AppLocalizations localizations = AppLocalizations(locale);
     await localizations.load();
 
     return localizations;
