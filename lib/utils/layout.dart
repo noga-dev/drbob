@@ -70,11 +70,16 @@ class _MyScaffoldState extends State<MyScaffold> with TickerProviderStateMixin {
           leftChild: MainDrawer(),
           tapScaffoldEnabled: true,
           borderRadius: 32,
-          offset: const IDOffset.only(left: .18, bottom: .25, right: .18),
+          offset: const IDOffset.only(left: .2, bottom: .25, right: .2),
           backgroundColor: mainBgColor(context),
-          innerDrawerCallback: (bool val, InnerDrawerDirection direction) =>
+          onDragUpdate: (double val, InnerDrawerDirection idr) => setState(
+            () => idr == InnerDrawerDirection.start
+                ? _navAnimationController.value = val
+                : _menuAnimationController.value = val,
+          ),
+          innerDrawerCallback: (bool val, InnerDrawerDirection idr) =>
               setState(() {
-            if (direction == InnerDrawerDirection.start) {
+            if (idr == InnerDrawerDirection.start) {
               _isNavOpen = val;
               _isNavOpen
                   ? _navAnimationController.forward()

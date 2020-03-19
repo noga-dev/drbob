@@ -387,7 +387,9 @@ class _MainDrawerState extends State<MainDrawer> {
         alignment: Alignment.center,
         color: mainBgColor(context),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.only(right: 20,),
+          padding: const EdgeInsets.only(
+            right: 20,
+          ),
           child: Column(
             children: items,
           ),
@@ -444,9 +446,12 @@ class _DrawerMenuItemState extends State<DrawerMenuItem> {
       child: ExpansionTile(
         leading: Icon(
           isExpanded ? Icons.expand_less : Icons.expand_more,
+          color: isExpanded ? Theme.of(context).accentColor : Theme.of(context).textTheme.body1.color,
         ),
         title: Text(
           trans(context, widget.text),
+          style: TextStyle(color: isExpanded ? Theme.of(context).accentColor : Theme.of(context).textTheme.body1.color,
+          fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal),
         ),
         subtitle: widget.sub,
         trailing: Directionality(
