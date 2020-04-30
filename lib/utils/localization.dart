@@ -48,8 +48,7 @@ class AppLocalizations {
   }
 
   String translate(String key) {
-    //ignore: return_of_invalid_type
-    return _sentences[key] ?? key;
+    return (_sentences[key] ?? key)  as String;
   }
 }
 

@@ -74,13 +74,64 @@ class MyApp extends StatelessWidget {
       supportedLocales: supportedLocales,
       locale: Provider.of<Bloc>(context).getLocale,
       localeResolutionCallback: localeResolutionCallback,
-      initialRoute: '/',
-      routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => PrimaryView(),
-        '/bb': (BuildContext context) => BigBookView(),
-        '/dr': (BuildContext context) => DailyReflectionsListView(),
-      },
       title: 'Dr. Bob',
+      initialRoute: '/',
+      // routes: <String, WidgetBuilder>{
+      //   '/': (BuildContext context) => PrimaryView(),
+      //   '/bb': (BuildContext context) => BigBookView(),
+      //   '/dr': (BuildContext context) => DailyReflectionsListView(),
+      // },
+      onGenerateRoute: (RouteSettings settings) {
+        final Tween<Offset> tween = Tween<Offset>(
+          begin: const Offset(
+            -.6,
+            .25,
+          ),
+          end: const Offset(
+            0,
+            0,
+          ),
+        );
+        const Duration duration = Duration(
+          milliseconds: 500,
+        );
+        return PageRouteBuilder<Widget>(
+          settings: settings,
+          pageBuilder: (
+            BuildContext _,
+            Animation<double> __,
+            Animation<double> ___,
+          ) =>
+              PrimaryView(),
+          transitionsBuilder: (
+            BuildContext _,
+            Animation<double> anim1,
+            Animation<double> anim2,
+            Widget child,
+          ) {
+            Widget destination;
+            if (settings.name == '/') {
+              destination = PrimaryView();
+            } else if (settings.name == '/bb') {
+              destination = BigBookView();
+            } else if (settings.name == '/dr') {
+              destination = DailyReflectionsListView();
+            } else {
+              throw Exception('YOU BROKE THE PROGRAM!');
+            }
+            return SlideTransition(
+              position: tween.animate(
+                CurvedAnimation(
+                  parent: anim1,
+                  curve: Curves.fastOutSlowIn,
+                ),
+              ),
+              child: destination,
+            );
+          },
+          transitionDuration: duration,
+        );
+      },
       // debugShowMaterialGrid: true,
       // showPerformanceOverlay: true,
     );

@@ -7,8 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'home/daily_reflection.dart';
 
-// TODO(AN): Replace card groups with tabs
-
 class PrimaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -32,7 +30,7 @@ class PrimaryView extends StatelessWidget {
       title: Center(
         child: Text(
           trans(context, 'title_home'),
-          style: TextStyle(color: Theme.of(context).textTheme.body1.color),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
         ),
       ),
       child: HomeView(),

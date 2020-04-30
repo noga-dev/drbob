@@ -70,6 +70,7 @@ class _MyScaffoldState extends State<MyScaffold> with TickerProviderStateMixin {
           leftChild: MainDrawer(),
           tapScaffoldEnabled: true,
           borderRadius: 32,
+          scale: const IDOffset.only(right: .75, left: .75),
           offset: const IDOffset.only(left: .2, bottom: .25, right: .2),
           backgroundColor: mainBgColor(context),
           onDragUpdate: (double val, InnerDrawerDirection idr) => setState(
@@ -135,7 +136,7 @@ class _MyScaffoldState extends State<MyScaffold> with TickerProviderStateMixin {
                       icon: AnimatedIcon(
                         icon: AnimatedIcons.menu_arrow,
                         progress: _navAnimationController,
-                        color: Theme.of(context).textTheme.body1.color,
+                        color: Theme.of(context).textTheme.bodyText1.color,
                       ),
                       onPressed: () => _innerDrawerKey.currentState.toggle(
                         direction: InnerDrawerDirection.start,
@@ -147,7 +148,7 @@ class _MyScaffoldState extends State<MyScaffold> with TickerProviderStateMixin {
                     icon: AnimatedIcon(
                       icon: AnimatedIcons.view_list,
                       progress: _menuAnimationController,
-                      color: Theme.of(context).textTheme.body1.color,
+                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                     onPressed: () => _innerDrawerKey.currentState.toggle(
                       direction: InnerDrawerDirection.end,

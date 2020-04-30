@@ -57,7 +57,7 @@ class SettingsView extends StatelessWidget {
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
+                          children: const <Widget>[
                             Icon(
                               Icons.brightness_5,
                               color: Colors.black,
@@ -94,7 +94,7 @@ class SettingsView extends StatelessWidget {
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
+                          children: const <Widget>[
                             Icon(Icons.brightness_3, color: Colors.white),
                           ],
                         ),
@@ -112,7 +112,7 @@ class SettingsView extends StatelessWidget {
               icon: Container(),
               isExpanded: true,
               hint: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.translate,
                 ),
                 title: Text(
@@ -156,7 +156,7 @@ class SettingsView extends StatelessWidget {
                                   .getInt('sobrietyDateInt'))
                           : DateTime.now();
                       return ListTile(
-                        leading: Icon(Icons.date_range),
+                        leading: const Icon(Icons.date_range),
                         title: Text(
                           // FutureBuilder -> SharedPreferences
                           trans(context, 'btn_sobriety_date'),
@@ -202,7 +202,7 @@ class SettingsView extends StatelessWidget {
             splashColor: Colors.green,
             onTap: () => null,
             child: ListTile(
-              leading: Icon(Icons.account_circle),
+              leading: const Icon(Icons.account_circle),
               title: Text(
                 trans(context, 'btn_about'),
                 style: valueStyle,

@@ -31,7 +31,7 @@ class MeetingView extends StatelessWidget {
               ListTile(
                 title: Text(
                   trans(context, 'meetings'),
-                  style: Theme.of(context).textTheme.headline,
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               Row(
@@ -85,7 +85,7 @@ class MeetingView extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
                                 vertical: 20,
-                              ), // TODO(AN): Prettify this
+                              ), // TODO(AN): Prettify this horrorshow
                               child: SingleChildScrollView(
                                 child: Column(
                                   children: <Widget>[
@@ -226,7 +226,7 @@ class MeetingView extends StatelessWidget {
                               curve: Curves.ease, // TODO(AN): Randomize?
                               duration: const Duration(milliseconds: 2000),
                               style: copied
-                                  ? TextStyle(
+                                  ? const TextStyle(
                                       color: Colors.red,
                                       fontWeight: FontWeight.bold,
                                     )

@@ -19,7 +19,7 @@ class NavDrawer extends StatelessWidget {
     final List<Widget> items = <Widget>[
       AnimatedMenuItem(
         ListTile(
-          leading: Icon(Icons.home),
+          leading: const Icon(Icons.home),
           title: Text(
             trans(
               context,
@@ -34,7 +34,7 @@ class NavDrawer extends StatelessWidget {
           ),
           trailing: ModalRoute.of(context).settings.name != '/'
               ? null
-              : Icon(
+              : const Icon(
                   Icons.arrow_left,
                   color: Colors.red,
                   size: 40,
@@ -48,7 +48,7 @@ class NavDrawer extends StatelessWidget {
       divider,
       AnimatedMenuItem(
         ListTile(
-          leading: Icon(Icons.book),
+          leading: const Icon(Icons.book),
           title: Text(
             trans(context, 'btn_bb'),
           ),
@@ -60,7 +60,7 @@ class NavDrawer extends StatelessWidget {
           ),
           trailing: ModalRoute.of(context).settings.name != '/bb'
               ? null
-              : Icon(
+              : const Icon(
                   Icons.arrow_left,
                   color: Colors.red,
                   size: 40,
@@ -74,7 +74,7 @@ class NavDrawer extends StatelessWidget {
       divider,
       AnimatedMenuItem(
         ListTile(
-          leading: Icon(Icons.account_circle),
+          leading: const Icon(Icons.account_circle),
           title: Text(
             trans(context, 'btn_dr_list'),
           ),
@@ -86,7 +86,7 @@ class NavDrawer extends StatelessWidget {
           ),
           trailing: ModalRoute.of(context).settings.name != '/dr'
               ? null
-              : Icon(
+              : const Icon(
                   Icons.arrow_left,
                   color: Colors.red,
                   size: 40,
@@ -223,7 +223,7 @@ class NavDrawer extends StatelessWidget {
                                                         AnimatedDefaultTextStyle(
                                                       curve: Curves.ease,
                                                       style: selected == f
-                                                          ? TextStyle(
+                                                          ? const TextStyle(
                                                               color: Colors.red,
                                                             )
                                                           : TextStyle(
@@ -270,7 +270,7 @@ class NavDrawer extends StatelessWidget {
                                                               .size
                                                               .width *
                                                           .2),
-                                              child: Divider(
+                                              child: const Divider(
                                                 color: Colors.grey,
                                               ),
                                             )
@@ -361,7 +361,7 @@ class NavDrawer extends StatelessWidget {
                             milliseconds: 2000,
                           ),
                           style: copied
-                              ? TextStyle(
+                              ? const TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                 )

@@ -83,7 +83,7 @@ class _BigBookViewState extends State<BigBookView> {
                     horizontal: MediaQuery.of(context).size.width * .25,
                     vertical: 5,
                   ),
-                  child: Divider(
+                  child: const Divider(
                     color: Colors.grey,
                     thickness: 1,
                   ),

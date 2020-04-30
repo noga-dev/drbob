@@ -256,7 +256,7 @@ class HomeView extends StatelessWidget {
                             milliseconds: 2000,
                           ),
                           style: copied
-                              ? TextStyle(
+                              ? const TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                 )
@@ -395,7 +395,7 @@ class HomeView extends StatelessWidget {
                                                           AnimatedDefaultTextStyle(
                                                         curve: Curves.ease,
                                                         style: selected == f
-                                                            ? TextStyle(
+                                                            ? const TextStyle(
                                                                 color:
                                                                     Colors.red,
                                                               )
@@ -446,7 +446,7 @@ class HomeView extends StatelessWidget {
                                                                 .size
                                                                 .width *
                                                             .2),
-                                                child: Divider(
+                                                child: const Divider(
                                                   color: Colors.grey,
                                                 ),
                                               )
@@ -611,7 +611,7 @@ class _SobrietySliderState extends State<SobrietySlider>
   CustomPaint progressView() {
     return CustomPaint(
       child: DefaultTextStyle(
-        style: statisticsStyle.copyWith(color: Theme.of(context).textTheme.body1.color),
+        style: statisticsStyle.copyWith(color: Theme.of(context).textTheme.bodyText1.color),
         child: Center(
           child: !(progressDegrees == .0)
               ? Text(progressDegrees.toStringAsFixed(2).toString() + '%')
@@ -742,7 +742,7 @@ class _UserStatisticsState extends State<UserStatistics> {
               width: 100,
               height: 100,
               child: DefaultTextStyle(
-                style: statisticsStyle.copyWith(color: Theme.of(context).textTheme.body1.color),
+                style: statisticsStyle.copyWith(color: Theme.of(context).textTheme.bodyText1.color),
                 child: AnimatedSwitcher(
                   duration: const Duration(seconds: 1),
                   child: type
@@ -795,20 +795,20 @@ class MenuButton extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                   colors: <Color>[
                     Colors.purple,
                     Colors.teal,
                   ],
-                  begin: const FractionalOffset(
+                  begin: FractionalOffset(
                     0.0,
                     0.0,
                   ),
-                  end: const FractionalOffset(
+                  end: FractionalOffset(
                     0.5,
                     0.0,
                   ),
-                  stops: const <double>[
+                  stops: <double>[
                     0.0,
                     1.0,
                   ],

@@ -73,10 +73,8 @@ class DailyReflectionView extends StatelessWidget {
                   day: nextDay,
                 ),
                 onDismissed: (DismissDirection d) {
-                  //ignore: implicit_dynamic_method
                   Navigator.pushReplacement(
                     context,
-                    //ignore: implicit_dynamic_type
                     MaterialPageRoute<void>(
                       builder: (dynamic context) =>
                           d == DismissDirection.startToEnd

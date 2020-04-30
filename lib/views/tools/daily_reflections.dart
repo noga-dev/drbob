@@ -31,11 +31,11 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
   void didChangeDependencies() {
     posRes = TextStyle(
         backgroundColor: Colors.red,
-        color: Theme.of(context).textTheme.body1.color,
+        color: Theme.of(context).textTheme.bodyText1.color,
         decoration: null);
     negRes = TextStyle(
         backgroundColor: Colors.transparent,
-        color: Theme.of(context).textTheme.body1.color,
+        color: Theme.of(context).textTheme.bodyText1.color,
         decoration: null);
     super.didChangeDependencies();
   }
@@ -100,14 +100,14 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                         context,
                         'search',
                       ),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Colors.grey,
                       ),
                       counter: Align(
                         alignment: Alignment.topCenter,
                         child: Text(
                           numberOfResults ?? '',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             height: .5,
                             color: Colors.grey,
@@ -138,10 +138,10 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                                     'month',
                                   ),
                             style: TextStyle(
-                              color: Theme.of(context).textTheme.body1.color,
+                              color: Theme.of(context).textTheme.bodyText1.color,
                             ),
                           ),
-                          Icon(Icons.arrow_drop_down, color: Theme.of(context).textTheme.body1.color,),
+                          Icon(Icons.arrow_drop_down, color: Theme.of(context).textTheme.bodyText1.color,),
                         ],
                       ),
                       initialValue: month,
@@ -175,7 +175,7 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                                       'day',
                                     ),
                               style: TextStyle(
-                                color: Theme.of(context).textTheme.body1.color,
+                                color: Theme.of(context).textTheme.bodyText1.color,
                               ),
                             )
                           else
@@ -190,7 +190,7 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                           Icon(
                             Icons.arrow_drop_down,
                             color: month > 0
-                                ? Theme.of(context).textTheme.body1.color
+                                ? Theme.of(context).textTheme.bodyText1.color
                                 : Theme.of(context).disabledColor,
                           )
                         ],
@@ -380,7 +380,7 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
           return ErrorWidget(future.data);
         } else {
           return Container(
-            child: CircularProgressIndicator(
+            child: const CircularProgressIndicator(
               backgroundColor: Colors.pink,
             ),
           );

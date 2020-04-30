@@ -13,13 +13,13 @@ class ToolsView extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
             border: Directionality.of(context) == TextDirection.rtl
-                ? Border(
+                ? const Border(
                     right: BorderSide(
                       width: 5,
                       color: Colors.lightGreen,
                     ),
                   )
-                : Border(
+                : const Border(
                     left: BorderSide(
                       width: 5,
                       color: Colors.lightGreen,
@@ -31,7 +31,7 @@ class ToolsView extends StatelessWidget {
               ListTile(
                 title: Text(
                   trans(context, 'useful'),
-                  style: Theme.of(context).textTheme.headline,
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               Row(
@@ -177,7 +177,7 @@ class ToolsView extends StatelessWidget {
                                                       AnimatedDefaultTextStyle(
                                                     curve: Curves.ease,
                                                     style: selected == f
-                                                        ? TextStyle(
+                                                        ? const TextStyle(
                                                             color: Colors.red)
                                                         : TextStyle(
                                                             color: Theme.of(context)
@@ -218,7 +218,7 @@ class ToolsView extends StatelessWidget {
                                                             .size
                                                             .width *
                                                         .2),
-                                            child: Divider(
+                                            child: const Divider(
                                               color: Colors.grey,
                                             ),
                                           )

@@ -11,24 +11,17 @@ class DailyReflection {
   });
 
     factory DailyReflection.fromRawJson(String str) => DailyReflection.fromJson(
-    //ignore: argument_type_not_assignable
-        json.decode(str),
+        json.decode(str) as Map<String, dynamic>,
       );
 
         factory DailyReflection.fromJson(Map<String, dynamic> json) =>
       DailyReflection(
-        //ignore: argument_type_not_assignable
-        month: json['month'],
-        //ignore: argument_type_not_assignable
-        day: json['day'],
-        //ignore: argument_type_not_assignable
-        title: json['title'],
-        //ignore: argument_type_not_assignable
-        excerpt: json['excerpt'],
-        //ignore: argument_type_not_assignable
-        source: json['source'],
-        //ignore: argument_type_not_assignable
-        reflection: json['reflection'],
+        month: json['month'] as int,
+        day: json['day'] as int,
+        title: json['title'] as String,
+        excerpt: json['excerpt'] as String,
+        source: json['source'] as String,
+        reflection: json['reflection'] as String,
       );
 
   int month;
@@ -40,17 +33,14 @@ class DailyReflection {
 
   static List<DailyReflection> fromJson2List(String str) =>
       List<DailyReflection>.from(
-        //ignore: argument_type_not_assignable
         json.decode(str).map(
-              //ignore: argument_type_not_assignable
-              (dynamic x) => DailyReflection.fromJson(x),
-            ),
+              (dynamic x) => DailyReflection.fromJson(x as Map<String, dynamic>),
+            ) as Iterable<dynamic>,
       );
 
   String fromList2Json(List<DailyReflection> data) => json.encode(
         List<dynamic>.from(
-          //ignore: implicit_dynamic_method
-          data.map(
+          data.map<dynamic>(
             (dynamic x) => x.toJson(),
           ),
         ),
@@ -58,7 +48,6 @@ class DailyReflection {
 
   String toRawJson() => json.encode(toJson());
 
-  //ignore: implicit_dynamic_map_literal
   Map<String, dynamic> toJson() => <String, dynamic>{
         'month': month,
         'day': day,

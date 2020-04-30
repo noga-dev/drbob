@@ -36,7 +36,7 @@ class _MainDrawerState extends State<MainDrawer> {
     final List<Widget> items = <Widget>[
       DrawerMenuItem(
         text: 'sobriety_date',
-        icon: Icon(Icons.calendar_today),
+        icon: const Icon(Icons.calendar_today),
         sub: Text(
           sobDate == now
               ? trans(context, 'not_set')
@@ -95,7 +95,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   color: Theme.of(context).disabledColor,
                 ),
               ),
-        icon: Icon(Icons.color_lens),
+        icon: const Icon(Icons.color_lens),
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -178,7 +178,7 @@ class _MainDrawerState extends State<MainDrawer> {
               .value,
           style: TextStyle(color: Theme.of(context).accentColor),
         ),
-        icon: Icon(Icons.translate),
+        icon: const Icon(Icons.translate),
         children: _languages
             .map(
               (MapEntry<String, String> f) => RadioListTile<String>(
@@ -311,7 +311,7 @@ class _MainDrawerState extends State<MainDrawer> {
             color: Theme.of(context).disabledColor,
           ),
         ),
-        icon: Icon(Icons.help_outline),
+        icon: const Icon(Icons.help_outline),
         children: <Widget>[Text(trans(context, 'disabled_func'))],
       ),
       if (kReleaseMode)
@@ -319,7 +319,7 @@ class _MainDrawerState extends State<MainDrawer> {
       else
         DrawerMenuItem(
           text: 'Debugging',
-          icon: Icon(Icons.bug_report),
+          icon: const Icon(Icons.bug_report),
           children: <Widget>[
             OutlineButton(
               onPressed: () => prefs
@@ -446,11 +446,11 @@ class _DrawerMenuItemState extends State<DrawerMenuItem> {
       child: ExpansionTile(
         leading: Icon(
           isExpanded ? Icons.expand_less : Icons.expand_more,
-          color: isExpanded ? Theme.of(context).accentColor : Theme.of(context).textTheme.body1.color,
+          color: isExpanded ? Theme.of(context).accentColor : Theme.of(context).textTheme.bodyText1.color,
         ),
         title: Text(
           trans(context, widget.text),
-          style: TextStyle(color: isExpanded ? Theme.of(context).accentColor : Theme.of(context).textTheme.body1.color,
+          style: TextStyle(color: isExpanded ? Theme.of(context).accentColor : Theme.of(context).textTheme.bodyText1.color,
           fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal),
         ),
         subtitle: widget.sub,

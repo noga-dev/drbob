@@ -25,7 +25,7 @@ const TextStyle darkInputText = TextStyle(
 
 const AppBarTheme appBarTheme = AppBarTheme(
   textTheme: TextTheme(
-    title: TextStyle(
+    headline6: TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.bold,
     ),
