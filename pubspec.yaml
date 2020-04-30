@@ -1,7 +1,7 @@
 name: drbob
 description: A companion app for AA members.
 
-version: 20.03.19+2192
+version: 20.04.30+2196
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
