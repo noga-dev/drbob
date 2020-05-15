@@ -68,7 +68,7 @@ class _MainDrawerState extends State<MainDrawer> {
                         'sobrietyDateInt',
                         val.millisecondsSinceEpoch,
                       );
-                      Provider.of<Bloc>(context).notify();
+                      Provider.of<Bloc>(context, listen: false).notify();
                     }
                   });
                 }),
@@ -111,11 +111,11 @@ class _MainDrawerState extends State<MainDrawer> {
               Expanded(
                 child: Slider(
                   onChanged: (double fontSize) => setState(() =>
-                      Provider.of<Bloc>(context).changeFontSize(fontSize)),
-                  value: Provider.of<Bloc>(context)
+                      Provider.of<Bloc>(context, listen: false).changeFontSize(fontSize)),
+                  value: Provider.of<Bloc>(context, listen: false)
                           .getPrefs
                           .containsKey('fontSize')
-                      ? Provider.of<Bloc>(context)
+                      ? Provider.of<Bloc>(context, listen: false)
                           .getPrefs
                           .getDouble('fontSize')
                       : 12,
@@ -147,14 +147,14 @@ class _MainDrawerState extends State<MainDrawer> {
                   inactiveThumbColor: Colors.amber,
                   activeColor: Colors.lightBlue,
                   onChanged: (bool val) =>
-                      Provider.of<Bloc>(context).changeTheme(
+                      Provider.of<Bloc>(context, listen: false).changeTheme(
                     ThemeData(
                       brightness:
                           (Theme.of(context).brightness == Brightness.light)
                               ? Brightness.dark
                               : Brightness.light,
                       primaryColor:
-                          Provider.of<Bloc>(context).getTheme.primaryColor,
+                          Provider.of<Bloc>(context, listen: false).getTheme.primaryColor,
                     ),
                   ),
                 ),
@@ -189,7 +189,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   if (Localizations.localeOf(context).languageCode == v) {
                     return;
                   }
-                  Provider.of<Bloc>(context).changeLocale(
+                  Provider.of<Bloc>(context, listen: false).changeLocale(
                     Locale(v),
                   );
                 },
@@ -225,13 +225,13 @@ class _MainDrawerState extends State<MainDrawer> {
                 child: Switch(
                   value: isNotifActive,
                   onChanged: (bool v) {
-                    Provider.of<Bloc>(context)
+                    Provider.of<Bloc>(context, listen: false)
                         .getPrefs
                         .setBool('notifActive', v);
                     setState(() => null);
                     v
                         ? updateNotif(context)
-                        : Provider.of<Bloc>(context).flnp.cancel(0);
+                        : Provider.of<Bloc>(context, listen: false).flnp.cancel(0);
                   },
                 ),
               ),
@@ -400,13 +400,13 @@ class _MainDrawerState extends State<MainDrawer> {
 
   // TODO(AN): Make notification data show specific information
   void updateNotif(BuildContext context) {
-    Provider.of<Bloc>(context).flnp.showDailyAtTime(
+    Provider.of<Bloc>(context, listen: false).flnp.showDailyAtTime(
           0,
           trans(context, 'notif_dr_title'),
           trans(context, 'notif_dr_desc'),
-          Time(Provider.of<Bloc>(context).getPrefs.getInt('notifHour') ?? 8,
-              Provider.of<Bloc>(context).getPrefs.getInt('notifMin') ?? 0, 00),
-          NotificationDetails(
+          Time(Provider.of<Bloc>(context, listen: false).getPrefs.getInt('notifHour') ?? 8,
+              Provider.of<Bloc>(context, listen: false).getPrefs.getInt('notifMin') ?? 0, 00),
+          const NotificationDetails(
             AndroidNotificationDetails(
               '0',
               'Dr. Bob',

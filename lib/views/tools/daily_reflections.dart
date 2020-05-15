@@ -76,15 +76,16 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
               result.length.toString();
           final List<PopupMenuItem<dynamic>> monthsList =
               List<PopupMenuItem<dynamic>>.generate(
-                  13,
-                  (int f) => PopupMenuItem<dynamic>(
-                        child: Center(
-                          child: Text(
-                            (f == 0) ? trans(context, 'month') : f.toString(),
-                          ),
-                        ),
-                        value: f,
-                      ));
+            13,
+            (int f) => PopupMenuItem<dynamic>(
+              child: Center(
+                child: Text(
+                  (f == 0) ? trans(context, 'month') : f.toString(),
+                ),
+              ),
+              value: f,
+            ),
+          );
           return MyScaffold(
             implyLeading: true,
             title: Row(
@@ -138,10 +139,14 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                                     'month',
                                   ),
                             style: TextStyle(
-                              color: Theme.of(context).textTheme.bodyText1.color,
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color,
                             ),
                           ),
-                          Icon(Icons.arrow_drop_down, color: Theme.of(context).textTheme.bodyText1.color,),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
                         ],
                       ),
                       initialValue: month,
@@ -149,7 +154,9 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                         setState(
                           () {
                             day = 0;
-                            month = int.tryParse(val.toString());
+                            month = int.tryParse(
+                              val.toString(),
+                            );
                           },
                         );
                       },
@@ -175,7 +182,8 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                                       'day',
                                     ),
                               style: TextStyle(
-                                color: Theme.of(context).textTheme.bodyText1.color,
+                                color:
+                                    Theme.of(context).textTheme.bodyText1.color,
                               ),
                             )
                           else
@@ -207,10 +215,14 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                               .map(
                                 (DailyReflection f) => PopupMenuItem<int>(
                                   child: Center(
-                                    child: Text(f.day.toString()),
+                                    child: Text(
+                                      f.day.toString(),
+                                    ),
                                   ),
                                   value: f.day,
-                                  key: Key(f.day.toString()),
+                                  key: Key(
+                                    f.day.toString(),
+                                  ),
                                 ),
                               )
                               .toList()

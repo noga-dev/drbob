@@ -25,9 +25,7 @@ void main() {
 
   group('android', () {
     setUp(() {
-      mockChannel = MockMethodChannel();
-      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin.private(
-          mockChannel, FakePlatform(operatingSystem: 'android'));
+      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin.private(FakePlatform(operatingSystem: 'android'));
     });
     test('initialise plugin on Android', () async {
       const AndroidInitializationSettings initializationSettingsAndroid =
@@ -39,12 +37,12 @@ void main() {
           'initialize', initializationSettingsAndroid.toMap()));
     });
     test('show notification on Android', () async {
-      final AndroidNotificationDetails androidPlatformChannelSpecifics =
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails('your channel id', 'your channel name',
               'your channel description',
               importance: Importance.Max, priority: Priority.High);
 
-      final NotificationDetails platformChannelSpecifics =
+      const NotificationDetails platformChannelSpecifics =
           NotificationDetails(androidPlatformChannelSpecifics, null);
 
       await flutterLocalNotificationsPlugin
@@ -61,11 +59,11 @@ void main() {
       final DateTime scheduledNotificationDateTime =
           DateTime.now().add(const Duration(seconds: 5));
 
-      final AndroidNotificationDetails androidPlatformChannelSpecifics =
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails('your other channel id',
               'your other channel name', 'your other channel description');
 
-      final NotificationDetails platformChannelSpecifics =
+      const NotificationDetails platformChannelSpecifics =
           NotificationDetails(androidPlatformChannelSpecifics, null);
       final Map<String, dynamic> androidPlatformChannelSpecificsMap = androidPlatformChannelSpecifics.toMap();
       androidPlatformChannelSpecificsMap['allowWhileIdle'] = false;

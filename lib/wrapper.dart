@@ -31,7 +31,7 @@ class _AppWrapperState extends State<AppWrapper> {
         if (data.connectionState == ConnectionState.done) {
           final SharedPreferences prefs = data.data as SharedPreferences;
           return ChangeNotifierProvider<Bloc>(
-            builder: (_) => Bloc(
+            create: (_) => Bloc(
               prefs.containsKey('theme')
                   ? ThemeData(
                       brightness: Brightness.values.firstWhere(

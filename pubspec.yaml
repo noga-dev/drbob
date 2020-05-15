@@ -4,26 +4,28 @@ description: A companion app for AA members.
 version: 20.04.30+2196
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.8.1 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  provider: ^3.0.0+1
-  shared_preferences: ^0.5.3+1
-  flutter_local_notifications: ^0.8.0
+  provider: ^4.1.0
+  shared_preferences: ^0.5.7+1
+  flutter_local_notifications: ^1.4.3
   draggable_scrollbar: ^0.0.4
-  scroll_to_index: ^1.0.2
-  flutter_inner_drawer: "^0.5.5"
+  scroll_to_index: ^1.0.6
+  flutter_inner_drawer: ^0.5.5+3
+  scrollable_positioned_list: ^0.1.5
+  url_launcher: ^5.4.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   test: ^1.5.1
   #build_runner: ^1.0.0
-  mockito: ^4.1.0
+  mockito: ^4.1.1
 
 flutter:
   # The following line ensures that the Material Icons font is

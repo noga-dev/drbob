@@ -1,4 +1,3 @@
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:drbob/blocs/Bloc.dart';
 import 'package:drbob/models/big_book.dart';
 import 'package:drbob/utils/layout.dart';
@@ -6,7 +5,7 @@ import 'package:drbob/utils/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class BigBookView extends StatefulWidget {
   @override
@@ -14,13 +13,14 @@ class BigBookView extends StatefulWidget {
 }
 
 class _BigBookViewState extends State<BigBookView> {
-  AutoScrollController controller;
   bool _disclaimer;
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
 
   @override
   void initState() {
     super.initState();
-    controller = AutoScrollController();
   }
 
   @override
@@ -36,8 +36,39 @@ class _BigBookViewState extends State<BigBookView> {
     _disclaimer = Localizations.localeOf(context).languageCode == 'en';
     return MyScaffold(
       implyLeading: true,
-      title: Center(
-        child: Text(trans(context, 'title_big_book')),
+      title: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 5,
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: trans(
+                  context,
+                  'search',
+                ),
+                counter: const Align(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    'test',
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: .5,
+                      color: Colors.grey,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                isDense: true,
+              ),
+            ),
+          ),
+          const VerticalDivider(width: 26,),
+          IconButton(
+              icon: const Icon(Icons.keyboard_arrow_up), onPressed: () => null),
+          IconButton(
+              icon: const Icon(Icons.keyboard_arrow_down),
+              onPressed: () => null),
+        ],
       ),
       fab: _disclaimer
           ? null
@@ -63,84 +94,61 @@ class _BigBookViewState extends State<BigBookView> {
             final List<BigBookPage> bigBook =
                 BigBook.fromRawJson(future.data.toString()).bigBook;
             // TODO(AN): Fix misaligned scroll index
-            return DraggableScrollbar.semicircle(
-              heightScrollThumb: 60,
-              // labelTextBuilder: (double offset) => Text(
-              //   "${1 + offset / 3.225 ~/ bigBook.where((t) => t.section == "Chapters").toList().length}/" +
-              //       bigBook
-              //           .where((t) => t.section == "Chapters")
-              //           .toList()
-              //           .length
-              //           .toString(),
-              //   style: TextStyle(color: Colors.black),
-              // ),
-              backgroundColor: Colors.lightBlue,
-              controller: controller,
-              child: ListView.separated(
-                separatorBuilder: (BuildContext context, int index) =>
-                    Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * .25,
-                    vertical: 5,
-                  ),
-                  child: const Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
+            return ScrollablePositionedList.separated(
+              itemScrollController: itemScrollController,
+              itemPositionsListener: itemPositionsListener,
+              separatorBuilder: (BuildContext context, int index) => Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * .25,
+                  vertical: 5,
                 ),
-                controller: controller,
-                itemCount: bigBook
-                    .where((BigBookPage t) => t.section == 'Chapters')
-                    .length,
-                itemBuilder: (BuildContext context, int index) {
-                  return AutoScrollTag(
-                    highlightColor: Colors.green,
-                    key: ValueKey<int>(index),
-                    controller: controller,
-                    index: index,
-                    child: Container(
-                      padding: const EdgeInsets.all(22),
-                      child: Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              bigBook
-                                  .where((BigBookPage t) =>
-                                      t.section == 'Chapters')
-                                  .toList()[index]
-                                  .chapterName
-                                  .toString(),
-                              style: TextStyle(fontSize: _fontSize + 4),
-                              textAlign: TextAlign.center,
-                            ),
-                            const Divider(),
-                            SelectableText(
-                              bigBook
-                                  .where((BigBookPage t) =>
-                                      t.section == 'Chapters')
-                                  .toList()[index]
-                                  .text
-                                  .join(' '),
-                              style: TextStyle(fontSize: _fontSize),
-                              textAlign: TextAlign.justify,
-                            ),
-                            Text(
-                              bigBook
-                                  .where((BigBookPage t) =>
-                                      t.section == 'Chapters')
-                                  .toList()[index]
-                                  .pageNumber
-                                  .toString(),
-                              style: TextStyle(fontSize: _fontSize - 4),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                child: const Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
               ),
+              itemCount: bigBook
+                  .where((BigBookPage t) => t.section == 'Chapters')
+                  .length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  padding: const EdgeInsets.all(22),
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          bigBook
+                              .where((BigBookPage t) => t.section == 'Chapters')
+                              .toList()[index]
+                              .chapterName
+                              .toString(),
+                          style: TextStyle(fontSize: _fontSize + 4),
+                          textAlign: TextAlign.center,
+                        ),
+                        const Divider(),
+                        SelectableText(
+                          bigBook
+                              .where((BigBookPage t) => t.section == 'Chapters')
+                              .toList()[index]
+                              .text
+                              .join(' '),
+                          style: TextStyle(fontSize: _fontSize),
+                          textAlign: TextAlign.justify,
+                        ),
+                        Text(
+                          bigBook
+                              .where((BigBookPage t) => t.section == 'Chapters')
+                              .toList()[index]
+                              .pageNumber
+                              .toString(),
+                          style: TextStyle(fontSize: _fontSize - 4),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             );
           }
           return const Center(child: RefreshProgressIndicator());
