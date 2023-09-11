@@ -1,14 +1,17 @@
-import 'package:drbob/blocs/Bloc.dart';
+import 'package:drbob/blocs/bloc.dart';
 import 'package:drbob/models/daily_reflection.dart';
 import 'package:drbob/utils/layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:provider/provider.dart';
 
 class DailyReflectionView extends StatelessWidget {
-  const DailyReflectionView({this.month, this.day});
+  const DailyReflectionView({
+    super.key,
+    required this.month,
+    required this.day,
+  });
 
   final int day, month;
 
@@ -105,23 +108,10 @@ class DailyReflectionView extends StatelessWidget {
                                     child: Column(
                                       children: <Widget>[
                                         Text(
-                                          intl.DateFormat.MMMMd(
-                                                      Localizations.localeOf(
-                                                              context)
-                                                          .languageCode)
-                                                  .format(
-                                                DateTime.parse(DateTime.now()
-                                                        .year
-                                                        .toString() +
-                                                    ((month < 10)
-                                                        ? '-0'
-                                                        : '-') +
-                                                    month.toString() +
-                                                    ((day < 10) ? '-0' : '-') +
-                                                    day.toString() +
-                                                    ' 00:00:00.000000'),
-                                              ) +
-                                              '\n',
+                                          '${intl.DateFormat.MMMMd(Localizations.localeOf(context).languageCode).format(
+                                            DateTime.parse(
+                                                '${DateTime.now().year}${(month < 10) ? '-0' : '-'}$month${(day < 10) ? '-0' : '-'}$day 00:00:00.000000'),
+                                          )}\n',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize:
@@ -139,7 +129,7 @@ class DailyReflectionView extends StatelessWidget {
                                               fontWeight: FontWeight.w600),
                                         ),
                                         SelectableText(
-                                          '\n' + dr.source,
+                                          '\n${dr.source}',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize:

@@ -1,25 +1,23 @@
 import 'package:drbob/main_drawer.dart';
 import 'package:drbob/nav_drawer.dart';
-import 'package:drbob/utils/style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_inner_drawer/inner_drawer.dart';
 
 class MyScaffold extends StatefulWidget {
   const MyScaffold({
-    @required this.child,
+    super.key,
+    required this.child,
     this.title,
     this.leading,
     this.fab,
     this.implyLeading = false,
     this.actions = const <Widget>[],
-  }) : assert(child != null);
+  });
 
   final Widget child;
-  final Widget fab;
-  final Widget title;
+  final Widget? fab;
+  final Widget? title;
+  final Widget? leading;
   final bool implyLeading;
-  final Widget leading;
   final List<Widget> actions;
 
   @override
@@ -27,12 +25,8 @@ class MyScaffold extends StatefulWidget {
 }
 
 class _MyScaffoldState extends State<MyScaffold> with TickerProviderStateMixin {
-  final GlobalKey<InnerDrawerState> _innerDrawerKey =
-      GlobalKey<InnerDrawerState>();
-  bool _isNavOpen = false;
-  bool _isMenuOpen = false;
-  AnimationController _navAnimationController;
-  AnimationController _menuAnimationController;
+  late AnimationController _navAnimationController;
+  late AnimationController _menuAnimationController;
 
   @override
   void initState() {
@@ -62,108 +56,45 @@ class _MyScaffoldState extends State<MyScaffold> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: InnerDrawer(
-          key: _innerDrawerKey,
-          rightChild: NavDrawer(),
-          leftChild: MainDrawer(),
-          tapScaffoldEnabled: true,
-          borderRadius: 32,
-          scale: const IDOffset.only(right: .75, left: .75),
-          offset: const IDOffset.only(left: .2, bottom: .25, right: .2),
-          backgroundColor: mainBgColor(context),
-          onDragUpdate: (double val, InnerDrawerDirection idr) => setState(
-            () => idr == InnerDrawerDirection.start
-                ? _navAnimationController.value = val
-                : _menuAnimationController.value = val,
-          ),
-          innerDrawerCallback: (bool val, InnerDrawerDirection idr) =>
-              setState(() {
-            if (idr == InnerDrawerDirection.start) {
-              _isNavOpen = val;
-              _isNavOpen
-                  ? _navAnimationController.forward()
-                  : _navAnimationController.reverse();
-            } else {
-              _isMenuOpen = val;
-              _isMenuOpen
-                  ? _menuAnimationController.forward()
-                  : _menuAnimationController.reverse();
-            }
-          }),
-          scaffold: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: Theme.of(context).brightness == Brightness.dark
-                    ? <Color>[
-                        Colors.deepPurple[800],
-                        Colors.indigo[800],
-                        Colors.blue[800],
-                      ]
-                    : <Color>[
-                        Colors.red,
-                        Colors.orange,
-                        Colors.yellow,
-                      ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: Theme.of(context).brightness == Brightness.dark
-                    ? const <double>[
-                        .0,
-                        .5,
-                        1.0,
-                      ]
-                    : const <double>[
-                        .0,
-                        .5,
-                        1.0,
-                      ],
-              ),
-            ),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Directionality(
-                textDirection: Directionality.of(context),
-                child: widget.child,
-              ),
-              appBar: AppBar(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                automaticallyImplyLeading: widget.implyLeading,
-                leading: widget.leading ??
-                    IconButton(
-                      icon: AnimatedIcon(
-                        icon: AnimatedIcons.menu_arrow,
-                        progress: _navAnimationController,
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                      ),
-                      onPressed: () => _innerDrawerKey.currentState.toggle(
-                        direction: InnerDrawerDirection.start,
-                      ),
-                    ),
-                actions: <Widget>[
-                  ...widget.actions,
-                  IconButton(
-                    icon: AnimatedIcon(
-                      icon: AnimatedIcons.view_list,
-                      progress: _menuAnimationController,
-                      color: Theme.of(context).textTheme.bodyText1.color,
-                    ),
-                    onPressed: () => _innerDrawerKey.currentState.toggle(
-                      direction: InnerDrawerDirection.end,
-                    ),
+      child: Scaffold(
+        endDrawer: const NavDrawer(),
+        drawer: const MainDrawer(),
+        floatingActionButton: widget.fab,
+        drawerScrimColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black.withOpacity(.75)
+            : Colors.black.withOpacity(.25),
+        extendBody: true,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: widget.implyLeading,
+          leading: Builder(builder: (context) {
+            return widget.leading ??
+                IconButton(
+                  icon: AnimatedIcon(
+                    icon: AnimatedIcons.menu_arrow,
+                    progress: _navAnimationController,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
                   ),
-                ],
-                title: widget.title,
-              ),
-              drawerScrimColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black.withOpacity(.75)
-                  : Colors.black.withOpacity(.25),
-              floatingActionButton: widget.fab,
-            ),
-          ),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                );
+          }),
+          actions: <Widget>[
+            ...widget.actions,
+            Builder(builder: (context) {
+              return IconButton(
+                icon: AnimatedIcon(
+                  icon: AnimatedIcons.view_list,
+                  progress: _menuAnimationController,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+              );
+            }),
+          ],
+          title: widget.title,
         ),
+        body: widget.child,
       ),
     );
   }

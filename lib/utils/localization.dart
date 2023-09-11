@@ -10,13 +10,16 @@ const List<Locale> supportedLocales = <Locale>[
   Locale('ru'),
 ];
 
-String Function(BuildContext context, String string) trans = (BuildContext context, String string) => AppLocalizations.of(
-      context,
-    ).translate(
-      string,
-    );
+String Function(BuildContext context, String string) trans =
+    (BuildContext context, String string) =>
+        AppLocalizations.of(
+          context,
+        )?.translate(
+          string,
+        ) ??
+        string;
 
-Iterable<LocalizationsDelegate<dynamic>> localeDelegates = <LocalizationsDelegate<dynamic>>[
+final localeDelegates = <LocalizationsDelegate<dynamic>>[
   const AppLocalizationsDelegate(),
   GlobalMaterialLocalizations.delegate,
   GlobalWidgetsLocalizations.delegate,
@@ -27,18 +30,20 @@ class AppLocalizations {
 
   final Locale locale;
 
-  static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(
+      context,
+      AppLocalizations,
+    );
   }
 
-  Map<String, dynamic> _sentences;
+  Map<String, dynamic> _sentences = <String, dynamic>{};
 
   Future<bool> load() async {
     _sentences = <String, dynamic>{};
     json
         .decode(
-      await rootBundle
-          .loadString('assets/langs/${locale.languageCode}.json'),
+      await rootBundle.loadString('assets/i18n/${locale.languageCode}.json'),
     )
         .forEach((String key, dynamic value) {
       _sentences[key] = value;
@@ -48,7 +53,7 @@ class AppLocalizations {
   }
 
   String translate(String key) {
-    return (_sentences[key] ?? key)  as String;
+    return (_sentences[key] ?? key) as String;
   }
 }
 
@@ -60,7 +65,8 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
 
   @override
   Future<AppLocalizations> load(Locale locale) async {
-    final AppLocalizations localizations = AppLocalizations(locale);
+    final localizations = AppLocalizations(locale);
+
     await localizations.load();
 
     return localizations;

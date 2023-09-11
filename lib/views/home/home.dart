@@ -1,5 +1,6 @@
 import 'dart:math';
-import 'package:drbob/blocs/Bloc.dart';
+
+import 'package:drbob/blocs/bloc.dart';
 import 'package:drbob/ui/common.dart';
 import 'package:drbob/utils/localization.dart';
 import 'package:drbob/utils/style.dart';
@@ -9,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> kids = <Widget>[
@@ -26,7 +29,7 @@ class HomeView extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
         ),
-        child: UserStatistics(),
+        child: const UserStatistics(),
       ),
     ];
     return Wrap(
@@ -79,9 +82,12 @@ class HomeView extends StatelessWidget {
           ),
           func: () => showGeneralDialog<void>(
             context: context,
-            pageBuilder: (BuildContext context, Animation<double> anim1,
-                    Animation<double> anim2) =>
-                null,
+            pageBuilder: (
+              BuildContext context,
+              Animation<double> anim1,
+              Animation<double> anim2,
+            ) =>
+                const SizedBox.shrink(),
             barrierDismissible: true,
             transitionDuration: const Duration(milliseconds: 500),
             barrierColor: Theme.of(context).brightness == Brightness.dark
@@ -106,47 +112,7 @@ class HomeView extends StatelessWidget {
                         style: DefaultTextStyle.of(context).style.copyWith(
                             fontSize: Provider.of<Bloc>(context).getFontSize),
                         child: Text(
-                          trans(context, 'hiw_1') +
-                              '\n\n' +
-                              trans(context, 'hiw_2') +
-                              '\n\n' +
-                              trans(context, 'hiw_3') +
-                              '\n\n' +
-                              trans(context, 'hiw_4') +
-                              '\n\n' +
-                              trans(context, 'hiw_5') +
-                              '\n\n' +
-                              trans(context, 'hiw_6') +
-                              '\n\n1. ' +
-                              trans(context, 'step_1') +
-                              '\n2. ' +
-                              trans(context, 'step_2') +
-                              '\n3. ' +
-                              trans(context, 'step_3') +
-                              '\n4. ' +
-                              trans(context, 'step_4') +
-                              '\n5. ' +
-                              trans(context, 'step_5') +
-                              '\n6. ' +
-                              trans(context, 'step_6') +
-                              '\n7. ' +
-                              trans(context, 'step_7') +
-                              '\n8. ' +
-                              trans(context, 'step_8') +
-                              '\n9. ' +
-                              trans(context, 'step_9') +
-                              '\n10. ' +
-                              trans(context, 'step_10') +
-                              '\n11. ' +
-                              trans(context, 'step_11') +
-                              '\n12. ' +
-                              trans(context, 'step_12') +
-                              '\n\n' +
-                              trans(context, 'hiw_7') +
-                              '\n\n' +
-                              trans(context, 'hiw_8') +
-                              '\n\n' +
-                              trans(context, 'hiw_9'),
+                          '${trans(context, 'hiw_1')}\n\n${trans(context, 'hiw_2')}\n\n${trans(context, 'hiw_3')}\n\n${trans(context, 'hiw_4')}\n\n${trans(context, 'hiw_5')}\n\n${trans(context, 'hiw_6')}\n\n1. ${trans(context, 'step_1')}\n2. ${trans(context, 'step_2')}\n3. ${trans(context, 'step_3')}\n4. ${trans(context, 'step_4')}\n5. ${trans(context, 'step_5')}\n6. ${trans(context, 'step_6')}\n7. ${trans(context, 'step_7')}\n8. ${trans(context, 'step_8')}\n9. ${trans(context, 'step_9')}\n10. ${trans(context, 'step_10')}\n11. ${trans(context, 'step_11')}\n12. ${trans(context, 'step_12')}\n\n${trans(context, 'hiw_7')}\n\n${trans(context, 'hiw_8')}\n\n${trans(context, 'hiw_9')}',
                         ),
                       );
                     },
@@ -166,14 +132,17 @@ class HomeView extends StatelessWidget {
         //     ),
         //     func: null,
         //   ),
-        // ), 
+        // ),
       ],
     );
   }
 
-  Widget menuItem(
-          {String label, IconData icon, Future<void> Function() func}) =>
-      Container(
+  Widget menuItem({
+    required String label,
+    required IconData icon,
+    required Future<void> Function() func,
+  }) =>
+      SizedBox(
         height: 80,
         width: 200,
         child: Card(
@@ -182,22 +151,27 @@ class HomeView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Container(width: 20,),
+                  Container(
+                    width: 20,
+                  ),
                   Expanded(child: Text(label)),
                   Icon(icon),
-                  Container(width: 20,),
+                  Container(
+                    width: 20,
+                  ),
                 ],
               ),
               func),
         ),
       );
 
-  Widget buildModalText(
-      {BuildContext context,
-      IconData icon,
-      String sub,
-      String title,
-      String modalText}) {
+  Widget buildModalText({
+    required BuildContext context,
+    required IconData icon,
+    required String sub,
+    required String title,
+    required String modalText,
+  }) {
     return menuItem(
       icon: icon,
       label: trans(
@@ -212,9 +186,12 @@ class HomeView extends StatelessWidget {
             : Colors.white,
         context: context,
         transitionDuration: const Duration(milliseconds: 500),
-        pageBuilder: (BuildContext context, Animation<double> anim1,
-            Animation<double> anime2) {
-          return;
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> anim1,
+          Animation<double> anime2,
+        ) {
+          return const SizedBox.shrink();
         },
         transitionBuilder: (BuildContext context, Animation<double> anim1,
             Animation<double> anim2, Widget child) {
@@ -249,38 +226,36 @@ class HomeView extends StatelessWidget {
                       },
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      child: Container(
-                        child: AnimatedDefaultTextStyle(
-                          curve: Curves.ease, // TODO(AN): Randomize Curves?
-                          duration: const Duration(
-                            milliseconds: 2000,
-                          ),
-                          style: copied
-                              ? const TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
+                      child: AnimatedDefaultTextStyle(
+                        curve: Curves.ease, // TODO(AN): Randomize Curves?
+                        duration: const Duration(
+                          milliseconds: 2000,
+                        ),
+                        style: copied
+                            ? const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              )
+                            : TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    Provider.of<Bloc>(context).getFontSize,
+                              ),
+                        child: Text(
+                          copied
+                              ? trans(
+                                  context,
+                                  clipboard,
                                 )
-                              : TextStyle(
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize:
-                                      Provider.of<Bloc>(context).getFontSize,
+                              : trans(
+                                  context,
+                                  modalText,
                                 ),
-                          child: Text(
-                            copied
-                                ? trans(
-                                    context,
-                                    clipboard,
-                                  )
-                                : trans(
-                                    context,
-                                    modalText,
-                                  ),
-                            textAlign: TextAlign.center,
-                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
@@ -294,14 +269,15 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget buildX(
-      {BuildContext context,
-      IconData icon,
-      String button,
-      String sub,
-      String type,
-      String header,
-      int x}) {
+  Widget buildX({
+    required BuildContext context,
+    required IconData icon,
+    required String button,
+    required String sub,
+    required String type,
+    required String header,
+    required int x,
+  }) {
     return menuItem(
         icon: icon,
         label: trans(
@@ -310,87 +286,90 @@ class HomeView extends StatelessWidget {
         ),
         func: () => showGeneralDialog<void>(
               context: context,
-              pageBuilder: (BuildContext context, Animation<double> anim1,
-                      Animation<double> anim2) =>
-                  null,
-              barrierDismissible: true,
-              transitionDuration: const Duration(milliseconds: 500),
-              barrierColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black
-                  : Colors.white,
-              barrierLabel: '',
-              transitionBuilder: (BuildContext context, Animation<double> anim1,
-                  Animation<double> anim2, Widget child) {
+              pageBuilder: (
+                BuildContext context,
+                Animation<double> anim1,
+                Animation<double> anim2,
+              ) {
                 final String temp = trans(context, 'copied_to_clipboard');
                 int selected = 0;
+
                 return SafeArea(
                   top: true,
-                  child: Opacity(
-                    opacity: anim1.value,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 60),
-                      child: SimpleDialog(
-                        elevation: 0,
-                        backgroundColor: Colors.transparent,
-                        title: Text(
-                          trans(context, header) + '\n',
-                          textAlign: TextAlign.center,
-                        ),
-                        children: <Widget>[
-                          Container(
-                            color: Colors.transparent,
-                            child: StatefulBuilder(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * .8,
+                    width: MediaQuery.of(context).size.width * .8,
+                    child: Opacity(
+                      opacity: anim1.value,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 60),
+                        child: SimpleDialog(
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          title: Text(
+                            '${trans(context, header)}\n',
+                            textAlign: TextAlign.center,
+                          ),
+                          children: <Widget>[
+                            StatefulBuilder(
                               builder: (BuildContext context, Function s) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: List<int>.generate(
-                                          x, (int i) => ++i)
-                                      .map(
-                                        (int f) => Wrap(
-                                          children: <Widget>[
-                                            InkWell(
-                                              splashColor: Colors.primaries
-                                                  .toList()[Random().nextInt(
-                                                      Colors.primaries.length)]
-                                                  .withOpacity(.5),
-                                              onLongPress: () {
-                                                s(() {
-                                                  selected = f;
-                                                  Clipboard.setData(
-                                                    ClipboardData(
-                                                      text: trans(
-                                                        context,
-                                                        type + f.toString(),
+                                return SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .7,
+                                  width: MediaQuery.of(context).size.width * .8,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: List<int>.generate(
+                                      x,
+                                      (int i) => ++i,
+                                    )
+                                        .map(
+                                          (int f) => Wrap(
+                                            children: <Widget>[
+                                              InkWell(
+                                                splashColor: Colors.primaries
+                                                    .toList()[Random().nextInt(
+                                                        Colors
+                                                            .primaries.length)]
+                                                    .withOpacity(.5),
+                                                onLongPress: () {
+                                                  s(() {
+                                                    selected = f;
+                                                    Clipboard.setData(
+                                                      ClipboardData(
+                                                        text: trans(
+                                                          context,
+                                                          type + f.toString(),
+                                                        ),
                                                       ),
-                                                    ),
+                                                    );
+                                                  });
+                                                  Future<void>.delayed(
+                                                    const Duration(seconds: 2),
+                                                    () => s(() => selected = 0),
                                                   );
-                                                });
-                                                Future<void>.delayed(
-                                                  const Duration(seconds: 2),
-                                                  () => s(() => selected = 0),
-                                                );
-                                              },
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Flexible(
-                                                    flex: 2,
-                                                    child: Container(
-                                                      width: 120,
-                                                      child: Text(
-                                                        f.toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: Provider
-                                                                    .of<Bloc>(
-                                                                        context)
-                                                                .getFontSize),
+                                                },
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Flexible(
+                                                      flex: 2,
+                                                      child: SizedBox(
+                                                        width: 120,
+                                                        child: Text(
+                                                          f.toString(),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: Provider
+                                                                      .of<Bloc>(
+                                                                          context)
+                                                                  .getFontSize),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Flexible(
-                                                    flex: 12,
-                                                    child: Container(
+                                                    Flexible(
+                                                      flex: 12,
                                                       child:
                                                           AnimatedDefaultTextStyle(
                                                         curve: Curves.ease,
@@ -430,41 +409,55 @@ class HomeView extends StatelessWidget {
                                                               ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Flexible(
-                                                    flex: 1,
-                                                    child: Container(),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            if (f != x)
-                                              Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            .2),
-                                                child: const Divider(
-                                                  color: Colors.grey,
+                                                    Flexible(
+                                                      flex: 1,
+                                                      child: Container(),
+                                                    ),
+                                                  ],
                                                 ),
-                                              )
-                                            else
-                                              Container()
-                                          ],
-                                        ),
-                                      )
-                                      .toList(),
+                                              ),
+                                              if (f != x)
+                                                Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              .2),
+                                                  child: const Divider(
+                                                    color: Colors.grey,
+                                                  ),
+                                                )
+                                              else
+                                                Container()
+                                            ],
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
                                 );
                               },
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 );
+              },
+              barrierDismissible: true,
+              transitionDuration: const Duration(milliseconds: 500),
+              barrierColor: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.white,
+              barrierLabel: '',
+              transitionBuilder: (
+                BuildContext context,
+                Animation<double> anim1,
+                Animation<double> anim2,
+                Widget child,
+              ) {
+                return child;
               },
             ));
   }
@@ -472,13 +465,13 @@ class HomeView extends StatelessWidget {
 
 class ProgressPainter extends CustomPainter {
   ProgressPainter({
-    this.darkTheme,
-    this.oldChipColor,
-    this.newChipColor,
-    this.dividerColor,
-    this.completedPercentage,
-    this.circleWidth,
-    this.dividers,
+    required this.darkTheme,
+    required this.oldChipColor,
+    required this.newChipColor,
+    required this.dividerColor,
+    required this.completedPercentage,
+    required this.circleWidth,
+    required this.dividers,
   });
 
   bool darkTheme;
@@ -495,7 +488,7 @@ class ProgressPainter extends CustomPainter {
       double stroke = 7,
       StrokeCap cap = StrokeCap.round,
       BlendMode blend = BlendMode.srcOver,
-      ColorFilter cFilter,
+      required ColorFilter cFilter,
       bool invert = false}) {
     return Paint()
       ..color = color
@@ -513,18 +506,31 @@ class ProgressPainter extends CustomPainter {
       color: oldChipColor,
       stroke: circleWidth,
       cap: StrokeCap.round,
+      cFilter: ColorFilter.mode(
+        oldChipColor,
+        BlendMode.srcIn,
+      ),
     );
     final Paint progressCirclePaint = getPaint(
       color: newChipColor,
       stroke: circleWidth,
       cap: StrokeCap.butt,
+      cFilter: ColorFilter.mode(
+        oldChipColor,
+        BlendMode.srcIn,
+      ),
     );
     final Paint sections = getPaint(
-        color: dividerColor,
-        cap: StrokeCap.round,
-        invert: darkTheme,
-        stroke: 10,
-        blend: BlendMode.exclusion);
+      color: dividerColor,
+      cap: StrokeCap.round,
+      invert: darkTheme,
+      stroke: 10,
+      blend: BlendMode.exclusion,
+      cFilter: ColorFilter.mode(
+        oldChipColor,
+        BlendMode.srcIn,
+      ),
+    );
 
     canvas.save();
 
@@ -563,7 +569,10 @@ class ProgressPainter extends CustomPainter {
 }
 
 class SobrietySlider extends StatefulWidget {
-  const SobrietySlider({Key key, this.radius}) : super(key: key);
+  const SobrietySlider({
+    Key? key,
+    required this.radius,
+  }) : super(key: key);
 
   final double radius;
 
@@ -572,14 +581,23 @@ class SobrietySlider extends StatefulWidget {
 }
 
 class _SobrietySliderState extends State<SobrietySlider>
-    with SingleTickerProviderStateMixin {
-  AnimationController _radialProgressAnimationController;
-  Animation<double> _progressAnimation;
+    with TickerProviderStateMixin {
+  late AnimationController _radialProgressAnimationController;
+  late Animation<double> _progressAnimation;
   double goalCompleted = 0, progressDegrees = 0;
 
   @override
   void initState() {
     super.initState();
+
+    _progressAnimation = const AlwaysStoppedAnimation<double>(0);
+
+    _radialProgressAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        seconds: 2,
+      ),
+    );
 
     _radialProgressAnimationController = AnimationController(
       vsync: this,
@@ -610,24 +628,11 @@ class _SobrietySliderState extends State<SobrietySlider>
 
   CustomPaint progressView() {
     return CustomPaint(
-      child: DefaultTextStyle(
-        style: statisticsStyle.copyWith(color: Theme.of(context).textTheme.bodyText1.color),
-        child: Center(
-          child: !(progressDegrees == .0)
-              ? Text(progressDegrees.toStringAsFixed(2).toString() + '%')
-              : Center(
-                  child: Text(
-                    trans(context, 'pick_sobriety_date'),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-        ),
-      ),
       foregroundPainter: ProgressPainter(
           darkTheme: Theme.of(context).brightness == Brightness.dark,
           oldChipColor: Theme.of(context).brightness == Brightness.dark
               ? Colors.black
-              : Colors.grey[300],
+              : Colors.grey,
           newChipColor: Theme.of(context).brightness == Brightness.dark
               ? Colors.white
               : Colors.black,
@@ -637,6 +642,20 @@ class _SobrietySliderState extends State<SobrietySlider>
           completedPercentage: progressDegrees,
           circleWidth: 12.0,
           dividers: 12),
+      child: DefaultTextStyle(
+        style: statisticsStyle.copyWith(
+            color: Theme.of(context).textTheme.bodyLarge!.color),
+        child: Center(
+          child: !(progressDegrees == .0)
+              ? Text('${progressDegrees.toStringAsFixed(2)}%')
+              : Center(
+                  child: Text(
+                    trans(context, 'pick_sobriety_date'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+        ),
+      ),
     );
   }
 
@@ -653,7 +672,8 @@ class _SobrietySliderState extends State<SobrietySlider>
     final bool hasSobrietyDate = prefs.containsKey('sobrietyDateInt');
     final DateTime now = DateTime.now();
     final DateTime sobDate = hasSobrietyDate
-        ? DateTime.fromMillisecondsSinceEpoch(prefs.getInt('sobrietyDateInt'))
+        ? DateTime.fromMillisecondsSinceEpoch(
+            prefs.getInt('sobrietyDateInt') ?? 0)
         : now;
 
     return InkWell(
@@ -665,17 +685,18 @@ class _SobrietySliderState extends State<SobrietySlider>
               context: context,
               initialDate: sobDate,
               lastDate: DateTime.now(),
-            ).then((DateTime val) {
+            ).then((DateTime? val) {
               setState(() {
-                if (val != null) {
-                  prefs.setInt('sobrietyDateInt', val.millisecondsSinceEpoch);
-                  Provider.of<Bloc>(context).notify();
-                }
+                prefs.setInt(
+                  'sobrietyDateInt',
+                  val?.millisecondsSinceEpoch ?? 0,
+                );
+                Provider.of<Bloc>(context).notify();
               });
             }),
       child: Tooltip(
         message: trans(context, 'disabled_func'),
-        child: Container(
+        child: SizedBox(
           height: widget.radius,
           width: widget.radius,
           child: progressView(),
@@ -686,32 +707,32 @@ class _SobrietySliderState extends State<SobrietySlider>
 
   // TODO(AN): Add next chip indicator
   void initSobrietyDate() {
-    if (Provider.of<Bloc>(context).getSobrietyDate == null) {
-      return;
-    }
     setState(() {
       _radialProgressAnimationController.reset();
       _radialProgressAnimationController.forward();
-      final Duration _sobrietyTime = Provider.of<Bloc>(context).getSobrietyTime;
+      final Duration sobrietyTime = Provider.of<Bloc>(context).getSobrietyTime;
       // average days in year and month
-      final double days = _sobrietyTime.inDays % 365.2425 % 30.44;
-      if (_sobrietyTime.inDays >= 365)
-        goalCompleted = _sobrietyTime.inDays.toDouble() % 365.2425 / 365.2425;
-      else if (_sobrietyTime.inDays > 30 && _sobrietyTime.inDays <= 60)
+      final double days = sobrietyTime.inDays % 365.2425 % 30.44;
+      if (sobrietyTime.inDays >= 365) {
+        goalCompleted = sobrietyTime.inDays.toDouble() % 365.2425 / 365.2425;
+      } else if (sobrietyTime.inDays > 30 && sobrietyTime.inDays <= 60) {
         goalCompleted = days / 60.88;
-      else if (_sobrietyTime.inDays > 60 && _sobrietyTime.inDays <= 90)
+      } else if (sobrietyTime.inDays > 60 && sobrietyTime.inDays <= 90) {
         goalCompleted = days / 91;
-      else if (_sobrietyTime.inDays > 90 && _sobrietyTime.inDays <= 180)
+      } else if (sobrietyTime.inDays > 90 && sobrietyTime.inDays <= 180) {
         goalCompleted = days / 180;
-      else if (_sobrietyTime.inDays > 180 && _sobrietyTime.inDays < 365)
+      } else if (sobrietyTime.inDays > 180 && sobrietyTime.inDays < 365) {
         goalCompleted = days / 365;
-      else
+      } else {
         goalCompleted = days / 30.44;
+      }
     });
   }
 }
 
 class UserStatistics extends StatefulWidget {
+  const UserStatistics({super.key});
+
   @override
   _UserStatisticsState createState() => _UserStatisticsState();
 }
@@ -738,19 +759,18 @@ class _UserStatisticsState extends State<UserStatistics> {
                 ),
               ),
             )
-          : Container(
+          : SizedBox(
               width: 100,
               height: 100,
               child: DefaultTextStyle(
-                style: statisticsStyle.copyWith(color: Theme.of(context).textTheme.bodyText1.color),
+                style: statisticsStyle.copyWith(
+                    color: Theme.of(context).textTheme.bodyLarge!.color),
                 child: AnimatedSwitcher(
                   duration: const Duration(seconds: 1),
                   child: type
                       ? Center(
                           child: Text(
-                            sobrietyTime.inDays.toString() +
-                                ' ' +
-                                trans(context, 'total_sobriety_days'),
+                            '${sobrietyTime.inDays} ${trans(context, 'total_sobriety_days')}',
                           ),
                         )
                       : Column(
@@ -758,15 +778,13 @@ class _UserStatisticsState extends State<UserStatistics> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              years.toString() + ' ' + trans(context, 'years'),
+                              '$years ${trans(context, 'years')}',
                             ),
                             Text(
-                              months.toString() +
-                                  ' ' +
-                                  trans(context, 'months'),
+                              '$months ${trans(context, 'months')}',
                             ),
                             Text(
-                              days.toString() + ' ' + trans(context, 'days'),
+                              '$days ${trans(context, 'days')}',
                             ),
                           ],
                         ),
@@ -778,7 +796,7 @@ class _UserStatisticsState extends State<UserStatistics> {
 }
 
 class MenuButton extends StatelessWidget {
-  const MenuButton(this.title, this.sub, this.icon);
+  const MenuButton(this.title, this.sub, this.icon, {super.key});
 
   final String title;
   final String sub;
@@ -786,11 +804,11 @@ class MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 150,
       height: 80,
       child: InkWell(
-        onTap: () => null,
+        onTap: () {},
         child: SizedBox.expand(
           child: Container(
             decoration: BoxDecoration(

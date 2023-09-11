@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AnimatedMenuItem extends StatefulWidget {
-  const AnimatedMenuItem(this.child, this.route);
+  const AnimatedMenuItem(
+    this.child,
+    this.route, {
+    super.key,
+  });
 
   final Widget child;
   final Future<void> Function() route;
@@ -12,8 +16,8 @@ class AnimatedMenuItem extends StatefulWidget {
 
 class _AnimatedMenuItemState extends State<AnimatedMenuItem>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _animation;
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   @override
   void initState() {

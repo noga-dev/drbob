@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const TextStyle statisticsStyle = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 20,
-  );
+  fontWeight: FontWeight.bold,
+  fontSize: 20,
+);
 
-Color mainBgColor(BuildContext context) => Colors.teal[
-              Theme.of(context).brightness == Brightness.dark ? 800 : 400];
+Color mainBgColor(BuildContext context) => Colors.teal;
 
 const double inputTextSize = 14.0;
 const FontWeight weight = FontWeight.normal;
@@ -23,11 +21,17 @@ const TextStyle darkInputText = TextStyle(
   fontWeight: weight,
 );
 
-const AppBarTheme appBarTheme = AppBarTheme(
-  textTheme: TextTheme(
-    headline6: TextStyle(
+final AppBarTheme appBarTheme = AppBarTheme(
+  toolbarTextStyle: const TextTheme(
+    titleLarge: TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.bold,
     ),
-  ),
+  ).bodyLarge,
+  titleTextStyle: const TextTheme(
+    titleLarge: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    ),
+  ).titleLarge,
 );

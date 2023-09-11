@@ -2,20 +2,21 @@ import 'package:drbob/utils/localization.dart';
 import 'package:drbob/views/tools/big_book.dart';
 import 'package:drbob/views/tools/daily_reflections.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'blocs/Bloc.dart';
-import 'utils/localization.dart';
+
+import 'blocs/bloc.dart';
 import 'views/primary.dart';
 
 class AppWrapper extends StatefulWidget {
+  const AppWrapper({super.key});
+
   @override
   _AppWrapperState createState() => _AppWrapperState();
 }
 
 class _AppWrapperState extends State<AppWrapper> {
-  Future<SharedPreferences> prefs;
+  Future<SharedPreferences>? prefs;
 
   @override
   void initState() {
@@ -39,11 +40,11 @@ class _AppWrapperState extends State<AppWrapper> {
                     )
                   : ThemeData.light(),
               prefs.containsKey('lang')
-                  ? Locale(prefs.getString('lang'))
+                  ? Locale(prefs.getString('lang') ?? 'en')
                   : const Locale('en'),
               prefs,
             ),
-            child: MyApp(),
+            child: const MyApp(),
           );
         } else {
           return const RefreshProgressIndicator();
@@ -54,26 +55,26 @@ class _AppWrapperState extends State<AppWrapper> {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final Locale Function(
-            Locale deviceLocale, Iterable<Locale> supportedLocales)
-        localeResolutionCallback =
-        (Locale deviceLocale, Iterable<Locale> supportedLocales) {
-      if (Provider.of<Bloc>(context).getPrefs.containsKey('lang')) {
-        return Provider.of<Bloc>(context).getLocale;
-      } else if (supportedLocales.contains(Locale(deviceLocale.languageCode))) {
-        return Locale(deviceLocale.languageCode);
-      }
-      return const Locale('en');
-    };
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Provider.of<Bloc>(context).getTheme,
       localizationsDelegates: localeDelegates,
       supportedLocales: supportedLocales,
       locale: Provider.of<Bloc>(context).getLocale,
-      localeResolutionCallback: localeResolutionCallback,
+      localeResolutionCallback:
+          (Locale? deviceLocale, Iterable<Locale> supportedLocales) {
+        if (Provider.of<Bloc>(context).getPrefs.containsKey('lang')) {
+          return Provider.of<Bloc>(context).getLocale;
+        } else if (supportedLocales
+            .contains(Locale(deviceLocale?.languageCode ?? 'en'))) {
+          return Locale(deviceLocale?.languageCode ?? 'en');
+        }
+        return const Locale('en');
+      },
       title: 'Dr. Bob',
       initialRoute: '/',
       // routes: <String, WidgetBuilder>{
@@ -102,7 +103,7 @@ class MyApp extends StatelessWidget {
             Animation<double> __,
             Animation<double> ___,
           ) =>
-              PrimaryView(),
+              const PrimaryView(),
           transitionsBuilder: (
             BuildContext _,
             Animation<double> anim1,
@@ -111,11 +112,11 @@ class MyApp extends StatelessWidget {
           ) {
             Widget destination;
             if (settings.name == '/') {
-              destination = PrimaryView();
+              destination = const PrimaryView();
             } else if (settings.name == '/bb') {
-              destination = BigBookView();
+              destination = const BigBookView();
             } else if (settings.name == '/dr') {
-              destination = DailyReflectionsListView();
+              destination = const DailyReflectionsListView();
             } else {
               throw Exception('YOU BROKE THE PROGRAM!');
             }

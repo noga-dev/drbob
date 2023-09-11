@@ -2,19 +2,19 @@ import 'dart:convert';
 
 class DailyReflection {
   DailyReflection({
-    this.month,
-    this.day,
-    this.title,
-    this.excerpt,
-    this.source,
-    this.reflection,
+    required this.month,
+    required this.day,
+    required this.title,
+    required this.excerpt,
+    required this.source,
+    required this.reflection,
   });
 
-    factory DailyReflection.fromRawJson(String str) => DailyReflection.fromJson(
+  factory DailyReflection.fromRawJson(String str) => DailyReflection.fromJson(
         json.decode(str) as Map<String, dynamic>,
       );
 
-        factory DailyReflection.fromJson(Map<String, dynamic> json) =>
+  factory DailyReflection.fromJson(Map<String, dynamic> json) =>
       DailyReflection(
         month: json['month'] as int,
         day: json['day'] as int,
@@ -34,7 +34,8 @@ class DailyReflection {
   static List<DailyReflection> fromJson2List(String str) =>
       List<DailyReflection>.from(
         json.decode(str).map(
-              (dynamic x) => DailyReflection.fromJson(x as Map<String, dynamic>),
+              (dynamic x) =>
+                  DailyReflection.fromJson(x as Map<String, dynamic>),
             ) as Iterable<dynamic>,
       );
 

@@ -1,13 +1,17 @@
 import 'dart:math';
+
 import 'package:drbob/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'blocs/Bloc.dart';
+
+import 'blocs/bloc.dart';
 import 'ui/common.dart';
 import 'utils/localization.dart';
 
 class NavDrawer extends StatelessWidget {
+  const NavDrawer({super.key});
+
   final Divider divider = const Divider(
     thickness: 2,
     indent: 50,
@@ -32,7 +36,7 @@ class NavDrawer extends StatelessWidget {
               'btn_home_desc',
             ),
           ),
-          trailing: ModalRoute.of(context).settings.name != '/'
+          trailing: ModalRoute.of(context)?.settings.name != '/'
               ? null
               : const Icon(
                   Icons.arrow_left,
@@ -58,7 +62,7 @@ class NavDrawer extends StatelessWidget {
               'btn_bb_desc',
             ),
           ),
-          trailing: ModalRoute.of(context).settings.name != '/bb'
+          trailing: ModalRoute.of(context)?.settings.name != '/bb'
               ? null
               : const Icon(
                   Icons.arrow_left,
@@ -84,7 +88,7 @@ class NavDrawer extends StatelessWidget {
               'btn_dr_list_desc',
             ),
           ),
-          trailing: ModalRoute.of(context).settings.name != '/dr'
+          trailing: ModalRoute.of(context)?.settings.name != '/dr'
               ? null
               : const Icon(
                   Icons.arrow_left,
@@ -116,14 +120,15 @@ class NavDrawer extends StatelessWidget {
     );
   }
 
-  Widget buildX(
-      {BuildContext context,
-      IconData icon,
-      String button,
-      String sub,
-      String type,
-      String header,
-      int x}) {
+  Widget buildX({
+    required BuildContext context,
+    required IconData icon,
+    required String button,
+    required String sub,
+    required String type,
+    required String header,
+    required int x,
+  }) {
     return AnimatedMenuItem(
         ListTile(
           leading: Icon(icon),
@@ -141,7 +146,7 @@ class NavDrawer extends StatelessWidget {
             context: context,
             pageBuilder: (BuildContext context, Animation<double> anim1,
                     Animation<double> anim2) =>
-                null,
+                const SizedBox.shrink(),
             barrierDismissible: true,
             transitionDuration: const Duration(milliseconds: 500),
             barrierColor: Theme.of(context).brightness == Brightness.dark
@@ -162,7 +167,7 @@ class NavDrawer extends StatelessWidget {
                       elevation: 0,
                       backgroundColor: Colors.transparent,
                       title: Text(
-                        trans(context, header) + '\n',
+                        '${trans(context, header)}\n',
                         textAlign: TextAlign.center,
                       ),
                       children: <Widget>[
@@ -201,8 +206,44 @@ class NavDrawer extends StatelessWidget {
                                             child: Row(
                                               children: <Widget>[
                                                 Flexible(
+                                                  flex: 12,
+                                                  child:
+                                                      AnimatedDefaultTextStyle(
+                                                    curve: Curves.ease,
+                                                    style: selected == f
+                                                        ? const TextStyle(
+                                                            color: Colors.red,
+                                                          )
+                                                        : TextStyle(
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .dark
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            fontSize: Provider
+                                                                    .of<Bloc>(
+                                                                        context)
+                                                                .getFontSize),
+                                                    duration: const Duration(
+                                                      milliseconds: 4000,
+                                                    ),
+                                                    child: (selected == f)
+                                                        ? Center(
+                                                            child: Text(temp),
+                                                          )
+                                                        : Text(
+                                                            trans(
+                                                              context,
+                                                              type +
+                                                                  f.toString(),
+                                                            ),
+                                                          ),
+                                                  ),
+                                                ),
+                                                Flexible(
                                                   flex: 2,
-                                                  child: Container(
+                                                  child: SizedBox(
                                                     width: 120,
                                                     child: Text(
                                                       f.toString(),
@@ -213,45 +254,6 @@ class NavDrawer extends StatelessWidget {
                                                               Provider.of<Bloc>(
                                                                       context)
                                                                   .getFontSize),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Flexible(
-                                                  flex: 12,
-                                                  child: Container(
-                                                    child:
-                                                        AnimatedDefaultTextStyle(
-                                                      curve: Curves.ease,
-                                                      style: selected == f
-                                                          ? const TextStyle(
-                                                              color: Colors.red,
-                                                            )
-                                                          : TextStyle(
-                                                              color: Theme.of(context)
-                                                                          .brightness ==
-                                                                      Brightness
-                                                                          .dark
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .black,
-                                                              fontSize: Provider
-                                                                      .of<Bloc>(
-                                                                          context)
-                                                                  .getFontSize),
-                                                      duration: const Duration(
-                                                        milliseconds: 4000,
-                                                      ),
-                                                      child: (selected == f)
-                                                          ? Center(
-                                                              child: Text(temp),
-                                                            )
-                                                          : Text(
-                                                              trans(
-                                                                context,
-                                                                type +
-                                                                    f.toString(),
-                                                              ),
-                                                            ),
                                                     ),
                                                   ),
                                                 ),
@@ -292,12 +294,13 @@ class NavDrawer extends StatelessWidget {
             }));
   }
 
-  Widget buildModalText(
-      {BuildContext context,
-      IconData icon,
-      String sub,
-      String title,
-      String modalText}) {
+  Widget buildModalText({
+    required BuildContext context,
+    required IconData icon,
+    required String sub,
+    required String title,
+    required String modalText,
+  }) {
     return AnimatedMenuItem(
       ListTile(
         leading: Icon(icon),
@@ -319,7 +322,7 @@ class NavDrawer extends StatelessWidget {
         transitionDuration: const Duration(milliseconds: 500),
         pageBuilder: (BuildContext context, Animation<double> anim1,
             Animation<double> anime2) {
-          return;
+          return const SizedBox.shrink();
         },
         transitionBuilder: (BuildContext context, Animation<double> anim1,
             Animation<double> anim2, Widget child) {
@@ -354,38 +357,36 @@ class NavDrawer extends StatelessWidget {
                       },
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      child: Container(
-                        child: AnimatedDefaultTextStyle(
-                          curve: Curves.ease, // TODO(AN): Randomize Curves?
-                          duration: const Duration(
-                            milliseconds: 2000,
-                          ),
-                          style: copied
-                              ? const TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
+                      child: AnimatedDefaultTextStyle(
+                        curve: Curves.ease, // TODO(AN): Randomize Curves?
+                        duration: const Duration(
+                          milliseconds: 2000,
+                        ),
+                        style: copied
+                            ? const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              )
+                            : TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    Provider.of<Bloc>(context).getFontSize,
+                              ),
+                        child: Text(
+                          copied
+                              ? trans(
+                                  context,
+                                  clipboard,
                                 )
-                              : TextStyle(
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize:
-                                      Provider.of<Bloc>(context).getFontSize,
+                              : trans(
+                                  context,
+                                  modalText,
                                 ),
-                          child: Text(
-                            copied
-                                ? trans(
-                                    context,
-                                    clipboard,
-                                  )
-                                : trans(
-                                    context,
-                                    modalText,
-                                  ),
-                            textAlign: TextAlign.center,
-                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),

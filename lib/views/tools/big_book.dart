@@ -1,4 +1,4 @@
-import 'package:drbob/blocs/Bloc.dart';
+import 'package:drbob/blocs/bloc.dart';
 import 'package:drbob/models/big_book.dart';
 import 'package:drbob/utils/layout.dart';
 import 'package:drbob/utils/localization.dart';
@@ -8,27 +8,25 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class BigBookView extends StatefulWidget {
+  const BigBookView({super.key});
+
   @override
   _BigBookViewState createState() => _BigBookViewState();
 }
 
 class _BigBookViewState extends State<BigBookView> {
-  bool _disclaimer;
+  bool _disclaimer = false;
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final double _fontSize =
-        Provider.of<Bloc>(context).getPrefs.containsKey('fontSize')
-            ? Provider.of<Bloc>(context).getPrefs.getDouble('fontSize')
-            : 12;
+    final double fontSize =
+        (Provider.of<Bloc>(context).getPrefs.containsKey('fontSize')
+                ? Provider.of<Bloc>(context).getPrefs.getDouble('fontSize')
+                : 12) ??
+            0;
     // TODO(AN): Implement translations
     final String lang = (Localizations.localeOf(context).languageCode == 'en')
         ? Localizations.localeOf(context).languageCode
@@ -62,16 +60,17 @@ class _BigBookViewState extends State<BigBookView> {
               ),
             ),
           ),
-          const VerticalDivider(width: 26,),
+          const VerticalDivider(
+            width: 26,
+          ),
           IconButton(
-              icon: const Icon(Icons.keyboard_arrow_up), onPressed: () => null),
+              icon: const Icon(Icons.keyboard_arrow_up), onPressed: () {}),
           IconButton(
-              icon: const Icon(Icons.keyboard_arrow_down),
-              onPressed: () => null),
+              icon: const Icon(Icons.keyboard_arrow_down), onPressed: () {}),
         ],
       ),
       fab: _disclaimer
-          ? null
+          ? const SizedBox.shrink()
           : Dismissible(
               key: UniqueKey(),
               direction: DismissDirection.vertical,
@@ -123,7 +122,7 @@ class _BigBookViewState extends State<BigBookView> {
                               .toList()[index]
                               .chapterName
                               .toString(),
-                          style: TextStyle(fontSize: _fontSize + 4),
+                          style: TextStyle(fontSize: fontSize + 4),
                           textAlign: TextAlign.center,
                         ),
                         const Divider(),
@@ -133,7 +132,7 @@ class _BigBookViewState extends State<BigBookView> {
                               .toList()[index]
                               .text
                               .join(' '),
-                          style: TextStyle(fontSize: _fontSize),
+                          style: TextStyle(fontSize: fontSize),
                           textAlign: TextAlign.justify,
                         ),
                         Text(
@@ -142,7 +141,7 @@ class _BigBookViewState extends State<BigBookView> {
                               .toList()[index]
                               .pageNumber
                               .toString(),
-                          style: TextStyle(fontSize: _fontSize - 4),
+                          style: TextStyle(fontSize: fontSize - 4),
                         ),
                       ],
                     ),
@@ -159,7 +158,7 @@ class _BigBookViewState extends State<BigBookView> {
 }
 
 class BigBookChapterView extends StatelessWidget {
-  const BigBookChapterView(this.f);
+  const BigBookChapterView(this.f, {super.key});
 
   final int f;
 
@@ -177,22 +176,20 @@ class BigBookChapterView extends StatelessWidget {
           return MyScaffold(
             implyLeading: true,
             title: Center(
-              child: Text(bigBook.first.chapterName ?? 'test'),
+              child: Text(bigBook.first.chapterName),
             ),
-            child: Container(
-              child: ListView(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(20),
-                children: bigBook
-                    .map(
-                      (BigBookPage x) => Text(
-                        x.text.first + '\n',
-                        overflow: TextOverflow.visible,
-                        textAlign: TextAlign.justify,
-                      ),
-                    )
-                    .toList(),
-              ),
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(20),
+              children: bigBook
+                  .map(
+                    (BigBookPage x) => Text(
+                      '${x.text.first}\n',
+                      overflow: TextOverflow.visible,
+                      textAlign: TextAlign.justify,
+                    ),
+                  )
+                  .toList(),
             ),
           );
         }

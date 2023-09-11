@@ -1,115 +1,130 @@
 import 'dart:math';
+
 import 'package:drbob/utils/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ToolsView extends StatelessWidget {
+  const ToolsView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Card(
-        child: Container(
-          padding: const EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
-            border: Directionality.of(context) == TextDirection.rtl
-                ? const Border(
-                    right: BorderSide(
-                      width: 5,
-                      color: Colors.lightGreen,
-                    ),
-                  )
-                : const Border(
-                    left: BorderSide(
-                      width: 5,
-                      color: Colors.lightGreen,
-                    ),
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).canvasColor,
+          border: Directionality.of(context) == TextDirection.rtl
+              ? const Border(
+                  right: BorderSide(
+                    width: 5,
+                    color: Colors.lightGreen,
                   ),
-          ),
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                title: Text(
-                  trans(context, 'useful'),
-                  style: Theme.of(context).textTheme.headline6,
+                )
+              : const Border(
+                  left: BorderSide(
+                    width: 5,
+                    color: Colors.lightGreen,
+                  ),
                 ),
+        ),
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Text(
+                trans(context, 'useful'),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: buildX(
-                        context,
-                        'btn_twelve_traditions',
-                        'twelve_traditions',
-                        'tradition_',
-                        Colors.green[800],
-                        12),
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: buildX(
+                    context,
+                    'btn_twelve_traditions',
+                    'twelve_traditions',
+                    'tradition_',
+                    Colors.green,
+                    12,
                   ),
-                  const VerticalDivider(
-                    thickness: 10,
+                ),
+                const VerticalDivider(
+                  thickness: 10,
+                ),
+                Expanded(
+                  child: buildX(
+                    context,
+                    'btn_twelve_steps',
+                    'twelve_steps',
+                    'step_',
+                    Colors.teal,
+                    12,
                   ),
-                  Expanded(
-                    child: buildX(
-                      context,
-                      'btn_twelve_steps',
-                      'twelve_steps',
-                      'step_',
-                      Colors.teal[800],
-                      12,
-                    ),
+                ),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: buildX(
+                    context,
+                    'btn_twelve_promises',
+                    'twelve_promises',
+                    'promise_',
+                    Colors.red,
+                    12,
                   ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: buildX(
-                      context,
-                      'btn_twelve_promises',
-                      'twelve_promises',
-                      'promise_',
-                      Colors.red[800],
-                      12,
-                    ),
+                ),
+                const VerticalDivider(
+                  thickness: 10,
+                ),
+                Expanded(
+                  child: buildX(
+                    context,
+                    'btn_j4t',
+                    'j4t',
+                    'j4t_',
+                    Colors.pink,
+                    9,
                   ),
-                  const VerticalDivider(
-                    thickness: 10,
-                  ),
-                  Expanded(
-                    child: buildX(
-                      context,
-                      'btn_j4t',
-                      'j4t',
-                      'j4t_',
-                      Colors.pink[800],
-                      9,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget buildX(BuildContext context, String button, String header, String type,
-      Color color, int x) {
-    return RaisedButton(
+  Widget buildX(
+    BuildContext context,
+    String button,
+    String header,
+    String type,
+    Color color,
+    int x,
+  ) {
+    return ElevatedButton(
       onPressed: () => showGeneralDialog<void>(
           context: context,
-          pageBuilder: (BuildContext context, Animation<double> anim1,
-                  Animation<double> anim2) =>
-              null,
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> anim1,
+            Animation<double> anim2,
+          ) =>
+              const SizedBox(),
           barrierDismissible: true,
           transitionDuration: const Duration(milliseconds: 500),
           barrierColor: Theme.of(context).brightness == Brightness.dark
               ? Colors.black
               : Colors.white,
           barrierLabel: '',
-          transitionBuilder: (BuildContext context, Animation<double> anim1,
-              Animation<double> anim2, Widget child) {
+          transitionBuilder: (
+            BuildContext context,
+            Animation<double> anim1,
+            Animation<double> anim2,
+            Widget child,
+          ) {
             final String temp = trans(context, 'copied_to_clipboard');
             int selected = 0;
             return SafeArea(
@@ -122,7 +137,7 @@ class ToolsView extends StatelessWidget {
                     elevation: 0,
                     backgroundColor: Colors.transparent,
                     title: Text(
-                      trans(context, header) + '\n',
+                      '${trans(context, header)}\n',
                       textAlign: TextAlign.center,
                     ),
                     children: <Widget>[
@@ -162,7 +177,7 @@ class ToolsView extends StatelessWidget {
                                             children: <Widget>[
                                               Flexible(
                                                 flex: 2,
-                                                child: Container(
+                                                child: SizedBox(
                                                   width: 120,
                                                   child: Text(
                                                     f.toString(),
@@ -172,35 +187,31 @@ class ToolsView extends StatelessWidget {
                                               ),
                                               Flexible(
                                                 flex: 12,
-                                                child: Container(
-                                                  child:
-                                                      AnimatedDefaultTextStyle(
-                                                    curve: Curves.ease,
-                                                    style: selected == f
-                                                        ? const TextStyle(
-                                                            color: Colors.red)
-                                                        : TextStyle(
-                                                            color: Theme.of(context)
-                                                                        .brightness ==
-                                                                    Brightness
-                                                                        .dark
-                                                                ? Colors.white
-                                                                : Colors.black),
-                                                    duration: const Duration(
-                                                      milliseconds: 4000,
-                                                    ),
-                                                    child: (selected == f)
-                                                        ? Center(
-                                                            child: Text(temp),
-                                                          )
-                                                        : Text(
-                                                            trans(
-                                                              context,
-                                                              type +
-                                                                  f.toString(),
-                                                            ),
-                                                          ),
+                                                child: AnimatedDefaultTextStyle(
+                                                  curve: Curves.ease,
+                                                  style: selected == f
+                                                      ? const TextStyle(
+                                                          color: Colors.red)
+                                                      : TextStyle(
+                                                          color: Theme.of(context)
+                                                                      .brightness ==
+                                                                  Brightness
+                                                                      .dark
+                                                              ? Colors.white
+                                                              : Colors.black),
+                                                  duration: const Duration(
+                                                    milliseconds: 4000,
                                                   ),
+                                                  child: (selected == f)
+                                                      ? Center(
+                                                          child: Text(temp),
+                                                        )
+                                                      : Text(
+                                                          trans(
+                                                            context,
+                                                            type + f.toString(),
+                                                          ),
+                                                        ),
                                                 ),
                                               ),
                                               Flexible(
@@ -244,7 +255,6 @@ class ToolsView extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      color: color,
     );
   }
 }

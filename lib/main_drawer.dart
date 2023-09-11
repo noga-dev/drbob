@@ -1,14 +1,16 @@
-import 'package:drbob/blocs/Bloc.dart';
+import 'package:drbob/blocs/bloc.dart';
 import 'package:drbob/utils/localization.dart';
 import 'package:drbob/utils/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart';
 
 class MainDrawer extends StatefulWidget {
+  const MainDrawer({super.key});
+
   @override
   _MainDrawerState createState() => _MainDrawerState();
 }
@@ -30,7 +32,8 @@ class _MainDrawerState extends State<MainDrawer> {
     final SharedPreferences prefs = Provider.of<Bloc>(context).getPrefs;
     final DateTime now = DateTime.now();
     final DateTime sobDate = (prefs.containsKey('sobrietyDateInt'))
-        ? DateTime.fromMillisecondsSinceEpoch(prefs.getInt('sobrietyDateInt'))
+        ? DateTime.fromMillisecondsSinceEpoch(
+            prefs.getInt('sobrietyDateInt') ?? 0)
         : now;
 
     final List<Widget> items = <Widget>[
@@ -44,7 +47,7 @@ class _MainDrawerState extends State<MainDrawer> {
           style: TextStyle(
             color: sobDate == now
                 ? Theme.of(context).disabledColor
-                : Theme.of(context).accentColor,
+                : Theme.of(context).colorScheme.secondary,
           ),
         ),
         children: <Widget>[
@@ -61,15 +64,13 @@ class _MainDrawerState extends State<MainDrawer> {
                   context: context,
                   initialDate: sobDate,
                   lastDate: DateTime.now(),
-                ).then((DateTime val) {
+                ).then((DateTime? val) {
                   setState(() {
-                    if (val != null) {
-                      prefs.setInt(
-                        'sobrietyDateInt',
-                        val.millisecondsSinceEpoch,
-                      );
-                      Provider.of<Bloc>(context, listen: false).notify();
-                    }
+                    prefs.setInt(
+                      'sobrietyDateInt',
+                      val?.millisecondsSinceEpoch ?? 0,
+                    );
+                    Provider.of<Bloc>(context, listen: false).notify();
                   });
                 }),
                 child: Text(
@@ -84,9 +85,9 @@ class _MainDrawerState extends State<MainDrawer> {
         text: 'app_appearance',
         sub: prefs.containsKey('fontSize')
             ? Text(
-                prefs.getDouble('fontSize').toInt().toString(),
+                prefs.getDouble('fontSize')?.toInt().toString() ?? '',
                 style: TextStyle(
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               )
             : Text(
@@ -100,9 +101,9 @@ class _MainDrawerState extends State<MainDrawer> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
+              const SizedBox(
                 width: 22,
-                child: const Text(
+                child: Text(
                   'A',
                   style: TextStyle(fontSize: 12),
                   textAlign: TextAlign.center,
@@ -111,22 +112,24 @@ class _MainDrawerState extends State<MainDrawer> {
               Expanded(
                 child: Slider(
                   onChanged: (double fontSize) => setState(() =>
-                      Provider.of<Bloc>(context, listen: false).changeFontSize(fontSize)),
+                      Provider.of<Bloc>(context, listen: false)
+                          .changeFontSize(fontSize)),
                   value: Provider.of<Bloc>(context, listen: false)
                           .getPrefs
                           .containsKey('fontSize')
                       ? Provider.of<Bloc>(context, listen: false)
-                          .getPrefs
-                          .getDouble('fontSize')
+                              .getPrefs
+                              .getDouble('fontSize') ??
+                          0
                       : 12,
                   min: 12,
                   max: 32,
                   divisions: 20,
                 ),
               ),
-              Container(
+              const SizedBox(
                 width: 20,
-                child: const Text(
+                child: Text(
                   'A',
                   style: TextStyle(fontSize: 24),
                 ),
@@ -153,8 +156,9 @@ class _MainDrawerState extends State<MainDrawer> {
                           (Theme.of(context).brightness == Brightness.light)
                               ? Brightness.dark
                               : Brightness.light,
-                      primaryColor:
-                          Provider.of<Bloc>(context, listen: false).getTheme.primaryColor,
+                      primaryColor: Provider.of<Bloc>(context, listen: false)
+                          .getTheme
+                          .primaryColor,
                     ),
                   ),
                 ),
@@ -176,7 +180,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     x.key == Localizations.localeOf(context).languageCode,
               )
               .value,
-          style: TextStyle(color: Theme.of(context).accentColor),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
         ),
         icon: const Icon(Icons.translate),
         children: _languages
@@ -185,12 +189,12 @@ class _MainDrawerState extends State<MainDrawer> {
                 value: f.key,
                 groupValue: Localizations.localeOf(context).languageCode,
                 title: Text(f.value),
-                onChanged: (String v) {
+                onChanged: (String? v) {
                   if (Localizations.localeOf(context).languageCode == v) {
                     return;
                   }
                   Provider.of<Bloc>(context, listen: false).changeLocale(
-                    Locale(v),
+                    Locale(v ?? 'en'),
                   );
                 },
               ),
@@ -203,7 +207,7 @@ class _MainDrawerState extends State<MainDrawer> {
           trans(context, isNotifActive ? 'notif_enabled' : 'notif_disabled'),
           style: TextStyle(
             color: isNotifActive
-                ? Theme.of(context).accentColor
+                ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).disabledColor,
           ),
         ),
@@ -220,7 +224,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   isNotifActive ? 'notif_enabled' : 'notif_disabled',
                 ),
               ),
-              Container(
+              SizedBox(
                 width: 85,
                 child: Switch(
                   value: isNotifActive,
@@ -228,10 +232,12 @@ class _MainDrawerState extends State<MainDrawer> {
                     Provider.of<Bloc>(context, listen: false)
                         .getPrefs
                         .setBool('notifActive', v);
-                    setState(() => null);
+                    setState(() {});
                     v
                         ? updateNotif(context)
-                        : Provider.of<Bloc>(context, listen: false).flnp.cancel(0);
+                        : Provider.of<Bloc>(context, listen: false)
+                            .flnp
+                            .cancel(0);
                   },
                 ),
               ),
@@ -263,20 +269,27 @@ class _MainDrawerState extends State<MainDrawer> {
                                     .getInt('notifMin') ??
                                 0,
                           ),
-                        ).then((TimeOfDay val) {
-                          if (val != null) {
-                            Provider.of<Bloc>(context).getPrefs.setInt(
-                                  'notifHour',
-                                  val.hour,
-                                );
-                            Provider.of<Bloc>(context).getPrefs.setInt(
-                                  'notifMin',
-                                  val.minute,
-                                );
-                            updateNotif(context);
-                          }
+                        ).then((TimeOfDay? val) {
+                          Provider.of<Bloc>(context).getPrefs.setInt(
+                                'notifHour',
+                                val?.hour ?? 0,
+                              );
+                          Provider.of<Bloc>(context).getPrefs.setInt(
+                                'notifMin',
+                                val?.minute ?? 0,
+                              );
+                          updateNotif(context);
                         })
                     : null,
+                color: Colors.transparent,
+                elevation: 0,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusElevation: 0,
+                highlightElevation: 0,
+                hoverElevation: 0,
                 child: Text(
                   TimeOfDay(
                     hour: Provider.of<Bloc>(context)
@@ -289,15 +302,6 @@ class _MainDrawerState extends State<MainDrawer> {
                         0,
                   ).format(context),
                 ),
-                color: Colors.transparent,
-                elevation: 0,
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                focusElevation: 0,
-                highlightElevation: 0,
-                hoverElevation: 0,
               ),
             ],
           ),
@@ -318,64 +322,57 @@ class _MainDrawerState extends State<MainDrawer> {
         Container()
       else
         DrawerMenuItem(
+          sub: const SizedBox.shrink(),
           text: 'Debugging',
           icon: const Icon(Icons.bug_report),
           children: <Widget>[
-            OutlineButton(
+            OutlinedButton(
               onPressed: () => prefs
                   .clear()
                   .then((bool val) => Provider.of<Bloc>(context).notify()),
               child: const Text('Clear'),
-              color: Colors.deepOrange[800],
             ),
-            OutlineButton(
+            OutlinedButton(
               onPressed: () => prefs.remove('fontSize').then(
                     (bool val) => Provider.of<Bloc>(context).notify(),
                   ),
               child: const Text('fontSize'),
-              color: Colors.deepOrange[800],
             ),
-            OutlineButton(
+            OutlinedButton(
               onPressed: () => prefs.remove('sobrietyDateInt').then(
                     (bool val) => Provider.of<Bloc>(context).notify(),
                   ),
               child: const Text('sobrietyDateInt'),
-              color: Colors.deepOrange[800],
             ),
-            OutlineButton(
+            OutlinedButton(
               onPressed: () => prefs.remove('notifActive').then(
                     (bool val) => Provider.of<Bloc>(context).notify(),
                   ),
               child: const Text('notifActive'),
-              color: Colors.deepOrange[800],
             ),
-            OutlineButton(
+            OutlinedButton(
               onPressed: () => prefs.remove('notifHour').then(
                     (bool val) => Provider.of<Bloc>(context).notify(),
                   ),
               child: const Text('notifHour'),
-              color: Colors.deepOrange[800],
             ),
-            OutlineButton(
+            OutlinedButton(
               onPressed: () => prefs.remove('notifMin').then(
                     (bool val) => Provider.of<Bloc>(context).notify(),
                   ),
               child: const Text('notifMin'),
-              color: Colors.deepOrange[800],
             ),
-            OutlineButton(
+            OutlinedButton(
               onPressed: () => prefs.remove('theme').then(
                     (bool val) => Provider.of<Bloc>(context).notify(),
                   ),
               child: const Text('theme'),
-              color: Colors.deepOrange[800],
             ),
-            OutlineButton(
+            OutlinedButton(
               onPressed: () => prefs.remove('lang').then(
                     (bool val) => Provider.of<Bloc>(context).notify(),
                   ),
               child: const Text('lang'),
-              color: Colors.deepOrange[800],
             ),
           ],
         ),
@@ -400,32 +397,45 @@ class _MainDrawerState extends State<MainDrawer> {
 
   // TODO(AN): Make notification data show specific information
   void updateNotif(BuildContext context) {
-    Provider.of<Bloc>(context, listen: false).flnp.showDailyAtTime(
+    Provider.of<Bloc>(context, listen: false).flnp.zonedSchedule(
           0,
           trans(context, 'notif_dr_title'),
           trans(context, 'notif_dr_desc'),
-          Time(Provider.of<Bloc>(context, listen: false).getPrefs.getInt('notifHour') ?? 8,
-              Provider.of<Bloc>(context, listen: false).getPrefs.getInt('notifMin') ?? 0, 00),
+          TZDateTime.now(local)
+          // Provider.of<Bloc>(context, listen: false)
+          //         .getPrefs
+          //         .getInt('notifHour') ??
+          //     8,
+          // Provider.of<Bloc>(context, listen: false)
+          //         .getPrefs
+          //         .getInt('notifMin') ??
+          //     0,
+          // 00
+          // )
+          ,
           const NotificationDetails(
-            AndroidNotificationDetails(
+            android: AndroidNotificationDetails(
               '0',
               'Dr. Bob',
-              'Daily Reflection',
-              importance: Importance.Max,
-              priority: Priority.Min,
+              channelDescription: 'Daily Reflection',
+              importance: Importance.min,
+              priority: Priority.min,
             ),
-            IOSNotificationDetails(),
+            iOS: DarwinNotificationDetails(),
           ),
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
         );
   }
 }
 
 class DrawerMenuItem extends StatefulWidget {
   const DrawerMenuItem({
-    @required this.text,
-    @required this.icon,
-    @required this.children,
-    this.sub,
+    super.key,
+    required this.text,
+    required this.icon,
+    required this.children,
+    required this.sub,
   });
 
   final String text;
@@ -442,34 +452,37 @@ class _DrawerMenuItemState extends State<DrawerMenuItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ExpansionTile(
-        leading: Icon(
-          isExpanded ? Icons.expand_less : Icons.expand_more,
-          color: isExpanded ? Theme.of(context).accentColor : Theme.of(context).textTheme.bodyText1.color,
-        ),
-        title: Text(
-          trans(context, widget.text),
-          style: TextStyle(color: isExpanded ? Theme.of(context).accentColor : Theme.of(context).textTheme.bodyText1.color,
-          fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal),
-        ),
-        subtitle: widget.sub,
-        trailing: Directionality(
-          textDirection: TextDirection.ltr,
-          child: widget.icon,
-        ),
-        onExpansionChanged: (_) => setState(() => isExpanded = !isExpanded),
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 22,
-            ),
-            child: Column(
-              children: widget.children,
-            ),
-          ),
-        ],
+    return ExpansionTile(
+      leading: Icon(
+        isExpanded ? Icons.expand_less : Icons.expand_more,
+        color: isExpanded
+            ? Theme.of(context).colorScheme.secondary
+            : Theme.of(context).textTheme.bodyLarge!.color,
       ),
+      title: Text(
+        trans(context, widget.text),
+        style: TextStyle(
+            color: isExpanded
+                ? Theme.of(context).colorScheme.secondary
+                : Theme.of(context).textTheme.bodyLarge!.color,
+            fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal),
+      ),
+      subtitle: widget.sub,
+      trailing: Directionality(
+        textDirection: TextDirection.ltr,
+        child: widget.icon,
+      ),
+      onExpansionChanged: (_) => setState(() => isExpanded = !isExpanded),
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 22,
+          ),
+          child: Column(
+            children: widget.children,
+          ),
+        ),
+      ],
     );
   }
 }

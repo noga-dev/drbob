@@ -1,3 +1,4 @@
+// ignore_for_file: file_names
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,20 +15,21 @@ class Bloc with ChangeNotifier {
     _flnp = FlutterLocalNotificationsPlugin();
   }
 
-  SharedPreferences _preferences;
-  ThemeData _theme;
-  Locale _locale;
-  FlutterLocalNotificationsPlugin _flnp;
+  late SharedPreferences _preferences;
+  late ThemeData _theme;
+  late Locale _locale;
+  late FlutterLocalNotificationsPlugin _flnp;
 
   ThemeData get getTheme => _theme;
   Locale get getLocale => _locale;
   SharedPreferences get getPrefs => _preferences;
   FlutterLocalNotificationsPlugin get flnp => _flnp;
   double get getFontSize => _preferences.containsKey('fontSize')
-      ? getPrefs.getDouble('fontSize')
+      ? getPrefs.getDouble('fontSize')!
       : 14;
   DateTime get getSobrietyDate => _preferences.containsKey('sobrietyDateInt')
-      ? DateTime.fromMillisecondsSinceEpoch(_preferences.getInt('sobrietyDateInt'))
+      ? DateTime.fromMillisecondsSinceEpoch(
+          _preferences.getInt('sobrietyDateInt')!)
       : DateTime.now();
   Duration get getSobrietyTime => DateTime.now().difference(getSobrietyDate);
 

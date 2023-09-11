@@ -1,21 +1,22 @@
-import 'package:drbob/blocs/Bloc.dart';
+import 'package:drbob/blocs/bloc.dart';
 import 'package:drbob/utils/layout.dart';
 import 'package:drbob/utils/localization.dart';
 import 'package:drbob/views/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
+
 import 'home/daily_reflection.dart';
 
 class PrimaryView extends StatelessWidget {
+  const PrimaryView({super.key});
+
   @override
   Widget build(BuildContext context) {
     Provider.of<Bloc>(context).flnp.initialize(
-          const InitializationSettings(
-            AndroidInitializationSettings('@mipmap/ic_launcher'),
-            IOSInitializationSettings(),
-          ),
-          onSelectNotification: (String payload) => Navigator.push(
+          const InitializationSettings(),
+          onDidReceiveNotificationResponse: (NotificationResponse details) =>
+              Navigator.push(
             context,
             MaterialPageRoute<void>(
               builder: (BuildContext context) => DailyReflectionView(
@@ -30,10 +31,9 @@ class PrimaryView extends StatelessWidget {
       title: Center(
         child: Text(
           trans(context, 'title_home'),
-          style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color),
         ),
       ),
-      child: HomeView(),
       fab: FloatingActionButton.extended(
         backgroundColor: Colors.teal,
         onPressed: () => Navigator.push(
@@ -52,6 +52,7 @@ class PrimaryView extends StatelessWidget {
           ),
         ),
       ),
+      child: const HomeView(),
     );
   }
 }
