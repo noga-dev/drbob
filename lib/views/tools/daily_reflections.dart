@@ -318,11 +318,14 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                                                         .toString(),
                                                     style: TextStyle(
                                                         fontSize: fontSize),
-                                                    textScaleFactor: .75,
+                                                    textScaler:
+                                                        const TextScaler.linear(
+                                                            0.75),
                                                   ),
                                                   const Text(
                                                     '\n',
-                                                    textScaleFactor: .25,
+                                                    textScaler:
+                                                        TextScaler.linear(0.25),
                                                   ),
                                                   RichText(
                                                     text: searchMatch(
@@ -333,17 +336,21 @@ class _DailyReflectionsListViewState extends State<DailyReflectionsListView> {
                                                   ),
                                                   const Text(
                                                     '\n',
-                                                    textScaleFactor: .25,
+                                                    textScaler:
+                                                        TextScaler.linear(0.25),
                                                   ),
                                                   RichText(
                                                     text: searchMatch(
                                                       f.source,
                                                     ),
-                                                    textScaleFactor: .75,
+                                                    textScaler:
+                                                        const TextScaler.linear(
+                                                            .75),
                                                   ),
                                                   const Text(
                                                     '\n',
-                                                    textScaleFactor: .25,
+                                                    textScaler:
+                                                        TextScaler.linear(0.25),
                                                   ),
                                                   RichText(
                                                     text: searchMatch(
