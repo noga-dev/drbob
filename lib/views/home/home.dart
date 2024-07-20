@@ -7,7 +7,6 @@ import 'package:drbob/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -42,8 +41,7 @@ class HomeView extends StatelessWidget {
         Container(
           height: 10,
         ),
-        buildX(
-          context: context,
+        const X(
           icon: Icons.directions_walk,
           button: 'btn_ts',
           header: 'twelve_steps',
@@ -51,8 +49,7 @@ class HomeView extends StatelessWidget {
           sub: 'btn_ts_desc',
           x: 12,
         ),
-        buildX(
-          context: context,
+        const X(
           icon: Icons.bookmark,
           button: 'btn_tt',
           header: 'twelve_traditions',
@@ -60,21 +57,19 @@ class HomeView extends StatelessWidget {
           sub: 'btn_tt_desc',
           x: 12,
         ),
-        buildModalText(
-          context: context,
+        const ModalText(
           title: 'btn_sp',
           sub: 'btn_sp_desc',
-          modalText: 'serenity_prayer',
+          text: 'serenity_prayer',
           icon: Icons.dashboard,
         ),
-        buildModalText(
-          context: context,
+        const ModalText(
           title: 'btn_preamble',
           sub: 'btn_preamble_desc',
-          modalText: 'preamble',
+          text: 'preamble',
           icon: Icons.local_florist,
         ),
-        menuItem(
+        MenuItem(
           icon: Icons.group_work,
           label: trans(
             context,
@@ -94,8 +89,12 @@ class HomeView extends StatelessWidget {
                 ? Colors.black
                 : Colors.white,
             barrierLabel: '',
-            transitionBuilder: (BuildContext context, Animation<double> anim1,
-                    Animation<double> anim2, Widget child) =>
+            transitionBuilder: (
+              BuildContext context,
+              Animation<double> anim1,
+              Animation<double> anim2,
+              Widget child,
+            ) =>
                 SimpleDialog(
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -135,331 +134,6 @@ class HomeView extends StatelessWidget {
         // ),
       ],
     );
-  }
-
-  Widget menuItem({
-    required String label,
-    required IconData icon,
-    required Future<void> Function() func,
-  }) =>
-      SizedBox(
-        height: 80,
-        width: 200,
-        child: Card(
-          color: Colors.transparent,
-          child: AnimatedMenuItem(
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Container(
-                    width: 20,
-                  ),
-                  Expanded(child: Text(label)),
-                  Icon(icon),
-                  Container(
-                    width: 20,
-                  ),
-                ],
-              ),
-              func),
-        ),
-      );
-
-  Widget buildModalText({
-    required BuildContext context,
-    required IconData icon,
-    required String sub,
-    required String title,
-    required String modalText,
-  }) {
-    return menuItem(
-      icon: icon,
-      label: trans(
-        context,
-        title,
-      ),
-      func: () => showGeneralDialog<void>(
-        barrierDismissible: true,
-        barrierLabel: '',
-        barrierColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.black
-            : Colors.white,
-        context: context,
-        transitionDuration: const Duration(milliseconds: 500),
-        pageBuilder: (
-          BuildContext context,
-          Animation<double> anim1,
-          Animation<double> anime2,
-        ) {
-          return const SizedBox.shrink();
-        },
-        transitionBuilder: (BuildContext context, Animation<double> anim1,
-            Animation<double> anim2, Widget child) {
-          const String clipboard = 'copied_to_clipboard';
-          bool copied = false;
-          return SafeArea(
-            top: true,
-            child: Opacity(
-              opacity: anim1.value,
-              child: SimpleDialog(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                contentPadding: const EdgeInsets.all(0),
-                children: <Widget>[
-                  StatefulBuilder(
-                    builder: (BuildContext context, Function s) => InkWell(
-                      onLongPress: () {
-                        s(() {
-                          copied = true;
-                          Clipboard.setData(
-                            ClipboardData(
-                              text: modalText,
-                            ),
-                          );
-                        });
-                        Future<dynamic>.delayed(
-                          const Duration(seconds: 2),
-                          () => s(
-                            () => copied = false,
-                          ),
-                        );
-                      },
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      child: AnimatedDefaultTextStyle(
-                        curve: Curves.ease, // TODO(AN): Randomize Curves?
-                        duration: const Duration(
-                          milliseconds: 2000,
-                        ),
-                        style: copied
-                            ? const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              )
-                            : TextStyle(
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    Provider.of<Bloc>(context).getFontSize,
-                              ),
-                        child: Text(
-                          copied
-                              ? trans(
-                                  context,
-                                  clipboard,
-                                )
-                              : trans(
-                                  context,
-                                  modalText,
-                                ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget buildX({
-    required BuildContext context,
-    required IconData icon,
-    required String button,
-    required String sub,
-    required String type,
-    required String header,
-    required int x,
-  }) {
-    return menuItem(
-        icon: icon,
-        label: trans(
-          context,
-          button,
-        ),
-        func: () => showGeneralDialog<void>(
-              context: context,
-              pageBuilder: (
-                BuildContext context,
-                Animation<double> anim1,
-                Animation<double> anim2,
-              ) {
-                final String temp = trans(context, 'copied_to_clipboard');
-                int selected = 0;
-
-                return SafeArea(
-                  top: true,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * .8,
-                    width: MediaQuery.of(context).size.width * .8,
-                    child: Opacity(
-                      opacity: anim1.value,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 60),
-                        child: SimpleDialog(
-                          elevation: 0,
-                          backgroundColor: Colors.transparent,
-                          title: Text(
-                            '${trans(context, header)}\n',
-                            textAlign: TextAlign.center,
-                          ),
-                          children: <Widget>[
-                            StatefulBuilder(
-                              builder: (BuildContext context, Function s) {
-                                return SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .7,
-                                  width: MediaQuery.of(context).size.width * .8,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: List<int>.generate(
-                                      x,
-                                      (int i) => ++i,
-                                    )
-                                        .map(
-                                          (int f) => Wrap(
-                                            children: <Widget>[
-                                              InkWell(
-                                                splashColor: Colors.primaries
-                                                    .toList()[Random().nextInt(
-                                                        Colors
-                                                            .primaries.length)]
-                                                    .withOpacity(.5),
-                                                onLongPress: () {
-                                                  s(() {
-                                                    selected = f;
-                                                    Clipboard.setData(
-                                                      ClipboardData(
-                                                        text: trans(
-                                                          context,
-                                                          type + f.toString(),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  });
-                                                  Future<void>.delayed(
-                                                    const Duration(seconds: 2),
-                                                    () => s(() => selected = 0),
-                                                  );
-                                                },
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Flexible(
-                                                      flex: 2,
-                                                      child: SizedBox(
-                                                        width: 120,
-                                                        child: Text(
-                                                          f.toString(),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: Provider
-                                                                      .of<Bloc>(
-                                                                          context)
-                                                                  .getFontSize),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Flexible(
-                                                      flex: 12,
-                                                      child:
-                                                          AnimatedDefaultTextStyle(
-                                                        curve: Curves.ease,
-                                                        style: selected == f
-                                                            ? const TextStyle(
-                                                                color:
-                                                                    Colors.red,
-                                                              )
-                                                            : TextStyle(
-                                                                color: Theme.of(context)
-                                                                            .brightness ==
-                                                                        Brightness
-                                                                            .dark
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                fontSize: Provider.of<
-                                                                            Bloc>(
-                                                                        context)
-                                                                    .getFontSize),
-                                                        duration:
-                                                            const Duration(
-                                                          milliseconds: 4000,
-                                                        ),
-                                                        child: (selected == f)
-                                                            ? Center(
-                                                                child:
-                                                                    Text(temp),
-                                                              )
-                                                            : Text(
-                                                                trans(
-                                                                  context,
-                                                                  type +
-                                                                      f.toString(),
-                                                                ),
-                                                              ),
-                                                      ),
-                                                    ),
-                                                    Flexible(
-                                                      flex: 1,
-                                                      child: Container(),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              if (f != x)
-                                                Container(
-                                                  margin: EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              .2),
-                                                  child: const Divider(
-                                                    color: Colors.grey,
-                                                  ),
-                                                )
-                                              else
-                                                Container()
-                                            ],
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
-                                );
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-              barrierDismissible: true,
-              transitionDuration: const Duration(milliseconds: 500),
-              barrierColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black
-                  : Colors.white,
-              barrierLabel: '',
-              transitionBuilder: (
-                BuildContext context,
-                Animation<double> anim1,
-                Animation<double> anim2,
-                Widget child,
-              ) {
-                return child;
-              },
-            ));
   }
 }
 
@@ -584,7 +258,8 @@ class _SobrietySliderState extends State<SobrietySlider>
     with TickerProviderStateMixin {
   late AnimationController _radialProgressAnimationController;
   late Animation<double> _progressAnimation;
-  double goalCompleted = 0, progressDegrees = 0;
+  double goalCompleted = 0;
+  double progressDegrees = 0;
 
   @override
   void initState() {
@@ -629,31 +304,32 @@ class _SobrietySliderState extends State<SobrietySlider>
   CustomPaint progressView() {
     return CustomPaint(
       foregroundPainter: ProgressPainter(
-          darkTheme: Theme.of(context).brightness == Brightness.dark,
-          oldChipColor: Theme.of(context).brightness == Brightness.dark
-              ? Colors.black
-              : Colors.grey,
-          newChipColor: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black,
-          dividerColor: Theme.of(context).brightness == Brightness.dark
-              ? Colors.black
-              : Colors.white,
-          completedPercentage: progressDegrees,
-          circleWidth: 12.0,
-          dividers: 12),
+        darkTheme: Theme.of(context).brightness == Brightness.dark,
+        oldChipColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.grey,
+        newChipColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
+        dividerColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white,
+        completedPercentage: progressDegrees,
+        circleWidth: 12.0,
+        dividers: 12,
+      ),
       child: DefaultTextStyle(
         style: statisticsStyle.copyWith(
             color: Theme.of(context).textTheme.bodyLarge!.color),
         child: Center(
-          child: !(progressDegrees == .0)
-              ? Text('${progressDegrees.toStringAsFixed(2)}%')
-              : Center(
+          child: (progressDegrees == 0)
+              ? Center(
                   child: Text(
                     trans(context, 'pick_sobriety_date'),
                     textAlign: TextAlign.center,
                   ),
-                ),
+                )
+              : Text('${progressDegrees.toStringAsFixed(2)}%'),
         ),
       ),
     );
@@ -668,32 +344,35 @@ class _SobrietySliderState extends State<SobrietySlider>
   @override
   Widget build(BuildContext context) {
     // TODO(AN): duplicate code from drawer-> refactor later
-    final SharedPreferences prefs = Provider.of<Bloc>(context).getPrefs;
-    final bool hasSobrietyDate = prefs.containsKey('sobrietyDateInt');
-    final DateTime now = DateTime.now();
-    final DateTime sobDate = hasSobrietyDate
+    final prefs = Provider.of<Bloc>(context).getPrefs;
+    final hasSobrietyDate = prefs.containsKey('sobrietyDateInt');
+    final now = DateTime.now();
+    final sobDate = hasSobrietyDate
         ? DateTime.fromMillisecondsSinceEpoch(
             prefs.getInt('sobrietyDateInt') ?? 0)
         : now;
 
     return InkWell(
       borderRadius: BorderRadius.circular(widget.radius),
-      onTap: () => hasSobrietyDate
-          ? null
-          : showDatePicker(
-              firstDate: DateTime.fromMillisecondsSinceEpoch(0),
-              context: context,
-              initialDate: sobDate,
-              lastDate: DateTime.now(),
-            ).then((DateTime? val) {
-              setState(() {
-                prefs.setInt(
-                  'sobrietyDateInt',
-                  val?.millisecondsSinceEpoch ?? 0,
-                );
-                Provider.of<Bloc>(context).notify();
-              });
-            }),
+      onTap: () async {
+        final result = await showDatePicker(
+          firstDate: DateTime.fromMillisecondsSinceEpoch(0),
+          context: context,
+          initialDate: sobDate,
+          lastDate: DateTime.now(),
+        );
+
+        if (result != null) {
+          setState(() {
+            prefs.setInt(
+              'sobrietyDateInt',
+              result.millisecondsSinceEpoch,
+            );
+
+            Provider.of<Bloc>(context).notify();
+          });
+        }
+      },
       child: Tooltip(
         message: trans(context, 'disabled_func'),
         child: SizedBox(
@@ -847,6 +526,327 @@ class MenuButton extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class MenuItem extends StatelessWidget {
+  const MenuItem({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.func,
+  });
+
+  final String label;
+  final IconData icon;
+  final Future<void> Function() func;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 80,
+      width: 200,
+      child: Card(
+        color: Colors.transparent,
+        child: AnimatedMenuItem(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Container(
+                  width: 20,
+                ),
+                Expanded(child: Text(label)),
+                Icon(icon),
+                Container(
+                  width: 20,
+                ),
+              ],
+            ),
+            func),
+      ),
+    );
+  }
+}
+
+class ModalText extends StatefulWidget {
+  const ModalText({
+    super.key,
+    required this.icon,
+    required this.sub,
+    required this.title,
+    required this.text,
+  });
+
+  final IconData icon;
+  final String sub;
+  final String title;
+  final String text;
+
+  @override
+  State<ModalText> createState() => _ModalTextState();
+}
+
+class _ModalTextState extends State<ModalText> {
+  bool copied = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MenuItem(
+      icon: widget.icon,
+      label: trans(
+        context,
+        widget.title,
+      ),
+      func: () => showGeneralDialog<void>(
+        barrierDismissible: true,
+        barrierLabel: '',
+        barrierColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white,
+        context: context,
+        transitionDuration: const Duration(milliseconds: 500),
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> anim1,
+          Animation<double> anime2,
+        ) {
+          return const SizedBox.shrink();
+        },
+        transitionBuilder: (
+          BuildContext context,
+          Animation<double> anim1,
+          Animation<double> anim2,
+          Widget child,
+        ) {
+          const String clipboard = 'copied_to_clipboard';
+
+          return SafeArea(
+            top: true,
+            child: Opacity(
+              opacity: anim1.value,
+              child: SimpleDialog(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                contentPadding: const EdgeInsets.all(0),
+                children: <Widget>[
+                  InkWell(
+                    onLongPress: () {
+                      setState(() {
+                        copied = true;
+                        Clipboard.setData(
+                          ClipboardData(
+                            text: widget.text,
+                          ),
+                        );
+                      });
+                      Future<dynamic>.delayed(
+                        const Duration(seconds: 2),
+                        () => setState(
+                          () => copied = false,
+                        ),
+                      );
+                    },
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    child: AnimatedDefaultTextStyle(
+                      curve: Curves.ease, // TODO(AN): Randomize Curves?
+                      duration: const Duration(
+                        milliseconds: 2000,
+                      ),
+                      style: copied
+                          ? const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            )
+                          : TextStyle(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: Provider.of<Bloc>(context).getFontSize,
+                            ),
+                      child: Text(
+                        copied
+                            ? trans(
+                                context,
+                                clipboard,
+                              )
+                            : trans(
+                                context,
+                                widget.text,
+                              ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class X extends StatefulWidget {
+  const X({
+    super.key,
+    required this.icon,
+    required this.button,
+    required this.sub,
+    required this.type,
+    required this.header,
+    required this.x,
+  });
+
+  final IconData icon;
+  final String button;
+  final String sub;
+  final String type;
+  final String header;
+  final int x;
+
+  @override
+  State<X> createState() => _XState();
+}
+
+class _XState extends State<X> {
+  @override
+  Widget build(BuildContext context) {
+    return MenuItem(
+      icon: widget.icon,
+      label: trans(
+        context,
+        widget.button,
+      ),
+      func: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            final temp = trans(context, 'copied_to_clipboard');
+            int selected = 0;
+
+            return SafeArea(
+              top: true,
+              child: Scaffold(
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: Text(
+                    trans(context, widget.header),
+                  ),
+                ),
+                body: ListView(
+                  children: List.generate(
+                    widget.x,
+                    (int i) => ++i,
+                  )
+                      .map(
+                        (int f) => Wrap(
+                          children: [
+                            ListTile(
+                              splashColor: Colors.primaries
+                                  .toList()[
+                                      Random().nextInt(Colors.primaries.length)]
+                                  .withOpacity(.5),
+                              onLongPress: () {
+                                setState(() {
+                                  selected = f;
+                                  Clipboard.setData(
+                                    ClipboardData(
+                                      text: trans(
+                                        context,
+                                        widget.type + f.toString(),
+                                      ),
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('copied to clipboard'),
+                                    ),
+                                  );
+                                });
+                                Future<void>.delayed(
+                                  const Duration(seconds: 2),
+                                  () => setState(() => selected = 0),
+                                );
+                              },
+                              title: Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 2,
+                                    child: SizedBox(
+                                      width: 120,
+                                      child: Text(
+                                        f.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: Provider.of<Bloc>(context)
+                                                .getFontSize),
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 12,
+                                    child: AnimatedDefaultTextStyle(
+                                      curve: Curves.ease,
+                                      style: selected == f
+                                          ? const TextStyle(
+                                              color: Colors.red,
+                                            )
+                                          : TextStyle(
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontSize:
+                                                  Provider.of<Bloc>(context)
+                                                      .getFontSize),
+                                      duration: const Duration(
+                                        milliseconds: 4000,
+                                      ),
+                                      child: (selected == f)
+                                          ? Center(
+                                              child: Text(temp),
+                                            )
+                                          : Text(
+                                              trans(
+                                                context,
+                                                widget.type + f.toString(),
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 1,
+                                    child: Container(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (f != widget.x)
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width * .2),
+                                child: const Divider(
+                                  color: Colors.grey,
+                                ),
+                              )
+                            else
+                              Container()
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
