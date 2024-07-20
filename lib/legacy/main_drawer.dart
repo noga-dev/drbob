@@ -1,6 +1,5 @@
-import 'package:drbob/blocs/bloc.dart';
-import 'package:drbob/utils/localization.dart';
-import 'package:drbob/utils/style.dart';
+import 'package:drbob/legacy/blocs/bloc.dart';
+import 'package:drbob/legacy/utils/localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -54,25 +53,30 @@ class _MainDrawerState extends State<MainDrawer> {
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: [
               MaterialButton(
                 focusElevation: 12,
                 elevation: 0,
                 color: Colors.transparent,
-                onPressed: () => showDatePicker(
-                  firstDate: DateTime.fromMillisecondsSinceEpoch(0),
-                  context: context,
-                  initialDate: sobDate,
-                  lastDate: DateTime.now(),
-                ).then((DateTime? val) {
-                  setState(() {
-                    prefs.setInt(
-                      'sobrietyDateInt',
-                      val?.millisecondsSinceEpoch ?? 0,
-                    );
-                    Provider.of<Bloc>(context, listen: false).notify();
-                  });
-                }),
+                onPressed: () async {
+                  final result = await showDatePicker(
+                    firstDate: DateTime.fromMillisecondsSinceEpoch(0),
+                    context: context,
+                    initialDate: sobDate,
+                    lastDate: DateTime.now(),
+                  );
+
+                  if (result != null) {
+                    setState(() {
+                      prefs.setInt(
+                        'sobrietyDateInt',
+                        result.millisecondsSinceEpoch,
+                      );
+
+                      Provider.of<Bloc>(context, listen: false).notify();
+                    });
+                  }
+                },
                 child: Text(
                   trans(context, 'change_sobriety_date'),
                 ),
@@ -318,9 +322,7 @@ class _MainDrawerState extends State<MainDrawer> {
         icon: const Icon(Icons.help_outline),
         children: <Widget>[Text(trans(context, 'disabled_func'))],
       ),
-      if (kReleaseMode)
-        Container()
-      else
+      if (kDebugMode)
         DrawerMenuItem(
           sub: const SizedBox.shrink(),
           text: 'Debugging',
@@ -382,7 +384,6 @@ class _MainDrawerState extends State<MainDrawer> {
       elevation: 0,
       child: Container(
         alignment: Alignment.center,
-        color: mainBgColor(context),
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(
             right: 20,

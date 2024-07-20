@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:drbob/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +19,7 @@ class NavDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> items = <Widget>[
+    final items = [
       AnimatedMenuItem(
         ListTile(
           leading: const Icon(Icons.home),
@@ -102,33 +101,158 @@ class NavDrawer extends StatelessWidget {
         ),
       ),
     ];
+
     return Drawer(
       elevation: 0,
-      child: Container(
-        color: mainBgColor(context),
-        alignment: Alignment.center,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(
-            left: 20,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: items,
-          ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(
+          left: 20,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: items,
         ),
       ),
     );
   }
+}
 
-  Widget buildX({
-    required BuildContext context,
-    required IconData icon,
-    required String button,
-    required String sub,
-    required String type,
-    required String header,
-    required int x,
-  }) {
+class T extends StatelessWidget {
+  const T({
+    super.key,
+    required this.icon,
+    required this.sub,
+    required this.title,
+    required this.modalText,
+  });
+
+  final IconData icon;
+  final String sub;
+  final String title;
+  final String modalText;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedMenuItem(
+      ListTile(
+        leading: Icon(icon),
+        title: Text(
+          trans(
+            context,
+            title,
+          ),
+        ),
+        subtitle: Text(trans(context, sub)),
+      ),
+      () => showGeneralDialog<void>(
+        barrierDismissible: true,
+        barrierLabel: '',
+        barrierColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white,
+        context: context,
+        transitionDuration: const Duration(milliseconds: 500),
+        pageBuilder: (BuildContext context, Animation<double> anim1,
+            Animation<double> anime2) {
+          return const SizedBox.shrink();
+        },
+        transitionBuilder: (BuildContext context, Animation<double> anim1,
+            Animation<double> anim2, Widget child) {
+          const String clipboard = 'copied_to_clipboard';
+          bool copied = false;
+          return SafeArea(
+            top: true,
+            child: Opacity(
+              opacity: anim1.value,
+              child: SimpleDialog(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                contentPadding: const EdgeInsets.all(0),
+                children: <Widget>[
+                  StatefulBuilder(
+                    builder: (BuildContext context, Function s) => InkWell(
+                      onLongPress: () {
+                        s(() {
+                          copied = true;
+                          Clipboard.setData(
+                            ClipboardData(
+                              text: modalText,
+                            ),
+                          );
+                        });
+                        Future<dynamic>.delayed(
+                          const Duration(seconds: 2),
+                          () => s(
+                            () => copied = false,
+                          ),
+                        );
+                      },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: AnimatedDefaultTextStyle(
+                        curve: Curves.ease, // TODO(AN): Randomize Curves?
+                        duration: const Duration(
+                          milliseconds: 2000,
+                        ),
+                        style: copied
+                            ? const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              )
+                            : TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    Provider.of<Bloc>(context).getFontSize,
+                              ),
+                        child: Text(
+                          copied
+                              ? trans(
+                                  context,
+                                  clipboard,
+                                )
+                              : trans(
+                                  context,
+                                  modalText,
+                                ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class N extends StatelessWidget {
+  const N({
+    super.key,
+    required this.icon,
+    required this.button,
+    required this.sub,
+    required this.type,
+    required this.header,
+    required this.x,
+  });
+
+  final IconData icon;
+  final String button;
+  final String sub;
+  final String type;
+  final String header;
+  final int x;
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedMenuItem(
         ListTile(
           leading: Icon(icon),
@@ -292,111 +416,5 @@ class NavDrawer extends StatelessWidget {
                 ),
               );
             }));
-  }
-
-  Widget buildModalText({
-    required BuildContext context,
-    required IconData icon,
-    required String sub,
-    required String title,
-    required String modalText,
-  }) {
-    return AnimatedMenuItem(
-      ListTile(
-        leading: Icon(icon),
-        title: Text(
-          trans(
-            context,
-            title,
-          ),
-        ),
-        subtitle: Text(trans(context, sub)),
-      ),
-      () => showGeneralDialog<void>(
-        barrierDismissible: true,
-        barrierLabel: '',
-        barrierColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.black
-            : Colors.white,
-        context: context,
-        transitionDuration: const Duration(milliseconds: 500),
-        pageBuilder: (BuildContext context, Animation<double> anim1,
-            Animation<double> anime2) {
-          return const SizedBox.shrink();
-        },
-        transitionBuilder: (BuildContext context, Animation<double> anim1,
-            Animation<double> anim2, Widget child) {
-          const String clipboard = 'copied_to_clipboard';
-          bool copied = false;
-          return SafeArea(
-            top: true,
-            child: Opacity(
-              opacity: anim1.value,
-              child: SimpleDialog(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                contentPadding: const EdgeInsets.all(0),
-                children: <Widget>[
-                  StatefulBuilder(
-                    builder: (BuildContext context, Function s) => InkWell(
-                      onLongPress: () {
-                        s(() {
-                          copied = true;
-                          Clipboard.setData(
-                            ClipboardData(
-                              text: modalText,
-                            ),
-                          );
-                        });
-                        Future<dynamic>.delayed(
-                          const Duration(seconds: 2),
-                          () => s(
-                            () => copied = false,
-                          ),
-                        );
-                      },
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      child: AnimatedDefaultTextStyle(
-                        curve: Curves.ease, // TODO(AN): Randomize Curves?
-                        duration: const Duration(
-                          milliseconds: 2000,
-                        ),
-                        style: copied
-                            ? const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              )
-                            : TextStyle(
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    Provider.of<Bloc>(context).getFontSize,
-                              ),
-                        child: Text(
-                          copied
-                              ? trans(
-                                  context,
-                                  clipboard,
-                                )
-                              : trans(
-                                  context,
-                                  modalText,
-                                ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
   }
 }

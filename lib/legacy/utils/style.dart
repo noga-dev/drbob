@@ -5,8 +5,6 @@ const TextStyle statisticsStyle = TextStyle(
   fontSize: 20,
 );
 
-Color mainBgColor(BuildContext context) => Colors.teal;
-
 const double inputTextSize = 14.0;
 const FontWeight weight = FontWeight.normal;
 

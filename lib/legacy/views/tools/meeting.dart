@@ -1,5 +1,5 @@
-import 'package:drbob/utils/layout.dart';
-import 'package:drbob/utils/localization.dart';
+import 'package:drbob/legacy/utils/layout.dart';
+import 'package:drbob/legacy/utils/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

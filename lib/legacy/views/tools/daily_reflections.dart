@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:drbob/blocs/bloc.dart';
-import 'package:drbob/models/daily_reflection.dart';
-import 'package:drbob/utils/layout.dart';
-import 'package:drbob/utils/localization.dart';
-import 'package:drbob/views/home/daily_reflection.dart';
+import 'package:drbob/legacy/blocs/bloc.dart';
+import 'package:drbob/legacy/models/daily_reflection.dart';
+import 'package:drbob/legacy/utils/layout.dart';
+import 'package:drbob/legacy/utils/localization.dart';
+import 'package:drbob/legacy/views/home/daily_reflection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;

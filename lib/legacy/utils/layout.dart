@@ -1,5 +1,5 @@
-import 'package:drbob/main_drawer.dart';
-import 'package:drbob/nav_drawer.dart';
+import 'package:drbob/legacy/main_drawer.dart';
+import 'package:drbob/legacy/nav_drawer.dart';
 import 'package:flutter/material.dart';
 
 class MyScaffold extends StatefulWidget {

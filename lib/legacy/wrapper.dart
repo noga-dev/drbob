@@ -1,6 +1,6 @@
-import 'package:drbob/utils/localization.dart';
-import 'package:drbob/views/tools/big_book.dart';
-import 'package:drbob/views/tools/daily_reflections.dart';
+import 'package:drbob/legacy/utils/localization.dart';
+import 'package:drbob/legacy/views/tools/big_book.dart';
+import 'package:drbob/legacy/views/tools/daily_reflections.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

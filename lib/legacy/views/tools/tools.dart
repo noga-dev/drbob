@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:drbob/utils/localization.dart';
+import 'package:drbob/legacy/utils/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,8 +10,7 @@ class ToolsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: Theme.of(context).canvasColor,
           border: Directionality.of(context) == TextDirection.rtl
@@ -28,82 +27,92 @@ class ToolsView extends StatelessWidget {
                   ),
                 ),
         ),
-        child: Column(
-          children: <Widget>[
-            ListTile(
-              title: Text(
-                trans(context, 'useful'),
-                style: Theme.of(context).textTheme.titleLarge,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  trans(context, 'useful'),
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: buildX(
-                    context,
-                    'btn_twelve_traditions',
-                    'twelve_traditions',
-                    'tradition_',
-                    Colors.green,
-                    12,
+              const Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Y(
+                      button: 'btn_twelve_traditions',
+                      header: 'twelve_traditions',
+                      type: 'tradition_',
+                      color: Colors.green,
+                      x: 12,
+                    ),
                   ),
-                ),
-                const VerticalDivider(
-                  thickness: 10,
-                ),
-                Expanded(
-                  child: buildX(
-                    context,
-                    'btn_twelve_steps',
-                    'twelve_steps',
-                    'step_',
-                    Colors.teal,
-                    12,
+                  VerticalDivider(
+                    thickness: 10,
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: buildX(
-                    context,
-                    'btn_twelve_promises',
-                    'twelve_promises',
-                    'promise_',
-                    Colors.red,
-                    12,
+                  Expanded(
+                    child: Y(
+                      button: 'btn_twelve_steps',
+                      header: 'twelve_steps',
+                      type: 'step_',
+                      color: Colors.teal,
+                      x: 12,
+                    ),
                   ),
-                ),
-                const VerticalDivider(
-                  thickness: 10,
-                ),
-                Expanded(
-                  child: buildX(
-                    context,
-                    'btn_j4t',
-                    'j4t',
-                    'j4t_',
-                    Colors.pink,
-                    9,
+                ],
+              ),
+              const Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Y(
+                      button: 'btn_twelve_promises',
+                      header: 'twelve_promises',
+                      type: 'promise_',
+                      color: Colors.red,
+                      x: 12,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  VerticalDivider(
+                    thickness: 10,
+                  ),
+                  Expanded(
+                    child: Y(
+                      button: 'btn_j4t',
+                      header: 'j4t',
+                      type: 'j4t_',
+                      color: Colors.pink,
+                      x: 9,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
 
-  Widget buildX(
-    BuildContext context,
-    String button,
-    String header,
-    String type,
-    Color color,
-    int x,
-  ) {
+class Y extends StatelessWidget {
+  const Y({
+    super.key,
+    required this.button,
+    required this.header,
+    required this.type,
+    required this.color,
+    required this.x,
+  });
+
+  final String button;
+  final String header;
+  final String type;
+  final Color color;
+  final int x;
+
+  @override
+  Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () => showGeneralDialog<void>(
           context: context,

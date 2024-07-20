@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:drbob/blocs/bloc.dart';
-import 'package:drbob/ui/common.dart';
-import 'package:drbob/utils/localization.dart';
-import 'package:drbob/utils/style.dart';
+import 'package:drbob/legacy/blocs/bloc.dart';
+import 'package:drbob/legacy/ui/common.dart';
+import 'package:drbob/legacy/utils/localization.dart';
+import 'package:drbob/legacy/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
