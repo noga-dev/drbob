@@ -329,50 +329,56 @@ class _MainDrawerState extends State<MainDrawer> {
           icon: const Icon(Icons.bug_report),
           children: <Widget>[
             OutlinedButton(
-              onPressed: () => prefs
-                  .clear()
-                  .then((bool val) => Provider.of<Bloc>(context).notify()),
+              onPressed: () => prefs.clear().then((bool val) =>
+                  Provider.of<Bloc>(context, listen: false).notify()),
               child: const Text('Clear'),
             ),
             OutlinedButton(
               onPressed: () => prefs.remove('fontSize').then(
-                    (bool val) => Provider.of<Bloc>(context).notify(),
+                    (bool val) =>
+                        Provider.of<Bloc>(context, listen: false).notify(),
                   ),
               child: const Text('fontSize'),
             ),
             OutlinedButton(
               onPressed: () => prefs.remove('sobrietyDateInt').then(
-                    (bool val) => Provider.of<Bloc>(context).notify(),
+                    (bool val) =>
+                        Provider.of<Bloc>(context, listen: false).notify(),
                   ),
               child: const Text('sobrietyDateInt'),
             ),
             OutlinedButton(
               onPressed: () => prefs.remove('notifActive').then(
-                    (bool val) => Provider.of<Bloc>(context).notify(),
+                    (bool val) =>
+                        Provider.of<Bloc>(context, listen: false).notify(),
                   ),
               child: const Text('notifActive'),
             ),
             OutlinedButton(
               onPressed: () => prefs.remove('notifHour').then(
-                    (bool val) => Provider.of<Bloc>(context).notify(),
+                    (bool val) =>
+                        Provider.of<Bloc>(context, listen: false).notify(),
                   ),
               child: const Text('notifHour'),
             ),
             OutlinedButton(
               onPressed: () => prefs.remove('notifMin').then(
-                    (bool val) => Provider.of<Bloc>(context).notify(),
+                    (bool val) =>
+                        Provider.of<Bloc>(context, listen: false).notify(),
                   ),
               child: const Text('notifMin'),
             ),
             OutlinedButton(
               onPressed: () => prefs.remove('theme').then(
-                    (bool val) => Provider.of<Bloc>(context).notify(),
+                    (bool val) =>
+                        Provider.of<Bloc>(context, listen: false).notify(),
                   ),
               child: const Text('theme'),
             ),
             OutlinedButton(
               onPressed: () => prefs.remove('lang').then(
-                    (bool val) => Provider.of<Bloc>(context).notify(),
+                    (bool val) =>
+                        Provider.of<Bloc>(context, listen: false).notify(),
                   ),
               child: const Text('lang'),
             ),

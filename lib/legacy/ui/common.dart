@@ -45,6 +45,7 @@ class _AnimatedMenuItemState extends State<AnimatedMenuItem>
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12),
       onHighlightChanged: (bool c) => _controller.reverse(),
       onTapDown: (TapDownDetails d) => _controller.forward(),
       onTap: widget.route,

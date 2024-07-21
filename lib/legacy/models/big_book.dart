@@ -46,7 +46,7 @@ class BigBookPage {
 
   factory BigBookPage.fromJson(Map<String, dynamic> json) => BigBookPage(
         section: json['Section'] as String,
-        chapterName: json['ChapterName'] as String,
+        chapterName: json['ChapterName'] as String? ?? 'N/A',
         pageNumber: json['PageNumber'] as int,
         chapterNumber: json['ChapterNumber'] as int,
         text: json['Text'] == null

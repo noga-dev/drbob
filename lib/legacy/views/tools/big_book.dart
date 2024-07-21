@@ -4,34 +4,33 @@ import 'package:drbob/legacy/utils/layout.dart';
 import 'package:drbob/legacy/utils/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class BigBookView extends StatefulWidget {
+class BigBookView extends HookWidget {
   const BigBookView({super.key});
 
   @override
-  _BigBookViewState createState() => _BigBookViewState();
-}
-
-class _BigBookViewState extends State<BigBookView> {
-  bool _disclaimer = false;
-  final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionsListener =
-      ItemPositionsListener.create();
-
-  @override
   Widget build(BuildContext context) {
-    final double fontSize =
+    final fontSize =
         (Provider.of<Bloc>(context).getPrefs.containsKey('fontSize')
                 ? Provider.of<Bloc>(context).getPrefs.getDouble('fontSize')
-                : 12) ??
-            0;
+                : 12.0) ??
+            0.0;
     // TODO(AN): Implement translations
-    final String lang = (Localizations.localeOf(context).languageCode == 'en')
+    final lang = (Localizations.localeOf(context).languageCode == 'en')
         ? Localizations.localeOf(context).languageCode
         : 'en';
-    _disclaimer = Localizations.localeOf(context).languageCode == 'en';
+
+    final searchController = useTextEditingController();
+    useListenable(searchController);
+    final showDisclaimer =
+        useState(Localizations.localeOf(context).languageCode == 'en');
+    final itemScrollController = useMemoized(() => ItemScrollController());
+    final itemPositionsListener =
+        useMemoized(() => ItemPositionsListener.create());
+
     return MyScaffold(
       implyLeading: true,
       title: Row(
@@ -39,37 +38,42 @@ class _BigBookViewState extends State<BigBookView> {
           Expanded(
             flex: 5,
             child: TextField(
+              controller: searchController,
               decoration: InputDecoration(
                 hintText: trans(
                   context,
                   'search',
                 ),
-                counter: const Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    'test',
-                    style: TextStyle(
-                      fontSize: 12,
-                      height: .5,
-                      color: Colors.grey,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+                // counter: const Align(
+                //   alignment: Alignment.topCenter,
+                //   child: Text(
+                //     'test',
+                //     style: TextStyle(
+                //       fontSize: 12,
+                //       height: .5,
+                //       color: Colors.grey,
+                //     ),
+                //     textAlign: TextAlign.center,
+                //   ),
+                // ),
                 isDense: true,
               ),
             ),
           ),
-          const VerticalDivider(
-            width: 26,
-          ),
-          IconButton(
-              icon: const Icon(Icons.keyboard_arrow_up), onPressed: () {}),
-          IconButton(
-              icon: const Icon(Icons.keyboard_arrow_down), onPressed: () {}),
+          // const VerticalDivider(
+          //   width: 26,
+          // ),
+          // IconButton(
+          //   icon: const Icon(Icons.keyboard_arrow_up),
+          //   onPressed: () {},
+          // ),
+          // IconButton(
+          //   icon: const Icon(Icons.keyboard_arrow_down),
+          //   onPressed: () {},
+          // ),
         ],
       ),
-      fab: _disclaimer
+      fab: showDisclaimer.value
           ? const SizedBox.shrink()
           : Dismissible(
               key: UniqueKey(),
@@ -77,7 +81,7 @@ class _BigBookViewState extends State<BigBookView> {
               child: Dismissible(
                 key: UniqueKey(),
                 child: FloatingActionButton.extended(
-                  onPressed: () => setState(() => _disclaimer = false),
+                  onPressed: () => showDisclaimer.value = false,
                   label: Text(
                     trans(context, 'translation_disclaimer'),
                   ),
@@ -90,8 +94,7 @@ class _BigBookViewState extends State<BigBookView> {
         future: rootBundle.loadString('assets/big_book/$lang.big.book.json'),
         builder: (BuildContext context, AsyncSnapshot<dynamic> future) {
           if (future.connectionState == ConnectionState.done) {
-            final List<BigBookPage> bigBook =
-                BigBook.fromRawJson(future.data.toString()).bigBook;
+            final bigBook = BigBook.fromRawJson(future.data.toString()).bigBook;
             // TODO(AN): Fix misaligned scroll index
             return ScrollablePositionedList.separated(
               itemScrollController: itemScrollController,
@@ -110,7 +113,7 @@ class _BigBookViewState extends State<BigBookView> {
                   .where((BigBookPage t) => t.section == 'Chapters')
                   .length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
+                return Padding(
                   padding: const EdgeInsets.all(22),
                   child: Directionality(
                     textDirection: TextDirection.ltr,
@@ -126,21 +129,56 @@ class _BigBookViewState extends State<BigBookView> {
                           textAlign: TextAlign.center,
                         ),
                         const Divider(),
-                        SelectableText(
-                          bigBook
-                              .where((BigBookPage t) => t.section == 'Chapters')
-                              .toList()[index]
-                              .text
-                              .join(' '),
+                        SelectableText.rich(
+                          TextSpan(
+                            children: bigBook
+                                .where(
+                                    (BigBookPage t) => t.section == 'Chapters')
+                                .toList()[index]
+                                .text
+                                .join(' ')
+                                .trim()
+                                // .split(RegExp(r'[ \-\u2014]'))
+                                // OPTIMIZE - FINDS BAD RESULTS
+                                .split(' ')
+                                .map(
+                                  (e) => TextSpan(
+                                    children: [
+                                      const TextSpan(text: ' '),
+                                      TextSpan(
+                                        text: e,
+                                        style: searchController
+                                                    .text.isNotEmpty &&
+                                                e.toLowerCase().contains(
+                                                    searchController.text
+                                                        .toLowerCase())
+                                            ? const TextStyle(
+                                                // color: Colors.red,
+                                                backgroundColor: Color.fromRGBO(
+                                                    255, 36, 36, 0.462),
+                                                decoration:
+                                                    TextDecoration.underline,
+                                              )
+                                            : null,
+                                      ),
+                                      // if (!bigBook
+                                      //     .where((BigBookPage t) =>
+                                      //         t.section == 'Chapters')
+                                      //     .toList()[index]
+                                      //     .text
+                                      //     .last
+                                      //     .endsWith(e))
+                                      //   const TextSpan(text: ' '),
+                                    ],
+                                  ),
+                                )
+                                .toList(),
+                          ),
                           style: TextStyle(fontSize: fontSize),
                           textAlign: TextAlign.justify,
                         ),
                         Text(
-                          bigBook
-                              .where((BigBookPage t) => t.section == 'Chapters')
-                              .toList()[index]
-                              .pageNumber
-                              .toString(),
+                          'p.${bigBook.where((BigBookPage t) => t.section == 'Chapters').toList()[index].pageNumber.toString()}',
                           style: TextStyle(fontSize: fontSize - 4),
                         ),
                       ],
@@ -150,6 +188,7 @@ class _BigBookViewState extends State<BigBookView> {
               },
             );
           }
+
           return const Center(child: RefreshProgressIndicator());
         },
       ),

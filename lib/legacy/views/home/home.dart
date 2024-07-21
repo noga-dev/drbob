@@ -6,6 +6,7 @@ import 'package:drbob/legacy/utils/localization.dart';
 import 'package:drbob/legacy/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatelessWidget {
@@ -13,14 +14,12 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> kids = <Widget>[
+    final kids = [
       Container(
         height: 140,
         width: 140,
         padding: const EdgeInsets.all(10),
-        child: const SobrietySlider(
-          radius: 120,
-        ),
+        child: const SobrietySlider(),
       ),
       Container(
         height: 140,
@@ -31,6 +30,7 @@ class HomeView extends StatelessWidget {
         child: const UserStatistics(),
       ),
     ];
+
     return Wrap(
       alignment: WrapAlignment.center,
       children: <Widget>[
@@ -245,10 +245,7 @@ class ProgressPainter extends CustomPainter {
 class SobrietySlider extends StatefulWidget {
   const SobrietySlider({
     Key? key,
-    required this.radius,
   }) : super(key: key);
-
-  final double radius;
 
   @override
   _SobrietySliderState createState() => _SobrietySliderState();
@@ -301,40 +298,6 @@ class _SobrietySliderState extends State<SobrietySlider>
     super.didChangeDependencies();
   }
 
-  CustomPaint progressView() {
-    return CustomPaint(
-      foregroundPainter: ProgressPainter(
-        darkTheme: Theme.of(context).brightness == Brightness.dark,
-        oldChipColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.black
-            : Colors.grey,
-        newChipColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.white
-            : Colors.black,
-        dividerColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.black
-            : Colors.white,
-        completedPercentage: progressDegrees,
-        circleWidth: 12.0,
-        dividers: 12,
-      ),
-      child: DefaultTextStyle(
-        style: statisticsStyle.copyWith(
-            color: Theme.of(context).textTheme.bodyLarge!.color),
-        child: Center(
-          child: (progressDegrees == 0)
-              ? Center(
-                  child: Text(
-                    trans(context, 'pick_sobriety_date'),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : Text('${progressDegrees.toStringAsFixed(2)}%'),
-        ),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     _radialProgressAnimationController.dispose();
@@ -353,7 +316,7 @@ class _SobrietySliderState extends State<SobrietySlider>
         : now;
 
     return InkWell(
-      borderRadius: BorderRadius.circular(widget.radius),
+      borderRadius: BorderRadius.circular(160),
       onTap: () async {
         final result = await showDatePicker(
           firstDate: DateTime.fromMillisecondsSinceEpoch(0),
@@ -369,19 +332,105 @@ class _SobrietySliderState extends State<SobrietySlider>
               result.millisecondsSinceEpoch,
             );
 
-            Provider.of<Bloc>(context).notify();
+            Provider.of<Bloc>(context, listen: false).notify();
           });
         }
       },
-      child: Tooltip(
-        message: trans(context, 'disabled_func'),
-        child: SizedBox(
-          height: widget.radius,
-          width: widget.radius,
-          child: progressView(),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 18),
+        child: AnimatedRadialGauge(
+          duration: const Duration(milliseconds: 300),
+          value: calculateAnniversaryProgress(sobDate),
+          builder: (context, child, value) => RadialGaugeLabel(
+            value: calculateAnniversaryProgress(sobDate),
+            labelProvider: GaugeLabelProvider.map(
+              toLabel: (e) => '${(e * 100).toStringAsFixed(2)}%',
+            ),
+            style: const TextStyle(),
+          ),
+          axis: const GaugeAxis(
+            degrees: 270,
+            style: GaugeAxisStyle(
+              thickness: 4,
+              cornerRadius: Radius.circular(36),
+            ),
+            // segments: [
+            //   GaugeSegment(
+            //     from: 0,
+            //     to: 360,
+            //     cornerRadius: Radius.circular(36),
+            //   ),
+            // ],
+            // segments: List.generate(
+            //   segments(Provider.of<Bloc>(context).getSobrietyDate),
+            //   (index) => const GaugeSegment(from: 0, to: 200),
+            // ),
+          ),
         ),
       ),
     );
+  }
+
+  int segments(DateTime date) {
+    final today = DateTime.now();
+    var anniversary = date;
+
+    // Check if anniversary has already passed this year
+    if (anniversary.isBefore(today)) {
+      anniversary = anniversary
+          .add(Duration(days: 365 * (1 + (today.year - anniversary.year))));
+    }
+
+    final difference = anniversary.difference(today);
+    final daysPassed = difference.inDays.toDouble();
+
+    const totalDays = 365.2425; // Assuming average year length
+
+    // Calculate progress based on time ranges
+    if (daysPassed >= totalDays) {
+      // Over a year
+      return 12;
+    } else if (daysPassed > 30 && daysPassed <= 60) {
+      // 30-60 days
+      return 2;
+    } else if (daysPassed > 60 && daysPassed <= 90) {
+      // 60-90 days
+      return 3;
+    } else if (daysPassed > 90 && daysPassed <= 180) {
+      // 90-180 days
+      return 90;
+    } else if (daysPassed > 180) {
+      // 180+ days (before a year)
+      return 180;
+    } else {
+      // Less than 30 days
+      return 30;
+    }
+  }
+
+  double calculateAnniversaryProgress(DateTime anniversaryDate) {
+    final now = DateTime.now();
+    final daysSinceAnniversary = now.difference(anniversaryDate).inDays;
+
+    if (daysSinceAnniversary <= 30) {
+      // Progress to 1 month
+      return daysSinceAnniversary / 30;
+    } else if (daysSinceAnniversary <= 60) {
+      // Progress to 2 months
+      return (daysSinceAnniversary - 30) / 30;
+    } else if (daysSinceAnniversary <= 90) {
+      // Progress to 3 months
+      return (daysSinceAnniversary - 60) / 30;
+    } else if (daysSinceAnniversary <= 180) {
+      // Progress to 6 months
+      return (daysSinceAnniversary - 90) / 90;
+    } else if (daysSinceAnniversary <= 365) {
+      // Progress to 1 year
+      return (daysSinceAnniversary - 180) / 185;
+    } else {
+      // Progress to next year
+      return (daysSinceAnniversary % 365) / 365;
+    }
   }
 
   // TODO(AN): Add next chip indicator
@@ -389,9 +438,9 @@ class _SobrietySliderState extends State<SobrietySlider>
     setState(() {
       _radialProgressAnimationController.reset();
       _radialProgressAnimationController.forward();
-      final Duration sobrietyTime = Provider.of<Bloc>(context).getSobrietyTime;
+      final sobrietyTime = Provider.of<Bloc>(context).getSobrietyTime;
       // average days in year and month
-      final double days = sobrietyTime.inDays % 365.2425 % 30.44;
+      final days = sobrietyTime.inDays % 365.2425 % 30.44;
       if (sobrietyTime.inDays >= 365) {
         goalCompleted = sobrietyTime.inDays.toDouble() % 365.2425 / 365.2425;
       } else if (sobrietyTime.inDays > 30 && sobrietyTime.inDays <= 60) {
@@ -421,24 +470,15 @@ class _UserStatisticsState extends State<UserStatistics> {
 
   @override
   Widget build(BuildContext context) {
-    final Duration sobrietyTime = Provider.of<Bloc>(context).getSobrietyTime;
-    final int years = sobrietyTime.inDays ~/ 365.2425;
-    final int months = sobrietyTime.inDays % 365.2425 ~/ 30.44;
-    final int days = (sobrietyTime.inDays % 365.2425 % 30.44).toInt();
+    final sobrietyTime = Provider.of<Bloc>(context).getSobrietyTime;
+    final years = sobrietyTime.inDays ~/ 365.2425;
+    final months = sobrietyTime.inDays % 365.2425 ~/ 30.44;
+    final days = (sobrietyTime.inDays % 365.2425 % 30.44).toInt();
 
     return InkWell(
-      borderRadius: BorderRadius.circular(150),
       onTap: () => setState(() => type = !type),
-      child: !Provider.of<Bloc>(context).getPrefs.containsKey('sobrietyDateInt')
-          ? Center(
-              child: Text(
-                trans(
-                  context,
-                  'sobriety_date_not_set',
-                ),
-              ),
-            )
-          : SizedBox(
+      child: Provider.of<Bloc>(context).getPrefs.containsKey('sobrietyDateInt')
+          ? SizedBox(
               width: 100,
               height: 100,
               child: DefaultTextStyle(
@@ -447,10 +487,9 @@ class _UserStatisticsState extends State<UserStatistics> {
                 child: AnimatedSwitcher(
                   duration: const Duration(seconds: 1),
                   child: type
-                      ? Center(
-                          child: Text(
-                            '${sobrietyTime.inDays} ${trans(context, 'total_sobriety_days')}',
-                          ),
+                      ? Text(
+                          '${sobrietyTime.inDays} ${trans(context, 'total_sobriety_days')}',
+                          textAlign: TextAlign.center,
                         )
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -467,6 +506,14 @@ class _UserStatisticsState extends State<UserStatistics> {
                             ),
                           ],
                         ),
+                ),
+              ),
+            )
+          : Center(
+              child: Text(
+                trans(
+                  context,
+                  'sobriety_date_not_set',
                 ),
               ),
             ),
@@ -552,20 +599,21 @@ class MenuItem extends StatelessWidget {
       child: Card(
         color: Colors.transparent,
         child: AnimatedMenuItem(
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Container(
-                  width: 20,
-                ),
-                Expanded(child: Text(label)),
-                Icon(icon),
-                Container(
-                  width: 20,
-                ),
-              ],
-            ),
-            func),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Container(
+                width: 20,
+              ),
+              Expanded(child: Text(label)),
+              Icon(icon),
+              Container(
+                width: 20,
+              ),
+            ],
+          ),
+          func,
+        ),
       ),
     );
   }
@@ -748,10 +796,7 @@ class _XState extends State<X> {
                         (int f) => Wrap(
                           children: [
                             ListTile(
-                              splashColor: Colors.primaries
-                                  .toList()[
-                                      Random().nextInt(Colors.primaries.length)]
-                                  .withOpacity(.5),
+                              splashColor: getColor(),
                               onLongPress: () {
                                 setState(() {
                                   selected = f;
@@ -821,16 +866,16 @@ class _XState extends State<X> {
                                             ),
                                     ),
                                   ),
-                                  Flexible(
+                                  const Flexible(
                                     flex: 1,
-                                    child: Container(),
+                                    child: SizedBox(),
                                   ),
                                 ],
                               ),
                             ),
                             if (f != widget.x)
-                              Container(
-                                margin: EdgeInsets.symmetric(
+                              Padding(
+                                padding: EdgeInsets.symmetric(
                                     horizontal:
                                         MediaQuery.of(context).size.width * .2),
                                 child: const Divider(
@@ -838,7 +883,7 @@ class _XState extends State<X> {
                                 ),
                               )
                             else
-                              Container()
+                              const SizedBox()
                           ],
                         ),
                       )
@@ -850,5 +895,11 @@ class _XState extends State<X> {
         ),
       ),
     );
+  }
+
+  Color getColor() {
+    return Colors.primaries
+        .toList()[Random().nextInt(Colors.primaries.length)]
+        .withOpacity(.5);
   }
 }
